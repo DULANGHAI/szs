@@ -11,3 +11,14 @@ export function getListApi(params) {
     params: params
   })
 }
+
+/**
+ * 获取列表
+ * @param {Object} params
+ */
+export function getCreatorApi() {
+  return request({
+    url: '/v1/tasks/task-creator',
+    method: 'get'
+  })
+}

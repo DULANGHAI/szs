@@ -15,10 +15,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="任务名">
-              <el-select v-model="form.task_name" placeholder="请选择">
-                <el-option :label="'任务名1'" :value="'任务名1'"></el-option>
-                <el-option :label="'任务名2'" :value="'任务名2'"></el-option>
-              </el-select>
+              <el-input v-model="form.task_name" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
