@@ -142,28 +142,34 @@ export const constantRouterMap = [
         meta: { title: '风险命令库' }
       },
       {
+        path: 'example1',
+        name: '命令白名单',
+        component: () => import('@/views/scriptLibrary/index'),
+        meta: { title: '命令白名单' }
+      },
+      {
+        path: 'software',
+        name: 'softwareLibrary',
+        component: () => import('@/views/softwareLibrary/index'),
+        meta: { title: '软件包库' }
+      },
+      {
         path: 'script',
-        name: '脚本库',
+        name: 'scriptLibrary',
         component: () => import('@/views/scriptLibrary/index'),
         meta: { title: '脚本库' }
       },
       {
         path: 'example2',
-        name: 'Example2',
+        name: '配置文件库',
         component: () => import('@/views/example2/index'),
-        meta: { title: 'Example2' }
+        meta: { title: '配置文件库' }
       },
       {
         path: 'example3',
-        name: 'Example3',
+        name: '文件审批',
         component: () => import('@/views/example3/index'),
-        meta: { title: 'Example3' }
-      },
-      {
-        path: 'script-file',
-        name: '脚本库-文件',
-        component: () => import('@/views/file/index'),
-        hidden: true
+        meta: { title: '文件审批' }
       }
     ]
   },

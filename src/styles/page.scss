@@ -35,3 +35,30 @@
     border-top: 1px solid #f0f0f0;
   }
 }
+.tabs-nav{
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.tabs-nav .tabs-nav-left{
+  float: left;
+}
+.tabs-nav .tabs-nav-right{
+  float: right;
+}
+.pb-dialog .el-input,
+.pb-dialog .el-select{
+  width: 100%;
+}
+.pb-dialog .el-upload-dragger,
+.pb-dialog .el-upload{
+  width: 100%;
+}
+.pb-dialog .el-upload-dragger{
+  height: 130px;
+}
+.pb-dialog .el-upload-dragger .el-icon-plus{
+  margin-top: 30px;
+  width: 40px;
+  height: 40px;
+  font-size: 32px;
+}

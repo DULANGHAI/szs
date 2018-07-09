@@ -4,7 +4,7 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      脚本库
+      软件包库
     </div>
     <div class="container-body">
       <template>
@@ -21,7 +21,19 @@
                       :value="item.value">
                     </el-option>
                   </el-select>
-                  <span> /patyon</span>
+                  <el-dropdown trigger="click">
+                    <span class="el-dropdown-link">
+                      <el-button size="mini"><i class="el-icon-plus"></i></el-button>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item class="clearfix" @click.native="$refs.create.doCreate(false)">
+                        新建版本
+                      </el-dropdown-item>
+                      <el-dropdown-item class="clearfix">
+                        删除版本
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </div>
                 <div class="tabs-nav-right">
                   <el-dropdown trigger="click">
@@ -86,49 +98,7 @@
               </el-table>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="版本历史" name="second">
-            <div class="tabs-contents">
-              <div class="tabs-nav">
-                <div class="tabs-nav-left">
-                  <el-select v-model="value4" size="mini" clearable placeholder="请选择">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                  <span> /patyon</span>
-                </div>
-              </div>
-              <el-table
-                ref="multipleTable"
-                :data="tableData3"
-                tooltip-effect="dark"
-                style="width: 100%"
-                empty-text="暂无数据">
-                <el-table-column
-                  label="提交时间"
-                  min-width="20%">
-                  <template slot-scope="scope">{{ scope.row.date }}</template>
-                </el-table-column>
-                <el-table-column
-                  prop="name"
-                  label="提交说明">
-                </el-table-column>
-                <el-table-column
-                  prop="rank"
-                  label="hash"
-                  min-width="30%">
-                  <template scope="scope">
-                    <el-button type="text" size="small">sadasdasd</el-button>
-                    <el-button type="text" size="small">复制</el-button>
-                    <el-button type="text" size="small">浏览文件</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-tab-pane>
+          <el-tab-pane label="版本历史" name="second">版本历史</el-tab-pane>
         </el-tabs>
       </template>
       <add-version ref="create"></add-version>
