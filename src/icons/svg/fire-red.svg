@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="18px" viewBox="0 0 14 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="01.任务列表-首页" transform="translate(-1128.000000, -447.000000)" fill="#F5222D" fill-rule="nonzero">
+            <g id="Group-58" transform="translate(1120.000000, 374.000000)">
+                <g id="Group-52" transform="translate(8.000000, 73.000000)">
+                    <path d="M12.3307809,3.71628526 C9.96152651,4.38469282 9.53078502,6.28298463 9.69231567,7.4861098 C7.99614024,5.50762511 8.07690555,3.26180274 8.07690555,0 C2.66535935,2.03193956 3.93077259,7.86039945 3.76924194,9.62500133 C2.4230841,8.52878593 2.15387326,5.88193588 2.15387326,5.88193588 C0.726908666,6.60381941 2.02477845e-08,8.58226189 0,10.1597189 C0,14.0096941 3.12307787,17.1111111 7,17.1111111 C10.8769221,17.1111111 14,14.0096941 14,10.1597189 C13.9999793,7.88715854 12.3038038,6.81772335 12.3307809,3.71628526 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

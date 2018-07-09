@@ -72,6 +72,29 @@ export const constantRouterMap = [
     ]
   },
 
+  // 运维作业部分
+  // 1.任务管理
+  {
+    path: '/taskManage',
+    component: Layout,
+    name: '任务管理',
+    meta: { title: '任务管理', icon: 'form' },
+    children: [
+      {
+        path: 'taskList',
+        name: '任务列表',
+        component: () => import('@/views/taskList/index'),
+        meta: { title: '任务列表', icon: 'form' }
+      },
+      {
+        path: 'taskApprove',
+        name: '任务审批',
+        component: () => import('@/views/taskApprove/index'),
+        meta: { title: '任务审批', icon: 'form' }
+      }
+    ]
+  },
+
   {
     path: '/resource',
     component: Layout,
