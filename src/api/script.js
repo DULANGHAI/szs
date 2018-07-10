@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export function getFileList() {
+export function getFileList(project_id, params) {
   return request({
-    url: '/v1/repository/system/language',
-    method: 'get'
+    url: '/v1/repository/project/' + project_id,
+    method: 'get',
+    params
   })
 }

@@ -174,6 +174,8 @@ import AddApp from './addApp' // 新建文件
 import UploadFile from './uploadFile' // 上传文件
 import UploadZip from './uploadZip' // 上传压缩包
 import { getFileList } from '@/api/script'
+import { Message } from 'element-ui'
+
 export default {
   name: 'ScriptLibrary',
   components: {
@@ -284,6 +286,8 @@ export default {
       }
       getFileList('2', params).then(response => {
         console.log(response.data)
+      }).catch(error => {
+        Message.error(error)
       })
     }
   }
