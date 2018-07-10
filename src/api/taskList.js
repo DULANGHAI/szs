@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getListApi(params) {
   return request({
-    url: '/v1/tasks',
+    url: '/v1/tasks/',
     method: 'get',
     params: params
   })
@@ -39,7 +39,7 @@ export function getLanguageApi() {
  */
 export function changeTaskStatusApi(data) {
   return request({
-    url: '/v1/tasks',
+    url: '/v1/tasks/',
     method: 'put',
     data: data
   })
@@ -50,8 +50,18 @@ export function changeTaskStatusApi(data) {
  */
 export function deleteTaskApi(data) {
   return request({
-    url: '/v1/tasks',
+    url: '/v1/tasks/',
     method: 'delete',
     data: data
+  })
+}
+
+/**
+ * 查询所有的脚本
+ */
+export function getAllScriptApi() {
+  return request({
+    url: '/v1/tasks/script/',
+    method: 'get'
   })
 }

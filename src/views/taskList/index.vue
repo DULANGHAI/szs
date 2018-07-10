@@ -147,7 +147,9 @@ export default {
         task_language: '',
         task_risk_level: '',
         task_creator: [],
-        task_is_enable: ''
+        task_is_enable: '',
+        page: 0,
+        per_page: 20
       },
       data: [
         {
@@ -361,7 +363,9 @@ export default {
         task_language: '',
         task_risk_level: '',
         task_creator: [],
-        task_is_enable: ''
+        task_is_enable: '',
+        page: 0,
+        per_page: 20
       }
       this.multipleSelection = []
       this.search()

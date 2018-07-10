@@ -11,8 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/user': {
+        target: "https://easy-mock.com/mock/5950a2419adc231f356a6636/vue-admin",
+        changeOrigin: true
+      },
       '/v1': {
-        target: 'http://192.168.2.191',
+        target: 'http://192.168.2.191:5050',
         changeOrigin: true
       }
     },

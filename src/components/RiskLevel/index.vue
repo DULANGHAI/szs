@@ -12,14 +12,14 @@ export default {
   props: {
     level: {
       type: [String, Number],
-      default: 1
+      default: 0
     }
   },
   computed: {
     computedLevel() {
       const num = parseInt(this.level)
-      if (num < 1) {
-        return 1
+      if (num < 0) {
+        return 0
       }
       return num
     }
