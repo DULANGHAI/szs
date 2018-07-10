@@ -71,13 +71,20 @@ export const constantRouterMap = [
         path: 'taskList',
         name: '任务列表',
         component: () => import('@/views/taskList/index'),
-        meta: { title: '任务列表', icon: 'form' }
+        meta: { title: '任务列表' }
+      },
+      {
+        path: 'taskAdd',
+        name: '添加任务',
+        component: () => import('@/views/taskList/taskAdd'),
+        meta: { title: '添加任务' },
+        hidden: true
       },
       {
         path: 'taskApprove',
         name: '任务审批',
         component: () => import('@/views/taskApprove/index'),
-        meta: { title: '任务审批', icon: 'form' }
+        meta: { title: '任务审批' }
       }
     ]
   },
