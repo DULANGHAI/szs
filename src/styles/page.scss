@@ -4,10 +4,9 @@
 }
 .container-title{
   background: #fff;
-  padding-left: 22px;
   font-size: 22px;
   line-height: 30px;
-  padding-bottom: 20px;
+  padding: 20px 0px 30px 22px;
 }
 .container-body{
   .el-tabs__nav-scroll{
@@ -61,4 +60,7 @@
   width: 40px;
   height: 40px;
   font-size: 32px;
+}
+.pb-library .page-bar{
+  padding-left: 22px;
 }
