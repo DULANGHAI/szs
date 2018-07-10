@@ -8,7 +8,23 @@
   line-height: 30px;
   padding: 20px 0px 30px 22px;
 }
-.container-body{
+.container-body-wrap{
+  margin: 24px;
+  padding: 29px 32px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+.container-body-wrap{
+  .el-table th{
+    background-color: #fafafa;
+    font-weight: normal;
+    border-bottom: none;
+    border-bottom: 1px solid #f0f0f0;
+    border-top: 1px solid #f0f0f0;
+    color: #000;
+  }
+}
+.pb-library .container-body{
   .el-tabs__nav-scroll{
     padding: 0px 22px;
     background: #fff;

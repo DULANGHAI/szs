@@ -59,19 +59,6 @@ export const constantRouterMap = [
     ]
   },
 
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
   // 运维作业部分
   // 1.任务管理
   {
@@ -150,11 +137,10 @@ export const constantRouterMap = [
       }
     ]
   },
-
+  // 版本库
   {
     path: '/repository',
     component: Layout,
-    redirect: '/repository/example3',
     name: 'Repository',
     meta: { title: '版本库', icon: 'banben' },
     children: [
@@ -189,14 +175,24 @@ export const constantRouterMap = [
         meta: { title: '配置文件库' }
       },
       {
-        path: 'example3',
-        name: '文件审批',
-        component: () => import('@/views/example3/index'),
+        path: 'examine',
+        name: 'examine',
+        component: () => import('@/views/examine/index'),
         meta: { title: '文件审批' }
       }
     ]
   },
-
+  {
+    path: '/repository/examine/detail',
+    name: 'examineDetail',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: '/repository/examine/detail/:id',
+      name: 'examineDetail',
+      component: () => import('@/views/examine/detail')
+    }]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

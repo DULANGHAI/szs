@@ -147,7 +147,7 @@
                   prop="rank"
                   label="hash"
                   min-width="30%">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button type="text" size="small">sadasdasd</el-button>
                     <el-button type="text" size="small">复制</el-button>
                     <el-button type="text" size="small">浏览文件</el-button>
@@ -171,8 +171,9 @@
 import AddVersion from './addVersion' // 新建版本
 import AddFolder from './addFolder' // 新建文件夹
 import AddApp from './addApp' // 新建文件
-import UploadFile from './uploadFile' // 新建文件
-import UploadZip from './uploadZip' // 新建文件
+import UploadFile from './uploadFile' // 上传文件
+import UploadZip from './uploadZip' // 上传压缩包
+import { getFileList } from '@/api/script'
 export default {
   name: 'ScriptLibrary',
   components: {
@@ -180,12 +181,14 @@ export default {
     AddFolder,
     AddApp,
     UploadFile,
-    UploadZip
+    UploadZip,
+    getFileList
   },
   data() {
     return {
       activeName: 'first',
       levelList: null,
+      path: '/',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -249,6 +252,7 @@ export default {
   },
   created() {
     this.getBreadcrumb()
+    this.getlist()
   },
   methods: {
     handleClick(tab, event) {
@@ -275,7 +279,12 @@ export default {
       this.levelList = matched
     },
     getlist() {
-      console.log(199)
+      var params = {
+        path: this.path
+      }
+      getFileList('2', params).then(response => {
+        console.log(response.data)
+      })
     }
   }
 }
