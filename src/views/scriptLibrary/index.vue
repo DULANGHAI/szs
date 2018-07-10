@@ -120,7 +120,7 @@
                   prop="rank"
                   label="hash"
                   min-width="30%">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button type="text" size="small">sadasdasd</el-button>
                     <el-button type="text" size="small">复制</el-button>
                     <el-button type="text" size="small">浏览文件</el-button>
