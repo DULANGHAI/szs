@@ -4,68 +4,128 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      添加任务
+      {{$route.name}}
     </div>
     <div class="container-body">
-      <el-form ref="form" label-width="80px" size="small" label-position="left">
+      <el-form ref="form" label-width="84px" size="small" label-position="left">
         <el-form-item label="任务名">
-          <el-input v-model="form.task_name" placeholder="请输入任务名"></el-input>
+          <el-input v-if="!view" v-model="form.task_name" placeholder="请输入任务名"></el-input>
+          <div v-if="view">{{form.task_name}}</div>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input type="textarea" v-model="form.task_description" :autosize="{ minRows: 4 }" placeholder="请输入备注"></el-input>
+          <el-input v-if="!view" type="textarea" v-model="form.task_description" :autosize="{ minRows: 4 }" placeholder="请输入备注"></el-input>
+          <div v-if="view">{{form.task_description}}</div>
         </el-form-item>
         <el-form-item label="任务类型">
-          <el-radio-group v-model="form.task_type" @change="changeTaskType">
+          <el-radio-group v-if="!view" v-model="form.task_type">
             <el-radio label="commond">命令</el-radio>
             <el-radio label="script">脚本</el-radio>
             <el-radio label="file">文件分发</el-radio>
           </el-radio-group>
+          <div v-if="view">{{form.task_type}}</div>
         </el-form-item>
 
-        <el-form-item label="目标系统" v-if="systemAndLang && Object.keys(systemAndLang).length && (form.task_type !== 'file')">
-          <el-select v-model="form.task_target_system" @change="systemChange" placeholder="请选择">
+        <el-form-item label="目标系统" v-if="systemAndLang && Object.keys(systemAndLang).length">
+          <el-select v-if="!view" v-model="form.task_target_system" @change="systemChange" placeholder="请选择">
             <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
           </el-select>
+          <div v-if="view">{{form.task_target_system}}</div>
         </el-form-item>
         <el-form-item label="语言" v-if="form.task_target_system && (form.task_type !== 'file')">
-          <el-select v-model="form.task_language" placeholder="请选择">
+          <el-select v-if="!view" v-model="form.task_language" placeholder="请选择">
             <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item" :value="item"></el-option>
           </el-select>
+          <div v-if="view">{{form.task_language}}</div>
         </el-form-item>
         <!-- 命令 -->
         <el-form-item label="命令" v-if="form.task_type === 'commond'">
-          <el-input type="textarea" v-model="form.task_command" :autosize="{ minRows: 4 }" placeholder="请输入命令"></el-input>
+          <el-input v-if="!view" type="textarea" v-model="form.task_command" :autosize="{ minRows: 4 }" placeholder="请输入命令"></el-input>
+          <div v-if="view">{{form.task_command}}</div>
         </el-form-item>
         <!-- 脚本 -->
-        <el-form-item label="脚本">
-          <el-select v-model="form.task_script"
-            filterable
-            placeholder="请选择脚本">
-            <el-option v-for="item in scriptOptions" :key="item.value" :label="item.label" :value="item.value">
-              <div style="height: 65px">
-                123111111111111111111111111111111111111111111<risk-level :level="3"></risk-level>
-              </div>
-            </el-option>
-          </el-select>
-        </el-form-item>
+        <div v-if="form.task_type === 'script'">
+          <el-form-item label="脚本">
+            <el-select v-if="!view" v-model="form.task_script"
+              filterable
+              placeholder="请选择脚本"
+              popper-class="script-select">
+              <el-option v-for="(item, index) in scriptOptions" :key="index" :label="item.name" :value="item.name">
+                <script-option :data="item"></script-option>
+              </el-option>
+            </el-select>
+            <div v-if="view">{{form.task_script}}</div>
+          </el-form-item>
+          <el-form-item label="脚本版本">
+            <el-select v-if="!view" v-model="form.task_script_version"
+              filterable
+              placeholder="请选择脚本">
+              <el-option v-for="item in scriptVersionOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+            <div v-if="view">{{form.task_script_version}}</div>
+            <el-button type="text" size="small">查看脚本</el-button>
+          </el-form-item>
+          <el-form-item label="脚本变量">
+            <el-input v-if="!view" v-model="form.task_script_parameter" disabled></el-input>
+            <div v-if="view">{{form.task_script_parameter}}</div>
+            <div>-a 文件名     -o 输出文件名     -p 进程名</div>
+          </el-form-item>
+        </div>
+        <!-- 文件分发 -->
+        <div v-if="form.task_type === 'file'">
+          <el-form-item label="文件分发">
+            <div>接口没有，暂时放下</div>
+          </el-form-item>
+          <div style="display: flex;">
+            <el-form-item label="文件所有者">
+              <el-input v-if="!view" v-model="form.task_file_owner" placeholder="请输入"></el-input>
+              <div v-if="view">{{form.task_file_owner}}</div>
+            </el-form-item>
+            <el-form-item label="文件权限" style="margin-left: 40px;">
+              <el-input v-if="!view" v-model="form.task_file_permission" placeholder="请输入"></el-input>
+              <div v-if="view">{{form.task_file_permission}}</div>
+            </el-form-item>
+          </div>
+          <el-form-item label="文件替换">
+            <el-switch v-if="!view" v-model="form.task_is_replace"></el-switch>
+            <div v-if="view">{{form.task_is_replace}}</div>
+          </el-form-item>
+        </div>
 
-        <el-form-item label="超时时间">
-          <el-input-number v-model="form.task_time_out" controls-position="right" :min="1" :precision="1"></el-input-number>
-          秒
-        </el-form-item>
-        <el-form-item label="风险">
-          <risk-level :level="form.task_risk_level"></risk-level>
-        </el-form-item>
-        <el-form-item label="风险说明">
-          <el-input type="textarea" v-model="form.task_risk_statement" disabled></el-input>
-        </el-form-item>
+        <div v-if="form.task_type !== 'file'">
+          <el-form-item label="超时时间">
+            <el-input-number v-if="!view" v-model="form.task_time_out" controls-position="right" :min="1" :precision="1"></el-input-number>
+            <span v-if="view">{{form.task_time_out}}</span>
+            秒
+          </el-form-item>
+          <el-form-item label="风险">
+            <risk-level :level="form.task_risk_level"></risk-level>
+          </el-form-item>
+          <el-form-item label="风险说明">
+            <el-input v-if="!view" type="textarea" v-model="form.task_risk_statement" disabled></el-input>
+            <div v-if="view">{{form.task_risk_statement}}</div>
+          </el-form-item>
+        </div>
+        
         <el-form-item label="启用">
-          <el-switch v-model="form.task_is_enable"></el-switch>
+          <el-switch v-if="!view" v-model="form.task_is_enable"></el-switch>
+          <div v-if="view">{{form.task_is_enable}}</div>
         </el-form-item>
 
-        <el-form-item>
-          <el-button type="primary">提交</el-button>
+        <!-- 添加的按钮组 -->
+        <el-form-item v-if="!view && !id">
+          <el-button type="primary" @click="submit">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
+          <el-button @click="goBack">返回</el-button>
+        </el-form-item>
+        <!-- 编辑的按钮组 -->
+        <el-form-item v-if="!view && id">
+          <el-button type="primary" @click="submit">提交</el-button>
+          <el-button @click="goBack">返回</el-button>
+        </el-form-item>
+        <!-- 查看的按钮组 -->
+        <el-form-item v-if="view">
+          <el-button @click="goEdit">编辑</el-button>
+          <el-button @click="goBack">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -75,13 +135,17 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
+import ScriptOption from '@/components/ScriptOption'
 
-import { getLanguageApi, getAllScriptApi } from '@/api/taskList'
+import { getLanguageApi, getAllScriptApi, createTaskApi, getTaskApi } from '@/api/taskList'
+
 export default {
+  props: ['id', 'view'],
   name: 'example1',
   components: {
     Breadcrumb,
-    RiskLevel
+    RiskLevel,
+    ScriptOption
   },
   data() {
     return {
@@ -94,9 +158,15 @@ export default {
         task_command: '',
 
         task_script: '',
+        task_script_parameter: '',
+        task_script_version: '',
+
+        task_file_owner: '',
+        task_file_permission: '',
+        task_is_replace: false,
 
         task_time_out: 1,
-        task_risk_level: 1,
+        task_risk_level: 0,
         task_risk_statement: '风险说明自动填写评估详情，用户不能修改',
         task_is_enable: false
       },
@@ -106,44 +176,42 @@ export default {
       },
       scriptOptions: [
         {
-          'updated_at': '2018-07-10T07:52:44.199Z',
-          'new_version': 'string',
-          'task_file_permission': 'string',
-          'task_command': 'string',
-          'current_version': 'string',
-          'deleted_at': '2018-07-10T07:52:44.199Z',
-          'id': 0,
-          'task_is_enable': true,
-          'task_creator': 'string',
-          'task_file_owner': 'string',
-          'task_script': 'string',
-          'task_time_out': 0,
-          'task_description': 'string',
-          'task_file_selection': 'string',
-          'task_script_parameter': 'string',
-          'task_is_replace': true,
-          'task_type': 'string',
-          'task_language': 'string',
-          'is_deleted': false,
-          'task_target_system': 'string',
-          'created_at': '2018-07-10T07:52:44.199Z',
-          'task_target_directory': 'string',
-          'task_name': 'string'
+          name: 'install_tomcat',
+          full_path: '/ops/linux/python/install_tomcat.py',
+          comment: '执行安装tomcat的运维指令，tomcat版本为6.7.1',
+          risk_level: 1
+        },
+        {
+          name: 'install_tomcat',
+          full_path: '/ops/linux/python/install_tomcat.py',
+          comment: '执行安装tomcat的运维指令，tomcat版本为6.7.1',
+          risk_level: 1
         }
-      ]
+      ],
+      scriptVersionOptions: []
+    }
+  },
+  created() {
+    if (this.id) {
+      Promise.all([getTaskApi(this.id), getAllScriptApi(), getLanguageApi()])
+        .then(res => {
+          debugger
+          this.form = res[0]
+          this.scriptOptions = res[1].items
+          this.systemAndLang = res[2]
+        }).catch(err => {
+          console.log(err)
+        })
+    } else {
+      getAllScriptApi().then(res => {
+        this.scriptOptions = res.items
+      })
     }
   },
   mounted() {
-    this.getAllScript()
+
   },
   methods: {
-    getLanguage() {
-      getLanguageApi().then(res => {
-        if (res.success) {
-          this.systemAndLang = res
-        }
-      })
-    },
     getAllScript() {
       getAllScriptApi().then(res => {
         this.scriptOptions = res.items
@@ -152,11 +220,21 @@ export default {
     systemChange() {
       this.form.task_language = ''
     },
-    changeTaskType(value) {
-      console.log(value)
-    },
     resetForm() {
       this.$refs.form.resetFields()
+    },
+    submit() {
+      createTaskApi(this.form).then(res => {
+
+      })
+    },
+    goEdit() {
+      this.$router.push({
+        path: `/taskManage/taskEdit/${this.id}`
+      })
+    },
+    goBack() {
+      this.$router.back()
     }
   }
 }

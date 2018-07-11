@@ -76,7 +76,7 @@
 
       <!-- 操作条 -->
       <div class="toolbar">
-        <el-button size="small" type="primary" icon="el-icon-plus" plain>添加</el-button>
+        <el-button size="small" type="primary" icon="el-icon-plus" plain @click="goAdd">添加</el-button>
         <div>
           <el-button size="small" plain :disabled="multipleStart" @click="handleMultipleStart">启用</el-button>
           <el-button size="small" plain :disabled="multipleStop" @click="handleMultipleStop">停用</el-button>
@@ -110,8 +110,8 @@
           <el-table-column prop="task_approver" label="审批人"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" disabled size="small">编辑</el-button>
-              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
               <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.task_is_enable ? '停用' : '启用'}}</el-button>
               <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)">删除</el-button>
             </template>
@@ -148,7 +148,7 @@ export default {
         task_risk_level: '',
         task_creator: [],
         task_is_enable: '',
-        page: 0,
+        page: 1,
         per_page: 20
       },
       data: [
@@ -274,9 +274,11 @@ export default {
       }
     }
   },
-  mounted() {
-    // todo
-    this.getListData()
+  created() {
+    Promise.all([getLanguageApi(), getListApi(this.form)])
+      .then(res => {
+        debugger
+      })
   },
   methods: {
     /**
@@ -484,6 +486,21 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    goAdd() {
+      this.$router.push({
+        path: '/taskManage/taskAdd'
+      })
+    },
+    goEdit(id) {
+      this.$router.push({
+        path: `/taskManage/taskEdit/${id}`
+      })
+    },
+    goView(id) {
+      this.$router.push({
+        path: `/taskManage/taskView/${id}/1`
       })
     }
   }

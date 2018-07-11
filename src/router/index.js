@@ -81,6 +81,22 @@ export const constantRouterMap = [
         hidden: true
       },
       {
+        path: 'taskEdit/:id',
+        name: '编辑任务',
+        component: () => import('@/views/taskList/taskAdd'),
+        meta: { title: '编辑任务' },
+        hidden: true,
+        props: true
+      },
+      {
+        path: 'taskView/:id/:view',
+        name: '查看任务',
+        component: () => import('@/views/taskList/taskAdd'),
+        meta: { title: '查看任务' },
+        hidden: true,
+        props: true
+      },
+      {
         path: 'taskApprove',
         name: '任务审批',
         component: () => import('@/views/taskApprove/index'),
