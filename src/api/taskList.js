@@ -65,3 +65,36 @@ export function getAllScriptApi() {
     method: 'get'
   })
 }
+
+/**
+ * 创建任务
+ * @param {Object} data
+ */
+export function createTaskApi(data) {
+  return request({
+    url: '/v1/tasks/',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 根据任务id获取任务数据
+ */
+export function getTaskApi(id) {
+  return request({
+    url: `/v1/tasks/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 根据任务id更新任务数据
+ */
+export function upadateTaskApi(id, data) {
+  return request({
+    url: `/v1/tasks/${id}`,
+    method: 'put',
+    data: data
+  })
+}
