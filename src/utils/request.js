@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
+import { Message } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
 
@@ -32,7 +32,7 @@ service.interceptors.response.use(
     //   Message({
     //     message: res.message,
     //     type: 'error',
-    //     duration: 5 * 10000
+    //     duration: 5 * 1000
     //   })
 
     //   // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
@@ -55,11 +55,11 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)// for debug
-    // Message({
-    //   message: error.message,
-    //   type: 'error',
-    //   duration: 5 * 10000
-    // })
+    Message({
+      message: error.message,
+      type: 'error',
+      duration: 5 * 1000
+    })
     return Promise.reject(error)
   }
 )

@@ -158,9 +158,9 @@ export const constantRouterMap = [
         meta: { title: '风险命令库' }
       },
       {
-        path: 'example1',
-        name: '命令白名单',
-        component: () => import('@/views/scriptLibrary/index'),
+        path: 'whitelist',
+        name: 'whitelist',
+        component: () => import('@/views/whitelist/index'),
         meta: { title: '命令白名单' }
       },
       {
@@ -173,6 +173,13 @@ export const constantRouterMap = [
         path: 'script',
         name: 'scriptLibrary',
         component: () => import('@/views/scriptLibrary/index'),
+        meta: { title: '脚本库' }
+      },
+      {
+        path: 'script/file',
+        name: 'fileList',
+        hidden: true,
+        component: () => import('@/views/scriptLibrary/filelist'),
         meta: { title: '脚本库' }
       },
       {
