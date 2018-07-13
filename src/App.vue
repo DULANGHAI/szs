@@ -16,4 +16,27 @@ export default {
   height: 65px;
   line-height: initial;
 }
+
+// 各种颜色小圆圈
+.dark-circle {
+  display: inline-block;
+  border-radius: 3px;
+  width: 6px;
+  height: 6px;
+  background: #D9D9D9;
+}
+.green-circle {
+  display: inline-block;
+  border-radius: 3px;
+  width: 6px;
+  height: 6px;
+  background: #52C41A;
+}
+.red-circle {
+  display: inline-block;
+  border-radius: 3px;
+  width: 6px;
+  height: 6px;
+  background: #F5222D;
+}
 </style>

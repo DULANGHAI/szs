@@ -1,6 +1,6 @@
 <template>
   <div class="risk-level">
-    <span v-for="n in [0, 1, 2]" :key="n">
+    <span v-for="n in [0, 1, 2]" :key="n" @click="handleChange(n)">
       <svg-icon v-if="n < computedLevel" icon-class="fire-red" />
       <svg-icon v-else icon-class="fire" />
     </span>
@@ -13,6 +13,10 @@ export default {
     level: {
       type: [String, Number],
       default: 0
+    },
+    changeable: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -27,6 +31,13 @@ export default {
   data() {
     return {
       levelList: null
+    }
+  },
+  methods: {
+    handleChange(index) {
+      if (this.changeable) {
+        this.$emit('update:level', index + 1)
+      }
     }
   }
 }

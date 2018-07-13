@@ -101,6 +101,22 @@ export const constantRouterMap = [
         name: '任务审批',
         component: () => import('@/views/taskApprove/index'),
         meta: { title: '任务审批' }
+      },
+      {
+        path: 'approveTask/:id',
+        name: '审批任务',
+        component: () => import('@/views/taskApprove/approve'),
+        meta: { title: '审批任务' },
+        hidden: true,
+        props: true
+      },
+      {
+        path: 'approveView/:id/:view',
+        name: '审批查看',
+        component: () => import('@/views/taskApprove/approve'),
+        meta: { title: '审批查看' },
+        hidden: true,
+        props: true
       }
     ]
   },

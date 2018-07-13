@@ -18,7 +18,7 @@ export function getListApi(params) {
  */
 export function getCreatorApi() {
   return request({
-    url: '/v1/tasks/task-creator',
+    url: '/v1/tasks/task-creator/',
     method: 'get'
   })
 }
@@ -61,7 +61,7 @@ export function deleteTaskApi(data) {
  */
 export function getAllScriptApi() {
   return request({
-    url: '/v1/tasks/script/',
+    url: '',
     method: 'get'
   })
 }
@@ -73,6 +73,18 @@ export function getAllScriptApi() {
 export function createTaskApi(data) {
   return request({
     url: '/v1/tasks/',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 获取命令任务的风险等级和风险说明
+ * @param {Object} data
+ */
+export function getTaskRiskApi(data) {
+  return request({
+    url: '/v1/tasks/task-risk/',
     method: 'post',
     data: data
   })

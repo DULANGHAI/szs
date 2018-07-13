@@ -31,7 +31,7 @@
           </el-select>
           <div v-if="view">{{form.task_target_system}}</div>
         </el-form-item>
-        <el-form-item label="语言" v-if="form.task_target_system && (form.task_type !== 'file')">
+        <el-form-item label="语言" v-if="(form.task_target_system || view) && (form.task_type !== 'file')">
           <el-select v-if="!view" v-model="form.task_language" placeholder="请选择">
             <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item" :value="item"></el-option>
           </el-select>
@@ -39,7 +39,7 @@
         </el-form-item>
         <!-- 命令 -->
         <el-form-item label="命令" v-if="form.task_type === 'commond'">
-          <el-input v-if="!view" type="textarea" v-model="form.task_command" :autosize="{ minRows: 4 }" placeholder="请输入命令"></el-input>
+          <el-input v-if="!view" type="textarea" v-model="form.task_command" @blur="getRiskAndState" :autosize="{ minRows: 4 }" placeholder="请输入命令"></el-input>
           <div v-if="view">{{form.task_command}}</div>
         </el-form-item>
         <!-- 脚本 -->
@@ -137,11 +137,10 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 
-import { getLanguageApi, getAllScriptApi, createTaskApi, getTaskApi } from '@/api/taskList'
+import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi } from '@/api/taskList'
 
 export default {
   props: ['id', 'view'],
-  name: 'example1',
   components: {
     Breadcrumb,
     RiskLevel,
@@ -170,10 +169,7 @@ export default {
         task_risk_statement: '风险说明自动填写评估详情，用户不能修改',
         task_is_enable: false
       },
-      systemAndLang: {
-        windows: ['windows1', 'windows2', 'windows3'],
-        linux: ['linux1', 'linux2', 'linux3']
-      },
+      systemAndLang: '',
       scriptOptions: [
         {
           name: 'install_tomcat',
@@ -193,7 +189,7 @@ export default {
   },
   created() {
     if (this.id) {
-      Promise.all([getTaskApi(this.id), getAllScriptApi(), getLanguageApi()])
+      Promise.all([getTaskApi(this.id), getLanguageApi()])
         .then(res => {
           debugger
           this.form = res[0]
@@ -203,18 +199,26 @@ export default {
           console.log(err)
         })
     } else {
-      getAllScriptApi().then(res => {
-        this.scriptOptions = res.items
-      })
+      // todo
+      Promise.all([getLanguageApi()])
+        .then(res => {
+          this.systemAndLang = res[0]
+        })
     }
   },
   mounted() {
 
   },
   methods: {
-    getAllScript() {
-      getAllScriptApi().then(res => {
-        this.scriptOptions = res.items
+    getRiskAndState() {
+      if (!this.form.task_command) {
+        return
+      }
+      getTaskRiskApi({
+        task_command: this.form.task_command
+      }).then(res => {
+        this.form.task_risk_level = res.task_risk_level
+        this.form.task_risk_statement = res.task_risk_statement
       })
     },
     systemChange() {

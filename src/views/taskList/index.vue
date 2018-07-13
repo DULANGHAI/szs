@@ -97,7 +97,7 @@
           <el-table-column prop="task_name" label="任务名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="task_creator" label="创建人"></el-table-column>
           <el-table-column prop="updated_at" label="修改时间" width="160px" :formatter="formatterTime"></el-table-column>
-          <el-table-column prop="task_type" label="类型"></el-table-column>
+          <el-table-column prop="task_type" label="类型" :formatter="formatterTaskType"></el-table-column>
           <el-table-column prop="task_language" label="语言"></el-table-column>
           <el-table-column prop="task_target_system" label="目标系统"></el-table-column>
           <el-table-column prop="task_description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
@@ -132,6 +132,12 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 
 import { getListApi, getCreatorApi, getLanguageApi, changeTaskStatusApi, deleteTaskApi } from '@/api/taskList'
+
+const taskTypeMap = {
+  commond: '命令',
+  script: '脚本',
+  file: '文件分发'
+}
 
 export default {
   components: {
@@ -293,6 +299,9 @@ export default {
     },
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatterTaskType(row) {
+      return taskTypeMap[row.task_type]
     },
     formatterEnable(row) {
       if (row.task_is_enable) {
@@ -513,6 +522,9 @@ export default {
   padding: 29px 32px;
   border-radius: 4px;
   background-color: #fff;
+  & /deep/ .el-select {
+    width: 100%;
+  }
 }
 .margl-70 {
   margin-left: 70px;
