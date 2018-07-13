@@ -80,3 +80,39 @@
 .pb-library .page-bar{
   padding-left: 22px;
 }
+span.text-yc{
+  width:55px;
+  overflow:hidden;
+  display: inline-block;
+  vertical-align: middle;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+dl, dd, p {
+  margin: 0px;
+}
+.ovinfo-dl dd{
+  background-color: #fff;
+  margin-right: 14px;
+  min-height: 110px;
+  padding: 18px;
+  box-shadow: 0 0 31px rgba(48,48,77,.1);
+  position: relative;
+  transition: all .25s ease-out 0s;
+  cursor: pointer;
+  border: 1px solid #fff;
+  display: inline-block;
+  vertical-align: middle;
+  width: 26%;
+  color:#a09d9d;
+  font-size: 12px;
+  span {
+    font-size: 18px;
+    padding-bottom: 15px;
+    display: block;
+    color:#333;
+  }
+}
+.ovinfo-dl dd:hover{
+  border: 1px solid #eee;
+}
