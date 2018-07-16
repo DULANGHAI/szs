@@ -13,7 +13,7 @@
         <svg-icon icon-class="logo" :style="{ transform: 'scale(1.6)', marginRight: '10px' }"/>
         <span>上证信息运维自动化平台</span>
       </div>
-      <sidebar-item :routes="routes"></sidebar-item>
+      <sidebar-item v-for="route in routes" :key="route.name" :item="route" :base-path="route.path"></sidebar-item>
     </el-menu>
   </el-scrollbar>
 </template>

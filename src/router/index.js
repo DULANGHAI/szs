@@ -8,6 +8,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '../views/layout/Layout'
+import Empty from '../views/layout/Empty'
 
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -58,80 +59,88 @@ export const constantRouterMap = [
       }
     ]
   },
-
   // 运维作业部分
-  // 1.任务管理
   {
-    path: '/taskManage',
-    component: Layout,
-    name: '任务管理',
-    meta: { title: '任务管理', icon: 'form' },
+    path: '/pe',
+    component: Empty,
+    name: '运维作业',
+    meta: { title: '运维作业' },
+    module: true,
     children: [
+      // 1.任务管理
       {
-        path: 'taskList',
-        name: '任务列表',
-        component: () => import('@/views/taskList/index'),
-        meta: { title: '任务列表' }
+        path: 'taskManage',
+        component: Layout,
+        name: '任务管理',
+        meta: { title: '任务管理', icon: 'form' },
+        children: [
+          {
+            path: 'taskList',
+            name: '任务列表',
+            component: () => import('@/views/taskList/index'),
+            meta: { title: '任务列表' }
+          },
+          {
+            path: 'taskAdd',
+            name: '添加任务',
+            component: () => import('@/views/taskList/taskAdd'),
+            meta: { title: '添加任务' },
+            hidden: true
+          },
+          {
+            path: 'taskEdit/:id',
+            name: '编辑任务',
+            component: () => import('@/views/taskList/taskAdd'),
+            meta: { title: '编辑任务' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'taskView/:id/:view',
+            name: '查看任务',
+            component: () => import('@/views/taskList/taskAdd'),
+            meta: { title: '查看任务' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'taskApprove',
+            name: '任务审批',
+            component: () => import('@/views/taskApprove/index'),
+            meta: { title: '任务审批' }
+          },
+          {
+            path: 'approveTask/:id',
+            name: '审批任务',
+            component: () => import('@/views/taskApprove/approve'),
+            meta: { title: '审批任务' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'approveView/:id/:view',
+            name: '审批查看',
+            component: () => import('@/views/taskApprove/approve'),
+            meta: { title: '审批查看' },
+            hidden: true,
+            props: true
+          }
+        ]
       },
+      // 2.作业管理
       {
-        path: 'taskAdd',
-        name: '添加任务',
-        component: () => import('@/views/taskList/taskAdd'),
-        meta: { title: '添加任务' },
-        hidden: true
-      },
-      {
-        path: 'taskEdit/:id',
-        name: '编辑任务',
-        component: () => import('@/views/taskList/taskAdd'),
-        meta: { title: '编辑任务' },
-        hidden: true,
-        props: true
-      },
-      {
-        path: 'taskView/:id/:view',
-        name: '查看任务',
-        component: () => import('@/views/taskList/taskAdd'),
-        meta: { title: '查看任务' },
-        hidden: true,
-        props: true
-      },
-      {
-        path: 'taskApprove',
-        name: '任务审批',
-        component: () => import('@/views/taskApprove/index'),
-        meta: { title: '任务审批' }
-      },
-      {
-        path: 'approveTask/:id',
-        name: '审批任务',
-        component: () => import('@/views/taskApprove/approve'),
-        meta: { title: '审批任务' },
-        hidden: true,
-        props: true
-      },
-      {
-        path: 'approveView/:id/:view',
-        name: '审批查看',
-        component: () => import('@/views/taskApprove/approve'),
-        meta: { title: '审批查看' },
-        hidden: true,
-        props: true
-      }
-    ]
-  },
-  // 2.作业管理
-  {
-    path: '/jobManage',
-    component: Layout,
-    name: '作业管理',
-    meta: { title: '作业管理', icon: 'form' },
-    children: [
-      {
-        path: 'jobList',
-        name: '作业列表',
-        component: () => import('@/views/jobList/index'),
-        meta: { title: '作业列表' }
+        path: 'jobManage',
+        component: Layout,
+        name: '作业管理',
+        meta: { title: '作业管理', icon: 'form' },
+        children: [
+          {
+            path: 'jobList',
+            name: '作业列表',
+            component: () => import('@/views/jobList/index'),
+            meta: { title: '作业列表' }
+          }
+        ]
       }
     ]
   },
