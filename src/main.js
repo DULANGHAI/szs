@@ -16,6 +16,9 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
+
 Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
