@@ -77,20 +77,20 @@ export const constantRouterMap = [
           {
             path: 'taskList',
             name: '任务列表',
-            component: () => import('@/views/taskList/index'),
+            component: () => import('@/views/pe/task/taskList/index'),
             meta: { title: '任务列表' }
           },
           {
             path: 'taskAdd',
             name: '添加任务',
-            component: () => import('@/views/taskList/taskAdd'),
+            component: () => import('@/views/pe/task/taskList/taskAdd'),
             meta: { title: '添加任务' },
             hidden: true
           },
           {
             path: 'taskEdit/:id',
             name: '编辑任务',
-            component: () => import('@/views/taskList/taskAdd'),
+            component: () => import('@/views/pe/task/taskList/taskAdd'),
             meta: { title: '编辑任务' },
             hidden: true,
             props: true
@@ -98,7 +98,7 @@ export const constantRouterMap = [
           {
             path: 'taskView/:id/:view',
             name: '查看任务',
-            component: () => import('@/views/taskList/taskAdd'),
+            component: () => import('@/views/pe/task/taskList/taskAdd'),
             meta: { title: '查看任务' },
             hidden: true,
             props: true
@@ -106,13 +106,13 @@ export const constantRouterMap = [
           {
             path: 'taskApprove',
             name: '任务审批',
-            component: () => import('@/views/taskApprove/index'),
+            component: () => import('@/views/pe/task/taskApprove/index'),
             meta: { title: '任务审批' }
           },
           {
             path: 'approveTask/:id',
             name: '审批任务',
-            component: () => import('@/views/taskApprove/approve'),
+            component: () => import('@/views/pe/task/taskApprove/approve'),
             meta: { title: '审批任务' },
             hidden: true,
             props: true
@@ -120,7 +120,7 @@ export const constantRouterMap = [
           {
             path: 'approveView/:id/:view',
             name: '审批查看',
-            component: () => import('@/views/taskApprove/approve'),
+            component: () => import('@/views/pe/task/taskApprove/approve'),
             meta: { title: '审批查看' },
             hidden: true,
             props: true
@@ -137,7 +137,7 @@ export const constantRouterMap = [
           {
             path: 'jobList',
             name: '作业列表',
-            component: () => import('@/views/jobList/index'),
+            component: () => import('@/views/pe/job/jobList/index'),
             meta: { title: '作业列表' }
           }
         ]
