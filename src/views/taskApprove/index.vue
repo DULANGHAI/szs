@@ -21,7 +21,7 @@
           <el-col :span="6">
             <el-form-item label="类型">
               <el-select v-model="form.task_type" placeholder="请选择">
-                <el-option :label="'命令'" :value="'commond'"></el-option>
+                <el-option :label="'命令'" :value="'command'"></el-option>
                 <el-option :label="'脚本'" :value="'script'"></el-option>
                 <el-option :label="'文件分发'" :value="'file'"></el-option>
               </el-select>
@@ -149,7 +149,7 @@ import RiskLevel from '@/components/RiskLevel'
 import { getListApi, getCreatorApi, getApproverApi } from '@/api/taskApprove'
 
 const taskTypeMap = {
-  commond: '命令',
+  command: '命令',
   script: '脚本',
   file: '文件分发'
 }
@@ -214,7 +214,7 @@ export default {
           ],
           'task_script_parameter': 'string',
           'task_is_replace': true,
-          'task_type': 'commond',
+          'task_type': 'command',
           'task_language': 'string',
           'task_target_system': 'string',
           'task_risk_level': '3',

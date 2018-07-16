@@ -18,27 +18,30 @@
         </el-form-item>
         <el-form-item label="任务类型">
           <el-radio-group v-if="!view" v-model="form.task_type">
-            <el-radio label="commond">命令</el-radio>
+            <el-radio label="command">命令</el-radio>
             <el-radio label="script">脚本</el-radio>
             <el-radio label="file">文件分发</el-radio>
           </el-radio-group>
           <div v-if="view">{{form.task_type}}</div>
         </el-form-item>
 
-        <el-form-item label="目标系统" v-if="systemAndLang && Object.keys(systemAndLang).length">
-          <el-select v-if="!view" v-model="form.task_target_system" @change="systemChange" placeholder="请选择">
-            <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
-          </el-select>
-          <div v-if="view">{{form.task_target_system}}</div>
-        </el-form-item>
-        <el-form-item label="语言" v-if="(form.task_target_system || view) && (form.task_type !== 'file')">
-          <el-select v-if="!view" v-model="form.task_language" placeholder="请选择">
-            <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item" :value="item"></el-option>
-          </el-select>
-          <div v-if="view">{{form.task_language}}</div>
-        </el-form-item>
+        <div style="display: flex;">
+          <el-form-item label="目标系统">
+            <el-select v-if="!view" v-model="form.task_target_system" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
+              <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
+            </el-select>
+            <div v-if="view">{{form.task_target_system}}</div>
+          </el-form-item>
+          <el-form-item label="语言" label-width="50px" style="margin-left: 40px;" v-if="form.task_type !== 'file'">
+            <el-select v-if="!view" v-model="form.task_language" placeholder="请选择" :disabled="!form.task_target_system">
+              <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+            <div v-if="view">{{form.task_language}}</div>
+          </el-form-item>
+        </div>
+        
         <!-- 命令 -->
-        <el-form-item label="命令" v-if="form.task_type === 'commond'">
+        <el-form-item label="命令" v-if="form.task_type === 'command'">
           <el-input v-if="!view" type="textarea" v-model="form.task_command" @blur="getRiskAndState" :autosize="{ minRows: 4 }" placeholder="请输入命令"></el-input>
           <div v-if="view">{{form.task_command}}</div>
         </el-form-item>
@@ -46,6 +49,7 @@
         <div v-if="form.task_type === 'script'">
           <el-form-item label="脚本">
             <el-select v-if="!view" v-model="form.task_script"
+              :disabled="!form.task_language"
               filterable
               placeholder="请选择脚本"
               popper-class="script-select">
@@ -57,6 +61,7 @@
           </el-form-item>
           <el-form-item label="脚本版本">
             <el-select v-if="!view" v-model="form.task_script_version"
+              :disabled="!form.task_script"
               filterable
               placeholder="请选择脚本">
               <el-option v-for="item in scriptVersionOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -120,6 +125,7 @@
         <!-- 编辑的按钮组 -->
         <el-form-item v-if="!view && id">
           <el-button type="primary" @click="submit">提交</el-button>
+          <el-button @click="resetForm">重置</el-button>
           <el-button @click="goBack">返回</el-button>
         </el-form-item>
         <!-- 查看的按钮组 -->
@@ -137,7 +143,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 
-import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi } from '@/api/taskList'
+import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi } from '@/api/taskList'
 
 export default {
   props: ['id', 'view'],
@@ -151,7 +157,7 @@ export default {
       form: {
         task_name: '',
         task_description: '',
-        task_type: 'commond',
+        task_type: 'command',
         task_target_system: '',
         task_language: '',
         task_command: '',
@@ -169,7 +175,7 @@ export default {
         task_risk_statement: '风险说明自动填写评估详情，用户不能修改',
         task_is_enable: false
       },
-      systemAndLang: '',
+      systemAndLang: {},
       scriptOptions: [
         {
           name: 'install_tomcat',
@@ -193,8 +199,7 @@ export default {
         .then(res => {
           debugger
           this.form = res[0]
-          this.scriptOptions = res[1].items
-          this.systemAndLang = res[2]
+          this.systemAndLang = res[1]
         }).catch(err => {
           console.log(err)
         })
@@ -223,14 +228,32 @@ export default {
     },
     systemChange() {
       this.form.task_language = ''
+      this.form.task_script = ''
+      this.form.task_script_version = ''
     },
     resetForm() {
       this.$refs.form.resetFields()
     },
     submit() {
-      createTaskApi(this.form).then(res => {
-
-      })
+      if (this.form.task_risk_level) {
+        if (this.form.id) {
+          upadateTaskApi(this.form.id, this.form).then(res => {
+            if (res.id) {
+              this.$router.push({
+                path: `/taskManage/taskList`
+              })
+            }
+          })
+        } else {
+          createTaskApi(this.form).then(res => {
+            if (res.id) {
+              this.$router.push({
+                path: `/taskManage/taskList`
+              })
+            }
+          })
+        }
+      }
     },
     goEdit() {
       this.$router.push({

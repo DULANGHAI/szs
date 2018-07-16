@@ -120,6 +120,21 @@ export const constantRouterMap = [
       }
     ]
   },
+  // 2.作业管理
+  {
+    path: '/jobManage',
+    component: Layout,
+    name: '作业管理',
+    meta: { title: '作业管理', icon: 'form' },
+    children: [
+      {
+        path: 'jobList',
+        name: '作业列表',
+        component: () => import('@/views/jobList/index'),
+        meta: { title: '作业列表' }
+      }
+    ]
+  },
 
   {
     path: '/resource',

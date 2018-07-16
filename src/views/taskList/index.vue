@@ -21,23 +21,23 @@
           <el-col :span="6">
             <el-form-item label="类型">
               <el-select v-model="form.task_type" placeholder="请选择">
-                <el-option :label="'命令'" :value="'commond'"></el-option>
+                <el-option :label="'命令'" :value="'command'"></el-option>
                 <el-option :label="'脚本'" :value="'script'"></el-option>
                 <el-option :label="'文件分发'" :value="'file'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="目标系统" v-if="systemAndLang && Object.keys(systemAndLang).length">
-              <el-select v-model="form.task_target_system" @change="systemChange" placeholder="请选择">
+            <el-form-item label="目标系统">
+              <el-select v-model="form.task_target_system" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
                 <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="语言" v-if="form.task_target_system">
-              <el-select v-model="form.task_language" placeholder="请选择">
-                <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item" :value="item"></el-option>
+            <el-form-item label="语言">
+              <el-select v-model="form.task_language" placeholder="请选择" :disabled="!form.task_target_system">
+                <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -54,7 +54,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="创建者">
-              <el-select v-model="form.task_creator" multiple placeholder="请选择">
+              <el-select v-model="task_creator" multiple placeholder="请选择">
                 <el-option v-for="name in creaters" :key="name" :label="name" :value="name"></el-option>
               </el-select>
             </el-form-item>
@@ -120,8 +120,8 @@
       </div>
 
       <!-- 分页 -->
-      <div>
-        <el-pagination layout="prev, pager, next" :total="50"></el-pagination>
+      <div class="pagination" v-if="total">
+        <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
       </div>
     </div>
   </div>
@@ -134,7 +134,7 @@ import RiskLevel from '@/components/RiskLevel'
 import { getListApi, getCreatorApi, getLanguageApi, changeTaskStatusApi, deleteTaskApi } from '@/api/taskList'
 
 const taskTypeMap = {
-  commond: '命令',
+  command: '命令',
   script: '脚本',
   file: '文件分发'
 }
@@ -152,99 +152,16 @@ export default {
         task_target_system: '',
         task_language: '',
         task_risk_level: '',
-        task_creator: [],
+        task_creator: '',
         task_is_enable: '',
         page: 1,
-        per_page: 20
+        per_page: 10
       },
-      data: [
-        {
-          'updated_at': '2018-07-09T07:08:45.521Z',
-          'task_risk_statement': 'string',
-          'task_file_permission': 'string',
-          'task_command': 'string',
-          'deleted_at': '2018-07-09T07:08:45.521Z',
-          'id': 0,
-          'task_is_enable': true,
-          'task_creator': 'string',
-          'task_file_owner': 'string',
-          'task_script': 'string',
-          'task_time_out': 0,
-          'task_description': 'string',
-          'task_file_selection': 'string',
-          'task_script_parameter': 'string',
-          'task_is_replace': true,
-          'task_approver': 'string',
-          'task_type': 'string',
-          'task_language': 'string',
-          'is_deleted': false,
-          'task_target_system': 'string',
-          'created_at': '2018-07-09T07:08:45.521Z',
-          'task_risk_level': 1,
-          'task_target_directory': 'string',
-          'task_name': 'task_nametask_nametask_nametask_nametask_name',
-          'task_status': 'pending'
-        },
-        {
-          'updated_at': '2018-07-09T07:08:45.521Z',
-          'task_risk_statement': 'string',
-          'task_file_permission': 'string',
-          'task_command': 'string',
-          'deleted_at': '2018-07-09T07:08:45.521Z',
-          'id': 1,
-          'task_is_enable': true,
-          'task_creator': 'string',
-          'task_file_owner': 'string',
-          'task_script': 'string',
-          'task_time_out': 0,
-          'task_description': 'string',
-          'task_file_selection': 'string',
-          'task_script_parameter': 'string',
-          'task_is_replace': true,
-          'task_approver': 'string',
-          'task_type': 'string',
-          'task_language': 'string',
-          'is_deleted': false,
-          'task_target_system': 'string',
-          'created_at': '2018-07-09T07:08:45.521Z',
-          'task_risk_level': 2,
-          'task_target_directory': 'string',
-          'task_name': 'task_nametask_nametask_nametask_nametask_name',
-          'task_status': 'pending'
-        },
-        {
-          'updated_at': '2018-07-09T07:08:45.521Z',
-          'task_risk_statement': 'string',
-          'task_file_permission': 'string',
-          'task_command': 'string',
-          'deleted_at': '2018-07-09T07:08:45.521Z',
-          'id': 2,
-          'task_is_enable': false,
-          'task_creator': 'string',
-          'task_file_owner': 'string',
-          'task_script': 'string',
-          'task_time_out': 0,
-          'task_description': 'string',
-          'task_file_selection': 'string',
-          'task_script_parameter': 'string',
-          'task_is_replace': true,
-          'task_approver': 'string',
-          'task_type': 'string',
-          'task_language': 'string',
-          'is_deleted': false,
-          'task_target_system': 'string',
-          'created_at': '2018-07-09T07:08:45.521Z',
-          'task_risk_level': 3,
-          'task_target_directory': 'string',
-          'task_name': 'task_nametask_nametask_nametask_nametask_name',
-          'task_status': 'pass'
-        }
-      ],
-      creaters: ['zhangsna', 'lisi', 'wangwu'],
-      systemAndLang: {
-        windows: ['windows1', 'windows2', 'windows3'],
-        linux: ['linux1', 'linux2', 'linux3']
-      },
+      data: [],
+      total: 0,
+      creaters: [],
+      task_creator: [], // 选择的创建者Array
+      systemAndLang: {},
       multipleSelection: [],
       multipleStart: true,
       multipleStop: true,
@@ -278,12 +195,21 @@ export default {
         this.multipleStop = true
         this.multipleDelete = true
       }
+    },
+    task_creator(arr) {
+      this.form.task_creator = arr.join(',')
     }
   },
   created() {
-    Promise.all([getLanguageApi(), getListApi(this.form)])
+    Promise.all([getLanguageApi(), getListApi(this.form), getCreatorApi()])
       .then(res => {
-        debugger
+        this.systemAndLang = res[0]
+        this.data = res[1].items
+        this.total = res[1].total
+        this.creaters = res[2].task_creator
+      })
+      .catch(() => {
+        this.$message.error('接口错误')
       })
   },
   methods: {
@@ -312,45 +238,35 @@ export default {
     /**
      * 接口
      */
-    getListData() {
-      getListApi(this.form).then(res => {
-        if (res.success) {
-          this.data = res.items
-        }
-      })
-    },
-    getCreator() {
-      getCreatorApi().then(res => {
-        if (res.success) {
-          this.creaters = res.task_creator
-        }
+    getListData(index) {
+      const params = this.form
+      if (index) {
+        params.page = index
+      }
+      getListApi(params).then(res => {
+        this.data = res.items
+        this.total = res.total
       })
     },
     getLanguage() {
       getLanguageApi().then(res => {
-        if (res.success) {
-          this.systemAndLang = res
-        }
+        this.systemAndLang = res
       })
     },
     changeTaskStatus(data) {
       changeTaskStatusApi(data).then(res => {
-        if (res.success) {
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-        }
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
       })
     },
     deleteTasks(data) {
       deleteTaskApi(data).then(res => {
-        if (res.success) {
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-        }
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
       })
     },
     getTaskIds() {
@@ -364,7 +280,7 @@ export default {
      * 交互操作
      */
     search() {
-      this.getListData()
+      this.getListData(1)
     },
     refresh() {
       this.form = {
@@ -373,13 +289,17 @@ export default {
         task_target_system: '',
         task_language: '',
         task_risk_level: '',
-        task_creator: [],
+        task_creator: '',
         task_is_enable: '',
-        page: 0,
-        per_page: 20
+        page: 1,
+        per_page: 10
       }
+      this.task_creator = []
       this.multipleSelection = []
       this.search()
+    },
+    handlePageChange(val) {
+      this.getListData(val)
     },
     systemChange() {
       this.form.task_language = ''
@@ -544,5 +464,9 @@ export default {
 }
 .danger {
   color: #f56c6c;
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
