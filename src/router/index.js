@@ -37,28 +37,6 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
   // 运维作业部分
   {
     path: '/pe',
@@ -157,111 +135,67 @@ export const constantRouterMap = [
       }
     ]
   },
-
+  // 资源管理 resouce
   {
-    path: '/resource',
-    component: Layout,
-    redirect: '/resource/example1',
-    name: 'Resource',
-    meta: { title: '资源管理', icon: 'ziyuan' },
+    path: '/resouce',
+    component: Empty,
+    name: '资源管理',
+    meta: { title: '资源管理' },
+    module: true,
     children: [
+      // 1.资源管理
+      // 2.应用管理
+      // 3.版本库
       {
-        path: 'example1',
-        name: 'Example1',
-        component: () => import('@/views/example1/index'),
-        meta: { title: 'Example1' }
-      },
-      {
-        path: 'example2',
-        name: 'Example2',
-        component: () => import('@/views/example2/index'),
-        meta: { title: 'Example2' }
-      },
-      {
-        path: 'example3',
-        name: 'Example3',
-        component: () => import('@/views/example3/index'),
-        meta: { title: 'Example3' }
-      }
-    ]
-  },
-
-  {
-    path: '/apply',
-    component: Layout,
-    redirect: '/apply/example2',
-    name: 'Apply',
-    meta: { title: '应用管理', icon: 'yingyong' },
-    children: [
-      {
-        path: 'example1',
-        name: 'Example1',
-        component: () => import('@/views/example1/index'),
-        meta: { title: 'Example1' }
-      },
-      {
-        path: 'example2',
-        name: 'Example2',
-        component: () => import('@/views/example2/index'),
-        meta: { title: 'Example2' }
-      },
-      {
-        path: 'example3',
-        name: 'Example3',
-        component: () => import('@/views/example3/index'),
-        meta: { title: 'Example3' }
-      }
-    ]
-  },
-  // 版本库
-  {
-    path: '/repository',
-    component: Layout,
-    name: 'Repository',
-    meta: { title: '版本库', icon: 'banben' },
-    children: [
-      {
-        path: 'example1',
-        name: '风险命令库',
-        component: () => import('@/views/scriptLibrary/index'),
-        meta: { title: '风险命令库' }
-      },
-      {
-        path: 'whitelist',
-        name: 'whitelist',
-        component: () => import('@/views/whitelist/index'),
-        meta: { title: '命令白名单' }
-      },
-      {
-        path: 'software',
-        name: 'softwareLibrary',
-        component: () => import('@/views/softwareLibrary/index'),
-        meta: { title: '软件包库' }
-      },
-      {
-        path: 'script',
-        name: 'scriptLibrary',
-        component: () => import('@/views/scriptLibrary/index'),
-        meta: { title: '脚本库' }
-      },
-      {
-        path: 'script/file',
-        name: 'fileList',
-        hidden: true,
-        component: () => import('@/views/scriptLibrary/filelist'),
-        meta: { title: '脚本库' }
-      },
-      {
-        path: 'example2',
-        name: '配置文件库',
-        component: () => import('@/views/example2/index'),
-        meta: { title: '配置文件库' }
-      },
-      {
-        path: 'examine',
-        name: 'examine',
-        component: () => import('@/views/examine/index'),
-        meta: { title: '文件审批' }
+        path: 'repository',
+        component: Layout,
+        name: 'Repository',
+        meta: { title: '版本库', icon: 'banben' },
+        children: [
+          {
+            path: 'example1',
+            name: '风险命令库',
+            component: () => import('@/views/scriptLibrary/index'),
+            meta: { title: '风险命令库' }
+          },
+          {
+            path: 'whitelist',
+            name: 'whitelist',
+            component: () => import('@/views/whitelist/index'),
+            meta: { title: '命令白名单' }
+          },
+          {
+            path: 'software',
+            name: 'softwareLibrary',
+            component: () => import('@/views/softwareLibrary/index'),
+            meta: { title: '软件包库' }
+          },
+          {
+            path: 'script',
+            name: 'scriptLibrary',
+            component: () => import('@/views/scriptLibrary/index'),
+            meta: { title: '脚本库' }
+          },
+          {
+            path: 'script/file',
+            name: 'fileList',
+            hidden: true,
+            component: () => import('@/views/scriptLibrary/filelist'),
+            meta: { title: '脚本库' }
+          },
+          {
+            path: 'example2',
+            name: '配置文件库',
+            component: () => import('@/views/example2/index'),
+            meta: { title: '配置文件库' }
+          },
+          {
+            path: 'examine',
+            name: 'examine',
+            component: () => import('@/views/examine/index'),
+            meta: { title: '文件审批' }
+          }
+        ]
       }
     ]
   },

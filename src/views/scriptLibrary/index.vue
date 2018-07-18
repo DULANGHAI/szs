@@ -60,6 +60,8 @@
           :data="zizuList"
           tooltip-effect="dark"
           style="width: 100%"
+          v-loading.body="listLoading" 
+          element-loading-text="Loading"
           empty-text="暂无数据">
           <el-table-column
             label="项目名"
@@ -83,13 +85,15 @@
           ref="yyTable"
           :data="yyList"
           style="width: 100%"
+          v-loading.body="listLoading" 
+          element-loading-text="Loading"
           empty-text="暂无数据">
           <el-table-column
             label="项目名"
             min-width="30%"
             show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goFileDetail(scope.row.id)">{{ scope.row.name}}</el-button>
+              <el-button type="text" size="small" @click="goFileDetail(scope.row.id, scope.row.name)">{{ scope.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -117,7 +121,7 @@
       </template>
     </div>
     <div class="container-body" v-if="isfile">
-      <file-page ref="create" :app_id="app_id"></file-page>
+      <file-page ref="create" :app_id="app_id" :app_name="app_name"></file-page>
     </div>
     <add-project ref="addproject" v-on:getList="getList" :group_id="zzSelect"></add-project>
   </div>
@@ -153,8 +157,10 @@ export default {
       yyList: [], // 语言list =》 列表
       ywzSelect: '', // 面包 =》 业务组select
       zzSelect: '',
+      listLoading: true,
       yySelection: [],
-      app_id: ''
+      app_id: '',
+      app_name: ''
     }
   },
   watch: {
@@ -189,6 +195,7 @@ export default {
     // 加载子组列表
     getZizu(id) {
       this.zizuList = []
+      this.listLoading = true
       getRepositoryZizu(id, this.r_type).then(response => {
         this.zizuList = response
         if (response.length > 0) {
@@ -197,6 +204,7 @@ export default {
         } else {
           this.isSpeed = 2
         }
+        this.listLoading = false
       }).catch(error => {
         Message.error(error)
       })
@@ -228,8 +236,10 @@ export default {
       var params = {
         group_id: id
       }
+      this.listLoading = true
       getRepositoryYuyan(params).then(response => {
         this.yyList = response
+        this.listLoading = false
       }).catch(error => {
         Message.error(error)
       })
@@ -244,9 +254,10 @@ export default {
         })
       }).catch(() => { })
     },
-    goFileDetail(id) {
+    goFileDetail(id, name) {
       this.isfile = true
       this.app_id = id
+      this.app_name = name
       // this.$router.push({
       //   name: 'fileList',
       //   params: {
@@ -255,6 +266,8 @@ export default {
       // })
     },
     getList() {
+      this.zizuList = []
+      this.yyList = []
       this.getYuyan(this.zzSelect)
     }
   }

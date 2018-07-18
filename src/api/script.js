@@ -4,7 +4,8 @@ import request from '@/utils/request'
 export function getFileList(project_id, params) {
   return request({
     url: '/v1/repository/project/' + project_id,
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
@@ -60,6 +61,15 @@ export function deleteRepositoryYuyan(project_id) {
   })
 }
 
+// 查看文件
+export function getAppFile(project_id, params) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/file',
+    method: 'get',
+    params
+  })
+}
+
 // 创建文件
 export function postAppFile(project_id, params) {
   return request({
@@ -74,6 +84,34 @@ export function putAppFile(project_id, params) {
   return request({
     url: '/v1/repository/project/' + project_id + '/file',
     method: 'put',
+    data: params
+  })
+}
+
+// 删除文件
+export function deleteAppFile(project_id, ids) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/file',
+    method: 'delete',
+    data: {
+      ids: ids
+    }
+  })
+}
+
+// 上传文件action
+export function uploadFileAction(project_id) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/files/upload',
+    method: 'post'
+  })
+}
+
+// 提交上传
+export function uploadAppFile(project_id, params) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/files',
+    method: 'post',
     data: params
   })
 }
