@@ -15,12 +15,12 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="任务名">
-              <el-input v-model="form.task_name" placeholder="请输入"></el-input>
+              <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="类型">
-              <el-select v-model="form.task_type" placeholder="请选择">
+              <el-select v-model="form.type" placeholder="请选择">
                 <el-option :label="'命令'" :value="'command'"></el-option>
                 <el-option :label="'脚本'" :value="'script'"></el-option>
                 <el-option :label="'文件分发'" :value="'file'"></el-option>
@@ -29,15 +29,15 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="目标系统">
-              <el-select v-model="form.task_target_system" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
+              <el-select v-model="form.target_system" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
                 <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="语言">
-              <el-select v-model="form.task_language" placeholder="请选择" :disabled="!form.task_target_system">
-                <el-option v-for="(item, index) in systemAndLang[form.task_target_system]" :key="index" :label="item.name" :value="item.name"></el-option>
+              <el-select v-model="form.language" placeholder="请选择" :disabled="!form.target_system">
+                <el-option v-for="(item, index) in systemAndLang[form.target_system]" :key="index" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -45,7 +45,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="风险等级">
-              <el-select v-model="form.task_risk_level" placeholder="请选择">
+              <el-select v-model="form.risk_level" placeholder="请选择">
                 <el-option :label="'低'" :value="'1'"></el-option>
                 <el-option :label="'中'" :value="'2'"></el-option>
                 <el-option :label="'高'" :value="'3'"></el-option>
@@ -54,15 +54,15 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="创建者">
-              <el-select v-model="task_creator" multiple placeholder="请选择">
+              <el-select v-model="creator" multiple placeholder="请选择">
                 <el-option v-for="name in creaters" :key="name" :label="name" :value="name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="状态">
-              <el-select v-model="form.task_is_enable" placeholder="请选择">
-                <el-option :label="'可用'" :value="1"></el-option>
+              <el-select v-model="form.is_enable" placeholder="请选择">
+                <el-option :label="'启用'" :value="1"></el-option>
                 <el-option :label="'停用'" :value="0"></el-option>
               </el-select>
             </el-form-item>
@@ -94,26 +94,26 @@
           style="width: 100%"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="task_name" label="任务名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="task_creator" label="创建人"></el-table-column>
+          <el-table-column prop="name" label="任务名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="updated_at" label="修改时间" width="160px" :formatter="formatterTime"></el-table-column>
-          <el-table-column prop="task_type" label="类型" :formatter="formatterTaskType"></el-table-column>
-          <el-table-column prop="task_language" label="语言"></el-table-column>
-          <el-table-column prop="task_target_system" label="目标系统"></el-table-column>
+          <el-table-column prop="type" label="类型" :formatter="formatterTaskType"></el-table-column>
+          <el-table-column prop="language" label="语言"></el-table-column>
+          <el-table-column prop="target_system" label="目标系统"></el-table-column>
           <el-table-column prop="task_description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
-              <risk-level :level="scope.row.task_risk_level"></risk-level>
+              <risk-level :level="scope.row.risk_level"></risk-level>
             </template>
           </el-table-column>
-          <el-table-column prop="task_is_enable" label="状态" :formatter="formatterEnable"></el-table-column>
+          <el-table-column prop="is_enable" label="状态" :formatter="formatterEnable"></el-table-column>
           <el-table-column prop="task_approver" label="审批人"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goEdit(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.status === '审批中'">编辑</el-button>
               <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
-              <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.task_is_enable ? '停用' : '启用'}}</el-button>
-              <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)">删除</el-button>
+              <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.is_enable ? '停用' : '启用'}}</el-button>
+              <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)" :disabled="scope.row.is_enable">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -147,20 +147,20 @@ export default {
   data() {
     return {
       form: {
-        task_name: '',
-        task_type: '',
-        task_target_system: '',
-        task_language: '',
-        task_risk_level: '',
-        task_creator: '',
-        task_is_enable: '',
+        name: '',
+        type: '',
+        target_system: '',
+        language: '',
+        risk_level: '',
+        creator: '',
+        is_enable: '',
         page: 1,
         per_page: 10
       },
       data: [],
       total: 0,
       creaters: [],
-      task_creator: [], // 选择的创建者Array
+      creator: [], // 选择的创建者Array
       systemAndLang: {},
       multipleSelection: [],
       multipleStart: true,
@@ -172,23 +172,24 @@ export default {
     multipleSelection(arr) {
       const length = arr.length
       if (length) {
-        this.multipleDelete = false
-
         let enable = 0
         for (let i = 0; i < length; i++) {
-          if (arr[i].task_is_enable) {
+          if (arr[i].is_enable) {
             enable++
           }
         }
         if (enable === length) {
           this.multipleStart = true
           this.multipleStop = false
+          this.multipleDelete = true
         } else if (enable === 0) {
           this.multipleStart = false
           this.multipleStop = true
+          this.multipleDelete = false
         } else {
           this.multipleStart = true
           this.multipleStop = true
+          this.multipleDelete = true
         }
       } else {
         this.multipleStart = true
@@ -196,8 +197,8 @@ export default {
         this.multipleDelete = true
       }
     },
-    task_creator(arr) {
-      this.form.task_creator = arr.join(',')
+    creator(arr) {
+      this.form.creator = arr.join(',')
     }
   },
   created() {
@@ -206,7 +207,7 @@ export default {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
-        this.creaters = res[2].task_creator
+        this.creaters = res[2].creator
       })
       .catch(() => {
         this.$message.error('接口错误')
@@ -217,7 +218,7 @@ export default {
      * 表格内容格式化
      */
     rowStyle({ row, rowIndex }) {
-      if (!row.task_is_enable) {
+      if (!row.is_enable) {
         return {
           color: '#BFBFBF'
         }
@@ -227,11 +228,11 @@ export default {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterTaskType(row) {
-      return taskTypeMap[row.task_type]
+      return taskTypeMap[row.type]
     },
     formatterEnable(row) {
-      if (row.task_is_enable) {
-        return '可用'
+      if (row.is_enable) {
+        return '启用'
       }
       return '停用'
     },
@@ -259,6 +260,7 @@ export default {
           message: '操作成功',
           type: 'success'
         })
+        this.getListData()
       })
     },
     deleteTasks(data) {
@@ -284,17 +286,17 @@ export default {
     },
     refresh() {
       this.form = {
-        task_name: '',
-        task_type: '',
-        task_target_system: '',
-        task_language: '',
-        task_risk_level: '',
-        task_creator: '',
-        task_is_enable: '',
+        name: '',
+        type: '',
+        target_system: '',
+        language: '',
+        risk_level: '',
+        creator: '',
+        is_enable: '',
         page: 1,
         per_page: 10
       }
-      this.task_creator = []
+      this.creator = []
       this.multipleSelection = []
       this.search()
     },
@@ -302,7 +304,7 @@ export default {
       this.getListData(val)
     },
     systemChange() {
-      this.form.task_language = ''
+      this.form.language = ''
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -316,7 +318,7 @@ export default {
         const ids = this.getTaskIds()
         this.changeTaskStatus({
           task_ids: ids,
-          task_is_enable: true
+          is_enable: true
         })
       }).catch(() => {
         this.$message({
@@ -334,7 +336,7 @@ export default {
         const ids = this.getTaskIds()
         this.changeTaskStatus({
           task_ids: ids,
-          task_is_enable: false
+          is_enable: false
         })
       }).catch(() => {
         this.$message({
@@ -361,7 +363,7 @@ export default {
       })
     },
     handleSingleStatus(row) {
-      if (row.task_is_enable) { // 处在启用状态，要停用
+      if (row.is_enable) { // 处在启用状态，要停用
         this.$confirm('确认要停用这条任务吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -371,7 +373,7 @@ export default {
           ids.push(row.id)
           this.changeTaskStatus({
             task_ids: ids,
-            task_is_enable: false
+            is_enable: false
           })
         }).catch(() => {
           this.$message({
@@ -389,7 +391,7 @@ export default {
           ids.push(row.id)
           this.changeTaskStatus({
             task_ids: ids,
-            task_is_enable: true
+            is_enable: true
           })
         }).catch(() => {
           this.$message({
