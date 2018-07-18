@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="14px" viewBox="0 0 12 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->
+    <title>baseline-insert_drive_file-24px</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="20-脚本库" transform="translate(-386.000000, -606.000000)">
+            <rect fill="#F8F9FE" x="0" y="0" width="1440" height="969"></rect>
+            <g id="Group-57" transform="translate(384.000000, 332.000000)">
+                <g id="Group-31-Copy-4" transform="translate(0.000000, 270.000000)">
+                    <g id="baseline-insert_drive_file-24px" transform="translate(0.000000, 3.000000)">
+                        <path d="M4,1.33333333 C3.26666667,1.33333333 2.67333333,1.93333333 2.67333333,2.66666667 L2.66666667,13.3333333 C2.66666667,14.0666667 3.26,14.6666667 3.99333333,14.6666667 L12,14.6666667 C12.7333333,14.6666667 13.3333333,14.0666667 13.3333333,13.3333333 L13.3333333,5.33333333 L9.33333333,1.33333333 L4,1.33333333 Z M8.66666667,6 L8.66666667,2.33333333 L12.3333333,6 L8.66666667,6 Z" id="Shape" fill-opacity="0.65" fill="#000000" fill-rule="nonzero"></path>
+                        <polygon id="Shape" points="0 0 16 0 16 16 0 16"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

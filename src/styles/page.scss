@@ -23,6 +23,35 @@
     border-top: 1px solid #f0f0f0;
     color: #000;
   }
+  .file-content{
+    .file-content-header{
+      height: 36px;
+      width:100%;
+      background: #f7f7f7;
+      border:1px solid #ddd;
+      border-right: none;
+      padding: 10px 10px;
+      overflow: hidden;
+    }
+    border-bottom:1px solid #ddd;
+    border-right:1px solid #ddd;
+    .file-content-header-left{
+      float:left;
+      span{
+        padding-left: 5px;
+      }
+    }
+    .file-content-header-right{
+      float: right;
+      span{
+        display: inline-block;
+        margin-left: 5px;
+      }
+    }
+  }
+  .CodeMirror-gutters{
+    border-left: 1px solid #ddd;
+  }
 }
 .pb-library .container-body{
   .el-tabs__nav-scroll{
@@ -50,15 +79,15 @@
     border-top: 1px solid #f0f0f0;
   }
 }
-.tabs-nav{
+.file-nav{
   margin-bottom: 20px;
   overflow: hidden;
-}
-.tabs-nav .tabs-nav-left{
-  float: left;
-}
-.tabs-nav .tabs-nav-right{
-  float: right;
+  .file-nav-left{
+    float: left;
+  }
+  .file-nav-right{
+    float: right;
+  }
 }
 .pb-dialog .el-input,
 .pb-dialog .el-select{
@@ -116,3 +145,20 @@ dl, dd, p {
 .ovinfo-dl dd:hover{
   border: 1px solid #eee;
 }
+.pathspan{
+  a{
+    color: #303133;
+    font-weight: 700;
+  }
+  a:hover{
+    color:#409eff
+  }
+}
+
+.container-body-wrap {
+  .el-form-item__content{
+    overflow: hidden;
+  }
+}
+
+
