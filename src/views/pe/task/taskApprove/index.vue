@@ -15,12 +15,12 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="任务名">
-              <el-input v-model="form.task_name" placeholder="请输入"></el-input>
+              <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="类型">
-              <el-select v-model="form.task_type" placeholder="请选择">
+              <el-select v-model="form.type" placeholder="请选择">
                 <el-option :label="'命令'" :value="'command'"></el-option>
                 <el-option :label="'脚本'" :value="'script'"></el-option>
                 <el-option :label="'文件分发'" :value="'file'"></el-option>
@@ -29,7 +29,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="风险">
-              <el-select v-model="form.task_risk_level" placeholder="请选择">
+              <el-select v-model="form.risk_level" placeholder="请选择">
                 <el-option :label="'低'" :value="'1'"></el-option>
                 <el-option :label="'中'" :value="'2'"></el-option>
                 <el-option :label="'高'" :value="'3'"></el-option>
@@ -38,7 +38,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="创建者">
-              <el-select v-model="form.task_creator" placeholder="请选择">
+              <el-select v-model="form.creator" placeholder="请选择">
                 <el-option v-for="name in creaters" :key="name" :label="name" :value="name"></el-option>
               </el-select>
             </el-form-item>
@@ -48,14 +48,14 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="审批者">
-              <el-select v-model="form.task_approver" placeholder="请选择">
+              <el-select v-model="form.approver" placeholder="请选择">
                 <el-option v-for="name in approvers" :key="name" :label="name" :value="name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="审批状态">
-              <el-select v-model="form.task_status" placeholder="请选择">
+              <el-select v-model="form.status" placeholder="请选择">
                 <el-option :label="'通过'" :value="'pass'"></el-option>
                 <el-option :label="'拒绝'" :value="'no-pass'"></el-option>
                 <el-option :label="'审核中'" :value="'pending'"></el-option>
@@ -91,14 +91,14 @@
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
-          <el-table-column prop="task_name" label="任务名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="task_creator" label="创建人"></el-table-column>
+          <el-table-column prop="name" label="任务名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="updated_at" label="修改时间" width="160px" :formatter="formatterTime"></el-table-column>
-          <el-table-column prop="task_type" label="任务类型" :formatter="formatterTaskType"></el-table-column>
+          <el-table-column prop="type" label="任务类型" :formatter="formatterTaskType"></el-table-column>
           <el-table-column prop="task_description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
-              <risk-level :level="scope.row.task_risk_level"></risk-level>
+              <risk-level :level="scope.row.risk_level"></risk-level>
             </template>
           </el-table-column>
           <el-table-column label="审批人" width="200px"
@@ -122,8 +122,8 @@
           </el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">
-              <div v-if="scope.row.task_status === 'no-pass'" style="color: #F5222D;">拒绝</div>
-              <div v-else-if="scope.row.task_status === 'pass'" style="color: #52C41A;">通过</div>
+              <div v-if="scope.row.status === 'no-pass'" style="color: #F5222D;">拒绝</div>
+              <div v-else-if="scope.row.status === 'pass'" style="color: #52C41A;">通过</div>
               <div v-else>审核中</div>
             </template>
           </el-table-column>
@@ -135,8 +135,8 @@
         </el-table>
       </div>
       <!-- 分页 -->
-      <div class="pagination">
-        <el-pagination layout="total, prev, pager, next" :page-size="20" :total="100"></el-pagination>
+      <div class="pagination" v-if="total">
+        <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
       </div>
     </div>
   </div>
@@ -168,61 +168,20 @@ export default {
   data() {
     return {
       form: {
-        task_name: '',
-        task_type: '',
+        name: '',
+        type: '',
         risk_level: '',
-        task_creator: '',
-        task_approver: '',
-        task_status: '',
+        creator: '',
+        approver: '',
+        status: '',
         start_time: '',
         end_time: '',
         page: 1,
         per_page: 10
       },
       daterange: '',
-      data: [
-        {
-          'task_risk_statement': 'string',
-          'task_file_permission': 'string',
-          'task_command': 'string',
-          'id': 0,
-          'task_is_enable': true,
-          'task_creator': 'string',
-          'task_file_owner': 'string',
-          'task_script': 'string',
-          'task_time_out': 0,
-          'task_script_version': 'string',
-          'task_description': '这是一段说明，是最长的字段文案限制额度这是一段说明，是最长的字段文案限制额度',
-          'task_file_selection': 'string',
-          'approve_record': [
-            {
-              'status': 'pending',
-              'approver': 'string1'
-            },
-            {
-              'status': 'pass',
-              'approver': 'string2'
-            },
-            {
-              'status': 'no-pass',
-              'approver': 'string3'
-            },
-            {
-              'status': 'no-pass',
-              'approver': 'string4'
-            }
-          ],
-          'task_script_parameter': 'string',
-          'task_is_replace': true,
-          'task_type': 'command',
-          'task_language': 'string',
-          'task_target_system': 'string',
-          'task_risk_level': '3',
-          'task_target_directory': 'string',
-          'task_name': 'string',
-          'task_status': 'pending'
-        }
-      ],
+      data: [],
+      total: 0,
       creaters: [],
       approvers: []
     }
@@ -234,17 +193,34 @@ export default {
     }
   },
   created() {
-    Promise.all([getListApi(), getCreatorApi(), getApproverApi()])
+    Promise.all([getListApi(this.form), getCreatorApi(), getApproverApi()])
       .then(res => {
-        debugger
+        this.data = res[0].items
+        this.total = res[0].total
+        this.creaters = res[1].creator
+        this.approvers = res[2].approver
       })
   },
   methods: {
+    getListData(index) {
+      const params = this.form
+      if (index) {
+        params.page = index
+      }
+      getListApi(params).then(res => {
+        this.data = res.items
+        this.total = res.total
+      })
+    },
+    handlePageChange(val) {
+      this.form.page = val
+      this.getListData()
+    },
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterTaskType(row) {
-      return taskTypeMap[row.task_type]
+      return taskTypeMap[row.type]
     },
     renderHeader(h, { column, $index }) {
       return (
@@ -261,10 +237,27 @@ export default {
         </span>
       )
     },
-    search() {},
-    refresh() {},
+    search() {
+      this.getListData(1)
+    },
+    refresh() {
+      this.form = {
+        name: '',
+        type: '',
+        risk_level: '',
+        creator: '',
+        approver: '',
+        status: '',
+        start_time: '',
+        end_time: '',
+        page: 1,
+        per_page: 10
+      }
+      this.daterange = ''
+      this.search()
+    },
     goView(row) {
-      if (row.task_status === 'pending') { // 审核中，可操作
+      if (row.status === 'pending') { // 审核中，可操作
         this.$router.push({
           path: `/pe/taskManage/approveTask/${row.id}`
         })

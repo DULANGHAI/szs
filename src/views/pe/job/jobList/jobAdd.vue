@@ -73,7 +73,7 @@
         <div class="block-title ">作业编排</div>
         <!-- 操作 -->
         <div class="tool-box">
-          <div class="op-item">
+          <div class="op-item" :class="{disable: addDisable}">
             <svg-icon icon-class="add_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">添加作业</div>
           </div>
@@ -98,7 +98,10 @@
         <div class="chart-content">
           <!-- 多套一层用来缩放 -->
           <div :style="{transform: 'scale('+ scale / 10 +')'}">
-            <my-chart :data.sync="chartData"></my-chart>
+            <my-chart :data.sync="chartData"
+              :selectNode="selectNode"
+              :addNode="addNode"
+              :forceUpdate="forceUpdate"></my-chart>
           </div>
         </div>
       </div>
@@ -206,18 +209,7 @@ export default {
                     lang: 'powershell',
                     desc: '介绍上看见的是那可是你看电视',
                     condition: 'sdsds',
-                    next: [
-                      {
-                        id: 8,
-                        type: 'script',
-                        name: 'task_8#skjbad',
-                        creater: '李四',
-                        lang: 'powershell',
-                        desc: '介绍上看见的是那可是你看电视',
-                        condition: 'sdsds',
-                        next: []
-                      }
-                    ]
+                    next: []
                   },
                   {
                     id: 7,
@@ -228,42 +220,11 @@ export default {
                     desc: '介绍上看见的是那可是你看电视',
                     condition: 'sdsds',
                     next: []
-                  }
-                ]
-              },
-              {
-                id: 2,
-                type: 'script',
-                name: 'task_2#skjbad',
-                creater: '李四',
-                lang: 'powershell',
-                desc: '介绍上看见的是那可是你看电视',
-                condition: 'sdsds',
-                next: [
-                  {
-                    id: 4,
-                    type: 'script',
-                    name: 'task_4#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
                   },
                   {
-                    id: 5,
+                    id: 8,
                     type: 'script',
-                    name: 'task_5#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
-                  },
-                  {
-                    id: 5,
-                    type: 'script',
-                    name: 'task_5#skjbad',
+                    name: 'task_8#skjbad',
                     creater: '李四',
                     lang: 'powershell',
                     desc: '介绍上看见的是那可是你看电视',
@@ -276,7 +237,17 @@ export default {
           }
         ]
       },
+      selected_id: '',
       scale: 10
+    }
+  },
+  computed: {
+    addDisable() {
+      if (this.selected_id !== '' || this.chartData.id === undefined) {
+        return false
+      } else {
+        return true
+      }
     }
   },
   created() {
@@ -306,6 +277,15 @@ export default {
       if (this.scale > 1) {
         this.scale--
       }
+    },
+    selectNode(id) {
+      this.selected_id = id
+    },
+    addNode(item) {
+
+    },
+    forceUpdate() {
+      this.chartData = Object.assign({}, this.chartData)
     }
   }
 }

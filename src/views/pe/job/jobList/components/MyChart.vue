@@ -3,7 +3,9 @@
     <!-- 竖线 -->
     <div v-if="bro !== undefined" class="v-line"></div>
     <!-- 当前节点 -->
-    <script-option :data.sync="data"></script-option>
+    <script-option :data.sync="data"
+      :forceUpdate="forceUpdate"
+      :selectNode="selectNode"></script-option>
     <!-- 横线 -->
     <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
     <!-- 子节点 -->
@@ -13,7 +15,9 @@
           :key="index"
           :data="item"
           :bro="data.next.length"
-          :index="index"></my-chart>
+          :index="index"
+          :forceUpdate="forceUpdate"
+          :selectNode="selectNode"></my-chart>
       </div>
     </div>
   </div>
@@ -36,7 +40,9 @@ export default {
       type: Number,
       default: 0
     },
-    index: Number
+    index: Number,
+    forceUpdate: Function,
+    selectNode: Function
   },
   methods: {
     getClass() {

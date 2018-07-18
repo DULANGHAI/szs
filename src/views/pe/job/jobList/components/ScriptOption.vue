@@ -1,5 +1,5 @@
 <template>
-  <div class="script-option" @click="test">
+  <div class="script-option" @click="handleSelect">
     <div class="flex">
       <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
       <div>
@@ -22,17 +22,20 @@ export default {
   props: {
     data: {
       type: Object
-    }
+    },
+    forceUpdate: Function,
+    selectNode: Function
   },
   components: {
     RiskLevel
   },
   methods: {
-    test() {
-      debugger
-      const res = this.data
-      res.risk_level = 1
-      this.$emit('update:data', res)
+    handleSelect() {
+      // const res = this.data
+      // res.risk_level = 1
+      // this.$emit('update:data', res)
+      this.selectNode(this.data.id)
+      this.forceUpdate()
     }
   }
 }
@@ -46,6 +49,7 @@ export default {
   border: 1px solid #DFE1E6;
   border-radius: 4px;
   position: relative;
+  cursor: pointer;
 }
 .flex-1 {
   flex: 1;

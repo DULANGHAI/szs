@@ -301,7 +301,8 @@ export default {
       this.search()
     },
     handlePageChange(val) {
-      this.getListData(val)
+      this.form.page = val
+      this.getListData()
     },
     systemChange() {
       this.form.language = ''
