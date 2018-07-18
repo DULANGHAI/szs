@@ -4,7 +4,7 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      任务列表
+      {{$route.name}}
     </div>
     <div class="container-body">
       <!-- 筛选 -->
@@ -419,17 +419,17 @@ export default {
     },
     goAdd() {
       this.$router.push({
-        path: '/taskManage/taskAdd'
+        path: '/pe/taskManage/taskAdd'
       })
     },
     goEdit(id) {
       this.$router.push({
-        path: `/taskManage/taskEdit/${id}`
+        path: `/pe/taskManage/taskEdit/${id}`
       })
     },
     goView(id) {
       this.$router.push({
-        path: `/taskManage/taskView/${id}/1`
+        path: `/pe/taskManage/taskView/${id}/1`
       })
     }
   }

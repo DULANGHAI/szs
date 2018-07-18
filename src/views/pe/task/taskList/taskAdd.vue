@@ -240,7 +240,7 @@ export default {
           upadateTaskApi(this.form.id, this.form).then(res => {
             if (res.id) {
               this.$router.push({
-                path: `/taskManage/taskList`
+                path: `/pe/taskManage/taskList`
               })
             }
           })
@@ -248,7 +248,7 @@ export default {
           createTaskApi(this.form).then(res => {
             if (res.id) {
               this.$router.push({
-                path: `/taskManage/taskList`
+                path: `/pe/taskManage/taskList`
               })
             }
           })
@@ -257,7 +257,7 @@ export default {
     },
     goEdit() {
       this.$router.push({
-        path: `/taskManage/taskEdit/${this.id}`
+        path: `/pe/taskManage/taskEdit/${this.id}`
       })
     },
     goBack() {

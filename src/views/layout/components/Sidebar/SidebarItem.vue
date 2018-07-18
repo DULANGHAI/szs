@@ -56,9 +56,6 @@ export default {
       default: ''
     }
   },
-  created() {
-    console.log(this.item)
-  },
   methods: {
     hasOneShowingChildren(children) {
       const showingChildren = children.filter(item => {
