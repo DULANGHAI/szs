@@ -243,6 +243,42 @@ export const constantRouterMap = [
       }
     ]
   },
+
+  // 系统管理
+  {
+    path: '/resource',
+    component: Layout,
+    redirect: '/resource/example1',
+    name: 'Resource',
+    meta: { title: '系统管理', icon: 'ziyuan' },
+    children: [
+      {
+        path: 'example1',
+        name: 'Example1',
+        component: () => import('@/views/example1/index'),
+        meta: { title: '用户管理' }
+      },
+      {
+        path: 'example1',
+        name: 'Example1',
+        component: () => import('@/views/example1/index'),
+        meta: { title: '角色管理' }
+      },
+      {
+        path: 'example2',
+        name: 'Example2',
+        component: () => import('@/views/example2/index'),
+        meta: { title: '系统审计' }
+      },
+      {
+        path: 'example3',
+        name: 'Example3',
+        component: () => import('@/views/example3/index'),
+        meta: { title: '系统配置' }
+      }
+    ]
+  },
+
   {
     path: '/repository/examine/detail',
     name: 'examineDetail',
