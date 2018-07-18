@@ -177,7 +177,7 @@ export default {
         start_time: '',
         end_time: '',
         page: 1,
-        per_page: 20
+        per_page: 10
       },
       daterange: '',
       data: [
@@ -266,11 +266,11 @@ export default {
     goView(row) {
       if (row.task_status === 'pending') { // 审核中，可操作
         this.$router.push({
-          path: `/taskManage/approveTask/${row.id}`
+          path: `/pe/taskManage/approveTask/${row.id}`
         })
       } else {
         this.$router.push({
-          path: `/taskManage/approveView/${row.id}/1`
+          path: `/pe/taskManage/approveView/${row.id}/1`
         })
       }
     }
