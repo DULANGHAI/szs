@@ -4,6 +4,7 @@
     <div v-if="bro !== undefined" class="v-line"></div>
     <!-- 当前节点 -->
     <script-option :data.sync="data"
+      :selectedId="selectedId"
       :forceUpdate="forceUpdate"
       :selectNode="selectNode"></script-option>
     <!-- 横线 -->
@@ -14,6 +15,7 @@
         <my-chart v-for="(item, index) in data.next"
           :key="index"
           :data="item"
+          :selectedId="selectedId"
           :bro="data.next.length"
           :index="index"
           :forceUpdate="forceUpdate"
@@ -36,6 +38,7 @@ export default {
       type: Object,
       default: {}
     },
+    selectedId: Number,
     bro: {
       type: Number,
       default: 0

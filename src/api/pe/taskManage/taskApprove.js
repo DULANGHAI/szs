@@ -35,6 +35,27 @@ export function getApproverApi() {
 }
 
 /**
+ * 获取系统和语言
+ * @param {Object} params
+ */
+export function getLanguageApi() {
+  return request({
+    url: '/v1/repository/system/language',
+    method: 'get'
+  })
+}
+
+/**
+ * 查询所有的脚本
+ */
+export function getAllScriptApi() {
+  return request({
+    url: '',
+    method: 'get'
+  })
+}
+
+/**
  * 根据任务ID获取数据
  * @param {Object} params
  */

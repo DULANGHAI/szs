@@ -1,5 +1,5 @@
 <template>
-  <div class="script-option" @click="handleSelect">
+  <div class="script-option" :class="{'selected': data.id === selectedId}" @click="handleSelect">
     <div class="flex">
       <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
       <div>
@@ -23,6 +23,7 @@ export default {
     data: {
       type: Object
     },
+    selectedId: Number,
     forceUpdate: Function,
     selectNode: Function
   },
@@ -34,7 +35,11 @@ export default {
       // const res = this.data
       // res.risk_level = 1
       // this.$emit('update:data', res)
-      this.selectNode(this.data.id)
+      if (this.data.id === this.selectedId) {
+        this.selectNode({})
+      } else {
+        this.selectNode(this.data)
+      }
       this.forceUpdate()
     }
   }
@@ -50,6 +55,9 @@ export default {
   border-radius: 4px;
   position: relative;
   cursor: pointer;
+}
+.selected {
+  border-color: #1890FF;
 }
 .flex-1 {
   flex: 1;

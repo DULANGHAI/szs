@@ -120,13 +120,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="状态">
-            <template slot-scope="scope">
-              <div v-if="scope.row.status === 'no-pass'" style="color: #F5222D;">拒绝</div>
-              <div v-else-if="scope.row.status === 'pass'" style="color: #52C41A;">通过</div>
-              <div v-else>审核中</div>
-            </template>
-          </el-table-column>
+          <el-table-column prop="status" label="状态"></el-table-column>
           <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button type="text" @click="goView(scope.row)">查看</el-button>
@@ -146,7 +140,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 
-import { getListApi, getCreatorApi, getApproverApi } from '@/api/taskApprove'
+import { getListApi, getCreatorApi, getApproverApi } from '@/api/pe/taskManage/taskApprove'
 
 const taskTypeMap = {
   command: '命令',
@@ -257,7 +251,7 @@ export default {
       this.search()
     },
     goView(row) {
-      if (row.status === 'pending') { // 审核中，可操作
+      if (row.status === '审批中') { // 审核中，可操作
         this.$router.push({
           path: `/pe/taskManage/approveTask/${row.id}`
         })

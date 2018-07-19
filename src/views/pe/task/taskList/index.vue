@@ -131,7 +131,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 
-import { getListApi, getCreatorApi, getLanguageApi, changeTaskStatusApi, deleteTaskApi } from '@/api/taskList'
+import { getListApi, getCreatorApi, getLanguageApi, changeTaskStatusApi, deleteTaskApi } from '@/api/pe/taskManage/taskList'
 
 const taskTypeMap = {
   command: '命令',

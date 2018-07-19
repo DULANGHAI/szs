@@ -77,7 +77,7 @@
             <svg-icon icon-class="add_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">添加作业</div>
           </div>
-          <div class="op-item disable">
+          <div class="op-item" :class="{disable: conditionDisable}">
             <svg-icon icon-class="condition_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">条件编辑</div>
           </div>
@@ -89,7 +89,7 @@
             <svg-icon icon-class="narrow" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">缩小</div>
           </div>
-          <div class="op-item disable">
+          <div class="op-item" :class="{disable: removeDisable}">
             <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">删除</div>
           </div>
@@ -99,6 +99,7 @@
           <!-- 多套一层用来缩放 -->
           <div :style="{transform: 'scale('+ scale / 10 +')'}">
             <my-chart :data.sync="chartData"
+              :selectedId="selected.id"
               :selectNode="selectNode"
               :addNode="addNode"
               :forceUpdate="forceUpdate"></my-chart>
@@ -119,7 +120,7 @@ import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import MyChart from './components/MyChart'
 
-import { getLanguageApi } from '@/api/taskList'
+import { getLanguageApi } from '@/api/pe/taskManage/taskList'
 
 export default {
   props: ['id', 'view'],
@@ -237,16 +238,30 @@ export default {
           }
         ]
       },
-      selected_id: '',
+      selected: {}, // 选中的节点
       scale: 10
     }
   },
   computed: {
     addDisable() {
-      if (this.selected_id !== '' || this.chartData.id === undefined) {
-        return false
-      } else {
+      if (this.selected.id === undefined || this.chartData.id === undefined) {
         return true
+      } else {
+        return false
+      }
+    },
+    conditionDisable() {
+      if (this.selected.id === undefined || this.selected.node_level === 0) {
+        return true
+      } else {
+        return false
+      }
+    },
+    removeDisable() {
+      if (this.selected.id === undefined) {
+        return true
+      } else {
+        return false
       }
     }
   },
@@ -278,8 +293,8 @@ export default {
         this.scale--
       }
     },
-    selectNode(id) {
-      this.selected_id = id
+    selectNode(obj) {
+      this.selected = obj
     },
     addNode(item) {
 

@@ -143,7 +143,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 
-import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi } from '@/api/taskList'
+import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi } from '@/api/pe/taskManage/taskList'
 
 export default {
   props: ['id', 'view'],
