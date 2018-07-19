@@ -178,13 +178,13 @@ export default {
       systemAndLang: {},
       scriptOptions: [
         {
-          name: 'install_tomcat',
+          name: 'install_tomcat1',
           full_path: '/ops/linux/python/install_tomcat.py',
           comment: '执行安装tomcat的运维指令，tomcat版本为6.7.1',
           risk_level: 1
         },
         {
-          name: 'install_tomcat',
+          name: 'install_tomcat2',
           full_path: '/ops/linux/python/install_tomcat.py',
           comment: '执行安装tomcat的运维指令，tomcat版本为6.7.1',
           risk_level: 1

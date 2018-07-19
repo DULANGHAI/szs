@@ -13,7 +13,7 @@
         <div class="block-title ">作业信息</div>
         <div class="block-content">
           <div class="flex">
-            <div class="flex-1">
+            <div class="flex-1 marr-20">
               <el-form ref="form" label-width="100px" size="small" label-position="left">
                 <el-form-item label="作业名">
                   <el-input v-if="!view" v-model="form.job_name" placeholder="请输入"></el-input>
@@ -42,7 +42,7 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 marr-20">
               <el-form ref="form" label-width="84px" size="small" label-position="left">
                 <el-form-item label="系统类型">
                   <el-select v-if="!view" v-model="form.job_system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
@@ -73,7 +73,7 @@
         <div class="block-title ">作业编排</div>
         <!-- 操作 -->
         <div class="tool-box">
-          <div class="op-item" :class="{disable: addDisable}">
+          <div class="op-item" :class="{disable: addDisable}" @click="openJobModel">
             <svg-icon icon-class="add_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">添加作业</div>
           </div>
@@ -97,11 +97,10 @@
         <!-- 流程图 -->
         <div class="chart-content">
           <!-- 多套一层用来缩放 -->
-          <div :style="{transform: 'scale('+ scale / 10 +')'}">
-            <my-chart :data.sync="chartData"
+          <div v-if="scheduling.id" :style="{transform: 'scale('+ scale / 10 +')'}">
+            <my-chart :data.sync="scheduling"
               :selectedId="selected.id"
               :selectNode="selectNode"
-              :addNode="addNode"
               :forceUpdate="forceUpdate"></my-chart>
           </div>
         </div>
@@ -111,6 +110,9 @@
         <div class="block-title ">配置</div>
       </div>
     </div>
+
+    <!-- 添加作业的model -->
+    <add-job-model :show.sync="showAddModel" :addNode="addNode"></add-job-model>
   </div>
 </template>
 
@@ -119,6 +121,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import MyChart from './components/MyChart'
+import AddJobModel from './components/AddJobModel'
 
 import { getLanguageApi } from '@/api/pe/taskManage/taskList'
 
@@ -128,7 +131,8 @@ export default {
     Breadcrumb,
     RiskLevel,
     ScriptOption,
-    MyChart
+    MyChart,
+    AddJobModel
   },
   data() {
     return {
@@ -145,106 +149,15 @@ export default {
       account_arr: [],
       ip_arr: [],
       systemAndLang: {},
-      chartData: {
-        id: 0,
-        type: 'script',
-        name: 'task_0#skjbad',
-        creater: '李四',
-        lang: 'powershell',
-        desc: '介绍上看见的是那可是你看电视',
-        next: [
-          {
-            id: 1,
-            type: 'script',
-            name: 'task_1#skjbad',
-            creater: '李四',
-            lang: 'powershell',
-            desc: '介绍上看见的是那可是你看电视',
-            condition: 'sdsds',
-            next: [
-              {
-                id: 2,
-                type: 'script',
-                name: 'task_2#skjbad',
-                creater: '李四',
-                lang: 'powershell',
-                desc: '介绍上看见的是那可是你看电视',
-                condition: 'sdsds',
-                next: [
-                  {
-                    id: 4,
-                    type: 'script',
-                    name: 'task_4#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
-                  },
-                  {
-                    id: 5,
-                    type: 'script',
-                    name: 'task_5#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
-                  }
-                ]
-              },
-              {
-                id: 3,
-                type: 'script',
-                name: 'task_3#skjbad',
-                creater: '李四',
-                lang: 'powershell',
-                desc: '介绍上看见的是那可是你看电视',
-                condition: 'sdsds',
-                next: [
-                  {
-                    id: 6,
-                    type: 'script',
-                    name: 'task_6#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
-                  },
-                  {
-                    id: 7,
-                    type: 'script',
-                    name: 'task_7#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
-                  },
-                  {
-                    id: 8,
-                    type: 'script',
-                    name: 'task_8#skjbad',
-                    creater: '李四',
-                    lang: 'powershell',
-                    desc: '介绍上看见的是那可是你看电视',
-                    condition: 'sdsds',
-                    next: []
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
+      scheduling: {},
       selected: {}, // 选中的节点
-      scale: 10
+      scale: 10,
+      showAddModel: false
     }
   },
   computed: {
     addDisable() {
-      if (this.selected.id === undefined || this.chartData.id === undefined) {
+      if (this.selected.id === undefined && this.scheduling.id !== undefined) {
         return true
       } else {
         return false
@@ -297,10 +210,20 @@ export default {
       this.selected = obj
     },
     addNode(item) {
-
+      if (this.scheduling.id === undefined) {
+        this.scheduling = item
+      } else {
+        if (!this.selected.next) {
+          this.selected.next = []
+        }
+        this.selected.next.push(item)
+      }
     },
     forceUpdate() {
-      this.chartData = Object.assign({}, this.chartData)
+      this.scheduling = Object.assign({}, this.scheduling)
+    },
+    openJobModel() {
+      this.showAddModel = true
     }
   }
 }
@@ -358,6 +281,9 @@ export default {
 }
 .mart-10 {
   margin-top: 10px;
+}
+.marr-20 {
+  margin-right: 20px;
 }
 .chart-content {
   overflow: auto;

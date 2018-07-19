@@ -1,37 +1,41 @@
 <template>
-  <div class="flex-center flex-v relative">
-    <!-- 竖线 -->
-    <div v-if="bro !== undefined" class="v-line"></div>
-    <!-- 当前节点 -->
-    <script-option :data.sync="data"
-      :selectedId="selectedId"
-      :forceUpdate="forceUpdate"
-      :selectNode="selectNode"></script-option>
-    <!-- 横线 -->
-    <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
-    <!-- 子节点 -->
-    <div v-if="data.next && data.next.length" style="margin-top: 50px;">
-      <div class="flex-between flex-h">
-        <my-chart v-for="(item, index) in data.next"
-          :key="index"
-          :data="item"
+  <div>
+    <div class="flex-center flex-v relative">
+      <!-- 竖线 -->
+      <div v-if="bro !== undefined" class="v-line"></div>
+      <!-- 当前节点 -->
+      <div>
+        <command-option v-if="data.type === 'command'" :data.sync="data"
           :selectedId="selectedId"
-          :bro="data.next.length"
-          :index="index"
           :forceUpdate="forceUpdate"
-          :selectNode="selectNode"></my-chart>
+          :selectNode="selectNode"></command-option>
+      </div>
+      <!-- 横线 -->
+      <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
+      <!-- 子节点 -->
+      <div v-if="data.next && data.next.length" style="margin-top: 50px;">
+        <div class="flex-between flex-h">
+          <my-chart v-for="(item, index) in data.next"
+            :key="index"
+            :data.sync="item"
+            :selectedId="selectedId"
+            :bro="data.next.length"
+            :index="index"
+            :forceUpdate="forceUpdate"
+            :selectNode="selectNode"></my-chart>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ScriptOption from './ScriptOption'
+import CommandOption from './CommandOption'
 
 export default {
   name: 'my-chart',
   components: {
-    ScriptOption
+    CommandOption
   },
   props: {
     data: {

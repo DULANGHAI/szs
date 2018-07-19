@@ -8,8 +8,8 @@
       </div>
     </div>
     <div class="flex-between">
-      <div>创建人：{{data.creater}}</div>
-      <div>语言：{{data.lang}}</div>
+      <div>创建人：{{data.creator}}</div>
+      <div>语言：{{data.language}}</div>
     </div>
     <div v-if="data.next && data.next.length" class="after-line"></div>
   </div>
