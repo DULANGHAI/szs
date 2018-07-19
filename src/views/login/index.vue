@@ -114,7 +114,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-$bg:#2d3a4b;
+$bg:#FAFFBD;
 $light_gray:#000;
 
 /* reset element-ui css */
@@ -133,7 +133,7 @@ $light_gray:#000;
       height: 47px;
       &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: #fff !important;
+        -webkit-text-fill-color: rgb(0, 0, 0) !important;
       }
     }
   }
