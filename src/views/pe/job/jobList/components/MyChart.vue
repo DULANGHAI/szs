@@ -1,24 +1,30 @@
 <template>
   <div>
     <div class="flex-center flex-v relative">
-      <!-- 竖线 -->
-      <div v-if="bro !== undefined" class="v-line"></div>
+      <div v-if="bro !== undefined && bro !== 0">
+        <!-- 竖线 -->
+        <div class="v-line"></div>
+        <!-- 条件按钮 -->
+        <div class="cmd">cmd</div>
+      </div>
+      
       <!-- 当前节点 -->
       <div>
-        <command-option v-if="data.type === 'command'" :data.sync="data"
-          :selectedId="selectedId"
+        <command-option v-if="data.type === 'command'" :data.sync="data" :uniqueId="uniqueId"
+          :selected="selected"
           :forceUpdate="forceUpdate"
           :selectNode="selectNode"></command-option>
       </div>
       <!-- 横线 -->
       <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
       <!-- 子节点 -->
-      <div v-if="data.next && data.next.length" style="margin-top: 50px;">
+      <div v-if="data.next && data.next.length" style="margin-top: 80px;">
         <div class="flex-between flex-h">
           <my-chart v-for="(item, index) in data.next"
             :key="index"
+            :uniqueId="uniqueId"
             :data.sync="item"
-            :selectedId="selectedId"
+            :selected="selected"
             :bro="data.next.length"
             :index="index"
             :forceUpdate="forceUpdate"
@@ -38,11 +44,12 @@ export default {
     CommandOption
   },
   props: {
+    uniqueId: Number,
     data: {
       type: Object,
       default: {}
     },
-    selectedId: Number,
+    selected: Object,
     bro: {
       type: Number,
       default: 0
@@ -92,7 +99,7 @@ export default {
 }
 .h-line {
   position: absolute;
-  top: -20px;
+  top: -50px;
   left: 0;
   width: 100%;
   height: 1px;
@@ -100,7 +107,7 @@ export default {
 }
 .h-line-left {
   position: absolute;
-  top: -20px;
+  top: -50px;
   right: 0;
   width: 50%;
   height: 1px;
@@ -108,7 +115,7 @@ export default {
 }
 .h-line-right {
   position: absolute;
-  top: -20px;
+  top: -50px;
   left: 0;
   width: 50%;
   height: 1px;
@@ -116,11 +123,25 @@ export default {
 }
 .v-line {
   position: absolute;
-  top: -20px;
+  top: -50px;
   left: 50%;
   width: 1px;
-  height: 20px;
+  height: 50px;
   background-color: #DFE1E6;
+}
+.cmd {
+  position: absolute;
+  top: -36px;
+  left: calc(50% - 21px);
+  width: 42px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: #E6F7FF;
+  border: 1px solid #91D5FF;
+  border-radius: 4px;
+  z-index: 1;
+  cursor: pointer;
 }
 .relative {
   position: relative;

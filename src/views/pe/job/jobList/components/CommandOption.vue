@@ -1,5 +1,5 @@
 <template>
-  <div class="script-option" :class="{'selected': data.id === selectedId}" @click="handleSelect">
+  <div class="script-option" :class="{'selected': data.id === selected.id && data.timestr === selected.timestr}" @click="handleSelect" :uniqueId="uniqueId">
     <div class="flex">
       <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
       <div>
@@ -20,10 +20,11 @@ import RiskLevel from '@/components/RiskLevel'
 
 export default {
   props: {
+    uniqueId: Number,
     data: {
       type: Object
     },
-    selectedId: Number,
+    selected: Object,
     forceUpdate: Function,
     selectNode: Function
   },
@@ -35,12 +36,11 @@ export default {
       // const res = this.data
       // res.risk_level = 1
       // this.$emit('update:data', res)
-      if (this.data.id === this.selectedId) {
+      if (this.data.id === this.selected.id && this.data.timestr === this.selected.timestr) {
         this.selectNode({})
       } else {
         this.selectNode(this.data)
       }
-      this.forceUpdate()
     }
   }
 }

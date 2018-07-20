@@ -89,7 +89,7 @@
             <svg-icon icon-class="narrow" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">缩小</div>
           </div>
-          <div class="op-item" :class="{disable: removeDisable}">
+          <div class="op-item" :class="{disable: removeDisable}" @click="removeNode">
             <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">删除</div>
           </div>
@@ -98,8 +98,9 @@
         <div class="chart-content">
           <!-- 多套一层用来缩放 -->
           <div v-if="scheduling.id" :style="{transform: 'scale('+ scale / 10 +')'}">
-            <my-chart :data.sync="scheduling"
-              :selectedId="selected.id"
+            <my-chart :uniqueId="uniqueId"
+              :data.sync="scheduling"
+              :selected="selected"
               :selectNode="selectNode"
               :forceUpdate="forceUpdate"></my-chart>
           </div>
@@ -113,6 +114,8 @@
 
     <!-- 添加作业的model -->
     <add-job-model :show.sync="showAddModel" :addNode="addNode"></add-job-model>
+    <!-- 条件编辑 -->
+
   </div>
 </template>
 
@@ -151,6 +154,7 @@ export default {
       systemAndLang: {},
       scheduling: {},
       selected: {}, // 选中的节点
+      uniqueId: +new Date(),
       scale: 10,
       showAddModel: false
     }
@@ -208,16 +212,63 @@ export default {
     },
     selectNode(obj) {
       this.selected = obj
+      // this.selected = Object.assign({}, this.selected, obj)
     },
     addNode(item) {
+      item.timestr = +new Date()
       if (this.scheduling.id === undefined) {
+        item.node_level = 0
         this.scheduling = item
       } else {
         if (!this.selected.next) {
           this.selected.next = []
         }
         this.selected.next.push(item)
+        this.changeScheduling()
       }
+    },
+    // 数据只是添加到了selected里，要添加scheduling里
+    changeScheduling() {
+      const temp = this.doRecursion(this.scheduling, this.selected)
+      this.scheduling = temp
+      this.uniqueId = +new Date()
+    },
+    doRecursion(scheduling, selected) {
+      if (scheduling.id === selected.id && scheduling.timestr === selected.timestr) {
+        scheduling = selected
+      } else if (scheduling.next) {
+        for (let i = 0; i < scheduling.next.length; i++) {
+          scheduling.next[i] = this.doRecursion(scheduling.next[i], selected)
+        }
+      } else {
+        scheduling.next = []
+      }
+      return scheduling
+    },
+    removeNode() {
+      if (this.scheduling.id === this.selected.id && this.scheduling.timestr === this.selected.timestr) {
+        this.scheduling = {}
+      } else {
+        // 递归查找减掉数据
+        const temp = this.doRemove(this.scheduling, this.selected)
+        this.scheduling = temp
+      }
+      this.selected = {}
+      this.uniqueId = +new Date()
+    },
+    doRemove(scheduling, selected) {
+      if (scheduling.next) {
+        for (let i = 0; i < scheduling.next.length; i++) {
+          if (scheduling.next[i].id === selected.id && scheduling.next[i].timestr === selected.timestr) {
+            scheduling.next.splice(i, 1)
+            break
+          } else if (scheduling.next[i].next) {
+            scheduling.next[i] = this.doRemove(scheduling.next[i], selected)
+          }
+        }
+      }
+
+      return scheduling
     },
     forceUpdate() {
       this.scheduling = Object.assign({}, this.scheduling)
