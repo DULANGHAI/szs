@@ -27,14 +27,14 @@
             </el-col>
             <el-col :span="7">
               <el-form-item label="创建人">
-                <el-select v-model="form.user" placeholder="请选择">
+                <el-select v-model="form.user" placeholder="请选择" style="width:100%;">
                   <el-option v-for="item in fileTypeList" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="7">
               <el-form-item label="命令">
-                <el-select v-model="form.target_system" placeholder="请选择">
+                <el-select v-model="form.target_system" placeholder="请选择" style="width:100%;">
                   <el-option :label="'test1'" :value="'test1'"></el-option>
                   <el-option :label="'test2'" :value="'test2'"></el-option>
                 </el-select>
@@ -42,11 +42,16 @@
             </el-col>
           </el-row>
         </el-form>
-        <div>
-          <el-col :span="3">
+        <div class="file-nav">
+          <div class="file-nav-left">
             <el-button size="small" type="primary">查询</el-button>
             <el-button size="small">重置</el-button>
-          </el-col>
+          </div>
+          <div class="file-nav-right">
+            <el-button size="small">添加命令白名单</el-button>
+            <el-button size="small">编辑</el-button>
+            <el-button size="small">删除</el-button>
+          </div>
         </div>
       </template>
       <template>
@@ -58,43 +63,19 @@
           empty-text="暂无数据">
           <el-table-column
             prop="name"
-            label="文件名">
+            label="创建时间">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="文件类型">
+            label="命令">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="提交说明">
+            label="备注">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="提交人">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="提交时间">
-          </el-table-column>
-          <el-table-column
-            label="风险等级">
-            <template slot-scope="scope">
-              <risk-level :level="scope.rank"></risk-level>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="审批人">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="状态">
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goDetail('aaa')">查看</el-button>
-            </template>
+            label="创建人">
           </el-table-column>
         </el-table>
       </template>

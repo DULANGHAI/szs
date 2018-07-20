@@ -6,14 +6,27 @@
           <div class="tabs-contents" style="position:relative">
             <div class="file-nav">
               <div class="file-nav-left">
-                <el-select v-model="branch" size="mini" placeholder="请选择">
+                <el-select v-model="branch" size="mini" placeholder="请选择分支">
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in branchOptions"
+                    :key="item.project_id"
+                    :label="item.name"
+                    :value="item.project_id">
                   </el-option>
                 </el-select>
+                <el-dropdown trigger="click">
+                  <span class="el-dropdown-link">
+                    <el-button size="mini"><i class="el-icon-plus"></i></el-button>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item class="clearfix" @click.native="$refs.branch.doCreate(false, true)">
+                      新建版本
+                    </el-dropdown-item>
+                    <el-dropdown-item class="clearfix" @click.native="$refs.branch.doCreate(false, false)">
+                      删除版本
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
                 <span style="padding-left: 10px;" class="pathspan">
                   <a style="display: inline-block;" @click="getfilelist('/')">{{ this.project_name }} </a>
                   <el-breadcrumb separator="/" style="display: inline-block;vertical-align: middle;">
@@ -93,12 +106,12 @@
           <div class="tabs-contents">
             <div class="file-nav">
               <div class="file-nav-left">
-                <el-select v-model="branch" size="mini" placeholder="请选择">
+                <el-select v-model="branch" size="mini" placeholder="请选择分支">
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in branchOptions"
+                    :key="item.project_id"
+                    :label="item.name"
+                    :value="item.project_id">
                   </el-option>
                 </el-select>
               </div>
@@ -141,7 +154,7 @@
           <div class="file-nav-left">
             <el-select v-model="branch" size="mini" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in branchOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -198,7 +211,7 @@
         <el-button @click="editFileContent(false)">取消</el-button>
       </div>
     </template>
-    <add-version ref="create"></add-version>
+    <add-version ref="branch" v-on:getfilelist="getfilelist(ckPath)" :branch="branchOptions" :project_id="project_id"></add-version>
     <add-file ref="app" v-on:getfilelist="getfilelist(ckPath)" :project_id="project_id" :filePath="ckPath === '' ?  '/' : ckPath" :branch="branch"></add-file>
     <upload-file ref="file" v-on:getfilelist="getfilelist(ckPath)" :project_id="project_id" :path="ckPath === '' ?  '/' : ckPath" :branch="branch"></upload-file>
     <upload-zip ref="zip" v-on:getfilelist="getfilelist(ckPath)" :project_id="project_id" :path="ckPath === '' ?  '/' : ckPath" :branch="branch"></upload-zip>
@@ -210,7 +223,7 @@ import AddVersion from './addVersion' // 新建版本
 import AddFile from './AddFile' // 新建文件
 import UploadFile from './uploadFile' // 上传文件
 import UploadZip from './uploadZip' // 上传压缩包
-import { getFileList, getVersionHistory, deleteAppFile, getAppFile, putAppFile } from '@/api/script'
+import { getFileList, getVersionHistory, deleteAppFile, getAppFile, putAppFile, getBranchList } from '@/api/script'
 import { Message, MessageBox } from 'element-ui'
 import RiskLevel from '@/components/RiskLevel'
 import CodeDiff from 'vue-code-diff'
@@ -243,10 +256,7 @@ export default {
     return {
       activeName: 'file',
       levelList: null,
-      options: [{
-        value: 'master',
-        label: 'master'
-      }],
+      branchOptions: [],
       levelOptions: [{
         label: '低风险',
         value: 1
@@ -277,10 +287,10 @@ export default {
         lineWrapping: true,
         readOnly: 'nocursor', // 是否编辑
         line: true,
-        mode: 'python',
+        mode: 'python, shell',
         theme: 'default'
       },
-      branch: 'master',
+      branch: '',
       codeFileContent: '',
       codeFileName: '',
       codeFileRiskLevel: 0,
@@ -299,9 +309,9 @@ export default {
   created() {
     this.getBreadcrumb()
     this.getfilelist()
+    this.getBranch()
     this.project_id = this.$props.app_id
     this.project_name = this.$props.app_name
-    this.editFileContent(false)
   },
   computed: {
     editor() {
@@ -387,6 +397,15 @@ export default {
       this.fileLoading = false
       getVersionHistory(this.$props.app_id, params).then(response => {
         this.historyData = response
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 获取分支
+    getBranch() {
+      getBranchList(this.$props.app_id).then(response => {
+        this.branchOptions = response
+        this.branch = response[0].project_id || ''
       }).catch(error => {
         Message.error(error)
       })

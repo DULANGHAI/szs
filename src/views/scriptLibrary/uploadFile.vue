@@ -13,6 +13,7 @@
         :on-remove="handleRemove"
         :onSuccess="uploadSuccess"
         :onError="uploadError"
+        :before-upload="beforeAvatarUpload"
         :before-remove="beforeRemove"
         :file-list="fileList"
         multiple>
@@ -64,6 +65,7 @@
           label: '高风险',
           value: 3
         }],
+        beforeUpload: true,
         form: {
           name: ''
         },
@@ -82,6 +84,7 @@
         this.dialogVisible = true
         this.form = Object.assign({}, formData)
         this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
+        this.fileList = []
       },
       handleClose(done) {
         this.$confirm('确认关闭？')
@@ -95,14 +98,25 @@
         console.log('上传文件', response, file, fileList)
         this.fileList = fileList
       },
+      // 上传文件大小
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2
+        this.beforeUpload = true
+        if (!isLt2M) {
+          this.beforeUpload = false
+          this.$message.error('上传文件大小不能超过 500MB!')
+        }
+        return isLt2M
+      },
       // 移除上传文件列表
       handleRemove(file, fileList) {
-        console.log(fileList)
         this.fileList = fileList
       },
       // 移除上传文件列表
       beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${file.name}？`)
+        if (this.beforeUpload) {
+          return this.$confirm(`确定移除 ${file.name}？`)
+        }
       },
       // 上传错误
       uploadError(response, file, fileList) {

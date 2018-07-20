@@ -8,7 +8,7 @@
               <router-link :to="item.redirect||item.path">{{item.meta.title}}</router-link>
             </el-breadcrumb-item>
           </transition-group>
-          <template v-if="isSpeed === 2">
+          <template v-if="isSpeed === 1">
             <span role="presentation" class="el-breadcrumb__separator">/</span>
             <el-select v-model="ywzSelect" size="mini" placeholder="请选择" @change="ywzChange">
               <el-option
@@ -19,7 +19,7 @@
               </el-option>
             </el-select>
           </template>
-          <template v-if="isSpeed === 3">
+          <template v-if="isSpeed === 2">
             <span role="presentation" class="el-breadcrumb__separator">/</span>
             <el-select v-model="ywzSelect" size="mini" placeholder="请选择" @change="ywzChange">
               <el-option
@@ -46,15 +46,15 @@
       脚本
     </div>
     <div class="container-body-wrap" v-if="!isfile">
-      <template v-if="isSpeed === 1">
+      <!-- <template v-if="isSpeed === 1">
         <dl class="ovinfo-dl">
           <dd v-for="item in ywzList" @click="zzDetail(item.id)">
             <span>{{ item.name }}</span>
             <div>{{ item.description }}</div>
           </dd>
         </dl>
-      </template>
-      <template v-if="isSpeed === 2">
+      </template> -->
+      <template v-if="isSpeed === 1">
         <el-table
           ref="multipleTable"
           :data="zizuList"
@@ -77,7 +77,7 @@
           </el-table-column>
         </el-table>
       </template>
-      <template v-if="isSpeed === 3">
+      <template v-if="isSpeed === 2">
         <div style="text-align:right;margin-bottom:15px;">
           <el-button size="mini" @click.native="$refs.addproject.doCreate(false)">添加</el-button>
         </div>
@@ -171,7 +171,7 @@ export default {
   created() {
     this.getBreadcrumb()
     this.getYWZ()
-    this.isSpeed = 1
+    this.isSpeed = 2
   },
   methods: {
     getBreadcrumb() {
@@ -188,6 +188,7 @@ export default {
     getYWZ() {
       getRepository().then(response => {
         this.ywzList = response
+        this.zzDetail(response[0].id)
       }).catch(error => {
         Message.error(error)
       })
@@ -202,7 +203,7 @@ export default {
           this.zzSelect = response[0].id
           this.getYuyan(response[0].id)
         } else {
-          this.isSpeed = 2
+          this.isSpeed = 1
         }
         this.listLoading = false
       }).catch(error => {
@@ -217,18 +218,18 @@ export default {
     // 子组select
     zzChange(id) {
       this.getYuyan(id)
-      this.isSpeed = 3
+      this.isSpeed = 2
       this.isfile = false
     },
     // 打开子组显示
     zzDetail(id) {
-      this.isSpeed = 2
+      this.isSpeed = 1
       this.ywzChange(id)
       this.ywzSelect = id
     },
     // 打开语言组显示
     yyDetail(id) {
-      this.isSpeed = 3
+      this.isSpeed = 2
       this.getYuyan(id)
     },
     getYuyan(id) {
