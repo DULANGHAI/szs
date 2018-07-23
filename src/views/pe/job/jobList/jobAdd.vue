@@ -4,7 +4,11 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      {{$route.name}}
+      <div>{{$route.name}}</div>
+      <div>
+        <el-button type="primary" @click="submitAll">提交</el-button>
+        <el-button>重置</el-button>
+      </div>
     </div>
 
     <div class="container-body">
@@ -16,28 +20,29 @@
             <div class="flex-1 marr-20">
               <el-form ref="form" label-width="100px" size="small" label-position="left">
                 <el-form-item label="作业名">
-                  <el-input v-if="!view" v-model="form.job_name" placeholder="请输入"></el-input>
-                  <div v-if="view">{{form.job_name}}</div>
+                  <el-input v-if="!view" v-model="form.name" placeholder="请输入"></el-input>
+                  <div v-if="view">{{form.name}}</div>
                 </el-form-item>
-                <el-form-item label="备注">
-                  <el-input v-if="!view" type="textarea" v-model="form.job_description" rows="4" placeholder="请输入"></el-input>
-                  <div v-if="view">{{form.job_description}}</div>
+                <el-form-item label="描述">
+                  <el-input v-if="!view" type="textarea" v-model="form.description" rows="4" placeholder="请输入"></el-input>
+                  <div v-if="view">{{form.description}}</div>
                 </el-form-item>
                 <el-form-item label="账号">
-                  <el-select v-if="!view" v-model="form.account" placeholder="请选择">
-                    <el-option v-for="item in account_arr" :key="item" :label="item" :value="item"></el-option>
+                  <el-select v-if="!view" v-model="form.execution_account" placeholder="请选择">
+                    <el-option v-for="(item, index) in account_arr" :key="index" :label="item" :value="item"></el-option>
                   </el-select>
-                  <div v-if="view">{{form.account}}</div>
+                  <div v-if="view">{{form.execution_account}}</div>
                 </el-form-item>
                 <el-form-item label="目标IP">
-                  <el-select v-if="!view" v-model="form.job_target_ip" placeholder="请选择">
+                  <!-- <el-select v-if="!view" v-model="form.target_ip" placeholder="请选择">
                     <el-option v-for="item in ip_arr" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                  <div v-if="view">{{form.job_target_ip}}</div>
+                  </el-select> -->
+                  <treeselect v-if="!view" v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
+                  <div v-if="view">{{form.target_ip}}</div>
                 </el-form-item>
                 <el-form-item label="失败重试次数">
-                  <el-input-number v-if="!view" v-model="form.job_frequency" controls-position="right" :min="1" :precision="1"></el-input-number>
-                  <span v-if="view">{{form.job_frequency}}</span>
+                  <el-input-number v-if="!view" v-model="form.frequency" controls-position="right" :min="1" :precision="1"></el-input-number>
+                  <span v-if="view">{{form.frequency}}</span>
                   次
                 </el-form-item>
               </el-form>
@@ -45,23 +50,29 @@
             <div class="flex-1 marr-20">
               <el-form ref="form" label-width="84px" size="small" label-position="left">
                 <el-form-item label="系统类型">
-                  <el-select v-if="!view" v-model="form.job_system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
+                  <el-select v-if="!view" v-model="form.system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
                     <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
                   </el-select>
-                  <div v-if="view">{{form.job_system_type}}</div>
+                  <div v-if="view">{{form.system_type}}</div>
                 </el-form-item>
                 <el-form-item label="作业类型">
                   <el-radio-group v-if="!view" v-model="form.job_type">
-                    <el-radio label="command">普通作业</el-radio>
-                    <el-radio label="script">应用更新&发布</el-radio>
-                    <el-radio label="file">应用下载</el-radio>
-                    <el-radio label="file1">日常检查</el-radio>
+                    <el-radio label="普通作业">普通作业</el-radio>
+                    <el-radio label="应用更新&发布">应用更新&发布</el-radio>
+                    <el-radio label="应用下线">应用下线</el-radio>
+                    <el-radio label="日常检查">日常检查</el-radio>
                   </el-radio-group>
                   <div v-if="view">{{form.job_type}}</div>
                 </el-form-item>
+                <el-form-item v-if="form.job_type === '应用更新&发布' || form.job_type === '应用下线'" label="应用实例">
+                  <el-select v-if="!view" v-model="form.applications" placeholder="请选择">
+                    <el-option v-for="item in applications_arr" :key="item" :label="item" :value="item"></el-option>
+                  </el-select>
+                  <div v-if="view">{{form.applications}}</div>
+                </el-form-item>
                 <el-form-item label="启用">
-                  <el-switch v-if="!view" v-model="form.job_status"></el-switch>
-                  <div v-if="view">{{form.job_status}}</div>
+                  <el-switch v-if="!view" v-model="form.status"></el-switch>
+                  <div v-if="view">{{form.status}}</div>
                 </el-form-item>
               </el-form>
             </div>
@@ -77,9 +88,9 @@
             <svg-icon icon-class="add_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">添加作业</div>
           </div>
-          <div class="op-item" :class="{disable: conditionDisable}">
-            <svg-icon icon-class="condition_job" :style="{ transform: 'scale(1.5)' }" />
-            <div class="mart-10">条件编辑</div>
+          <div class="op-item" :class="{disable: endDisable}" @click="openEndModel">
+            <svg-icon icon-class="end_job" :style="{ transform: 'scale(1.5)' }" />
+            <div class="mart-10">结束节点</div>
           </div>
           <div class="op-item" @click="enlarge">
             <svg-icon icon-class="enlarge" :style="{ transform: 'scale(1.5)' }" />
@@ -102,61 +113,105 @@
               :data.sync="scheduling"
               :selected="selected"
               :selectNode="selectNode"
-              :forceUpdate="forceUpdate"></my-chart>
+              :selectCondition="selectCondition"></my-chart>
           </div>
         </div>
       </div>
       <!-- 配置 -->
-      <div class="block-item">
-        <div class="block-title ">配置</div>
+      <div v-if="selected.id" class="block-item">
+        <div class="block-title">{{selected.name}}的配置</div>
+        <div class="block-content">
+          <!-- 命令类型 -->
+          <command-show :data="selected"></command-show>
+        </div>
       </div>
     </div>
 
     <!-- 添加作业的model -->
     <add-job-model :show.sync="showAddModel" :addNode="addNode"></add-job-model>
+    <!-- 添加结束节点的model -->
+    <add-end-model :show.sync="showEndModel" :addNode="addNode"></add-end-model>
     <!-- 条件编辑 -->
-
+    <condition-model :data="conditionNode" :show.sync="showConditionModel" :addCondition="addCondition"></condition-model>
   </div>
 </template>
 
 <script>
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import MyChart from './components/MyChart'
 import AddJobModel from './components/AddJobModel'
+import AddEndModel from './components/AddEndModel'
+import ConditionModel from './components/ConditionModel'
+import CommandShow from './components/CommandShow'
 
-import { getLanguageApi } from '@/api/pe/taskManage/taskList'
+import { getLanguageApi, createJobApi } from '@/api/pe/jobManage/jobList'
 
 export default {
   props: ['id', 'view'],
   components: {
+    Treeselect,
     Breadcrumb,
     RiskLevel,
     ScriptOption,
     MyChart,
-    AddJobModel
+    AddJobModel,
+    AddEndModel,
+    ConditionModel,
+    CommandShow
   },
   data() {
     return {
+      options: [
+        {
+          id: 'a',
+          label: 'a',
+          children: [
+            {
+              id: 'aa',
+              label: 'aa'
+            },
+            {
+              id: 'ab',
+              label: 'ab'
+            }
+          ]
+        },
+        {
+          id: 'b',
+          label: 'b'
+        },
+        {
+          id: 'c',
+          label: 'c'
+        }
+      ],
       form: {
-        job_name: '',
-        job_description: '',
-        account: '',
-        job_target_ip: '',
-        job_frequency: 1,
-        job_system_type: '',
-        job_type: '',
-        job_status: false
+        name: '',
+        description: '',
+        execution_account: '',
+        target_ip: null,
+        frequency: 1,
+        system_type: '',
+        job_type: '普通作业',
+        applications: '',
+        status: false
       },
-      account_arr: [],
+      account_arr: ['account1', 'account2'],
       ip_arr: [],
+      applications_arr: [],
       systemAndLang: {},
       scheduling: {},
       selected: {}, // 选中的节点
+      conditionNode: {}, // 选中的条件节点
       uniqueId: +new Date(),
       scale: 10,
-      showAddModel: false
+      showAddModel: false,
+      showEndModel: false,
+      showConditionModel: false
     }
   },
   computed: {
@@ -167,15 +222,19 @@ export default {
         return false
       }
     },
-    conditionDisable() {
-      if (this.selected.id === undefined || this.selected.node_level === 0) {
-        return true
-      } else {
-        return false
+    endDisable() {
+      if (this.uniqueId) {
+        if (this.selected.id === undefined ||
+        (this.selected.next && this.selected.next.length !== 0) ||
+        (this.selected.type.indexOf('end_') === 0)) {
+          return true
+        } else {
+          return false
+        }
       }
     },
     removeDisable() {
-      if (this.selected.id === undefined) {
+      if (this.selected.type === undefined) {
         return true
       } else {
         return false
@@ -212,7 +271,26 @@ export default {
     },
     selectNode(obj) {
       this.selected = obj
-      // this.selected = Object.assign({}, this.selected, obj)
+    },
+    selectCondition(obj) {
+      this.conditionNode = obj
+      this.showConditionModel = true
+    },
+    addCondition() {
+      this.doCondition(this.scheduling, this.conditionNode)
+      this.conditionNode = {}
+      this.uniqueId = +new Date()
+    },
+    doCondition(scheduling, conditionNode) {
+      for (let i = 0; i < scheduling.next.length; i++) {
+        if (scheduling.next[i].id === conditionNode.id && scheduling.next[i].timestr === conditionNode.timestr) {
+          scheduling.next[i] = conditionNode
+          break
+        } else if (scheduling.next[i].next) {
+          scheduling.next[i] = this.doCondition(scheduling.next[i], conditionNode)
+        }
+      }
+      return scheduling
     },
     addNode(item) {
       item.timestr = +new Date()
@@ -248,6 +326,8 @@ export default {
     removeNode() {
       if (this.scheduling.id === this.selected.id && this.scheduling.timestr === this.selected.timestr) {
         this.scheduling = {}
+      } else if (this.scheduling.id === undefined && this.selected.id === undefined && this.scheduling.timestr === this.selected.timestr) {
+        this.scheduling = {}
       } else {
         // 递归查找减掉数据
         const temp = this.doRemove(this.scheduling, this.selected)
@@ -270,11 +350,44 @@ export default {
 
       return scheduling
     },
-    forceUpdate() {
-      this.scheduling = Object.assign({}, this.scheduling)
-    },
     openJobModel() {
       this.showAddModel = true
+    },
+    openEndModel() {
+      this.showEndModel = true
+    },
+    /**
+     * 提交操作
+     */
+    submitAll() {
+      const job_task_id_list = []
+      this.getTaskIdList(this.scheduling, job_task_id_list)
+      const data = {
+        name: this.form.name,
+        description: this.form.description,
+        execution_account: this.form.execution_account,
+        target_ip: this.form.target_ip,
+        frequency: this.form.frequency,
+        system_type: this.form.system_type,
+        job_type: this.form.job_type,
+        applications: this.form.applications,
+        status: this.form.status,
+        scheduling: this.scheduling,
+        job_task_id_list: job_task_id_list
+      }
+      createJobApi(data).then(res => {
+
+      })
+    },
+    getTaskIdList(data, res) {
+      if (data.id && res.indexOf(data.id) === -1) {
+        res.push(data.id)
+        if (data.next && data.next.length) {
+          for (let i = 0; i < data.next.length; i++) {
+            this.getTaskIdList(data.next[i], res)
+          }
+        }
+      }
     }
   }
 }
@@ -286,6 +399,11 @@ export default {
   & /deep/ .el-select {
     width: 100%;
   }
+}
+.container-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 22px 30px;
 }
 .block-item {
   border-radius: 4px;

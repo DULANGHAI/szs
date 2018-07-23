@@ -15,22 +15,23 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="作业名">
-              <el-select v-model="form.job_name" placeholder="请选择">
-                <el-option v-for="(item, index) in job_name_arr" :key="index" :label="item.name" :value="item.value"></el-option>
-              </el-select>
+              <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="系统">
               <el-select v-model="form.system_type" placeholder="请选择">
-                <el-option v-for="(item, index) in system_type_arr" :key="index" :label="item.name" :value="item.value"></el-option>
+                <el-option v-for="(item, index) in Object.keys(systemAndLang)" :key="index" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="作业类型">
-              <el-select v-model="form.job_type" placeholder="请选择">
-                <el-option v-for="(item, index) in job_type_arr" :key="index" :label="item.name" :value="item.value"></el-option>
+              <el-select v-model="form.type" placeholder="请选择">
+                <el-option label="普通作业" value="普通作业"></el-option>
+                <el-option label="应用更新&发布" value="应用更新&发布"></el-option>
+                <el-option label="应用下线" value="应用下线"></el-option>
+                <el-option label="日常检查" value="日常检查"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -43,7 +44,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="创建人">
-              <el-select v-model="form.job_creator" placeholder="请选择">
+              <el-select v-model="form.creator" placeholder="请选择">
                 <el-option v-for="(item, index) in job_creator_arr" :key="index" :label="item.name" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
@@ -121,6 +122,8 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 
+import { getLanguageApi, getJobListApi } from '@/api/pe/jobManage/jobList'
+
 export default {
   components: {
     Breadcrumb,
@@ -129,18 +132,16 @@ export default {
   data() {
     return {
       form: {
-        job_name: '',
+        name: '',
         system_type: '',
-        job_type: '',
-        job_creator: '',
-        job_start_time: '',
-        job_end_time: '',
+        type: '',
+        creator: '',
+        start_time: '',
+        end_time: '',
         page: 1,
         per_page: 10
       },
-      job_name_arr: [],
-      system_type_arr: [],
-      job_type_arr: [],
+      systemAndLang: {},
       job_creator_arr: [],
       daterange: '',
       multipleSelection: [],
@@ -185,7 +186,11 @@ export default {
     }
   },
   created() {
-
+    Promise.all([getLanguageApi(), getJobListApi(this.form)]).then(res => {
+      this.systemAndLang = res[0]
+      this.data = res[1].items
+      this.total = res[1].total
+    })
   },
   methods: {
     rowStyle({ row, rowIndex }) {
@@ -211,14 +216,32 @@ export default {
       this.getListData(val)
     },
     getListData(index) {
-      // const params = this.form
-      // if (index) {
-      //   params.page = index
-      // }
-      // getListApi(params).then(res => {
-      //   this.data = res.items
-      //   this.total = res.total
-      // })
+      const params = this.form
+      if (index) {
+        params.page = index
+      }
+      getJobListApi(params).then(res => {
+        this.data = res.items
+        this.total = res.total
+      })
+    },
+    search() {
+      this.getListData(1)
+    },
+    refresh() {
+      this.form = {
+        name: '',
+        system_type: '',
+        type: '',
+        creator: '',
+        start_time: '',
+        end_time: '',
+        page: 1,
+        per_page: 10
+      }
+      this.daterange = ''
+      this.multipleSelection = []
+      this.search()
     },
     goAdd() {
       this.$router.push({
