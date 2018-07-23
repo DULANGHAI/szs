@@ -99,6 +99,15 @@ export function deleteAppFile(project_id, ids) {
   })
 }
 
+// 下载文件
+export function DownAppFile(project_id, params) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/files/download',
+    method: 'get',
+    params
+  })
+}
+
 // 上传文件action
 export function uploadFileAction(project_id) {
   return request({
@@ -116,3 +125,19 @@ export function uploadAppFile(project_id, params) {
   })
 }
 
+// 获取版本列表
+export function getBranchList(project_id) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/branches',
+    method: 'get'
+  })
+}
+
+// 新建版本
+export function postBranch(project_id, params) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/branches',
+    method: 'post',
+    data: params
+  })
+}
