@@ -25,7 +25,6 @@ export default {
       type: Object
     },
     selected: Object,
-    forceUpdate: Function,
     selectNode: Function
   },
   components: {

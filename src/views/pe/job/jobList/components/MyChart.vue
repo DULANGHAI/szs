@@ -5,14 +5,13 @@
         <!-- 竖线 -->
         <div class="v-line"></div>
         <!-- 条件按钮 -->
-        <div class="cmd">cmd</div>
+        <div class="cmd" :class="{'active': data.condition}" @click="handleConditionClick">cmd</div>
       </div>
       
       <!-- 当前节点 -->
       <div>
         <command-option v-if="data.type === 'command'" :data.sync="data" :uniqueId="uniqueId"
           :selected="selected"
-          :forceUpdate="forceUpdate"
           :selectNode="selectNode"></command-option>
       </div>
       <!-- 横线 -->
@@ -27,8 +26,8 @@
             :selected="selected"
             :bro="data.next.length"
             :index="index"
-            :forceUpdate="forceUpdate"
-            :selectNode="selectNode"></my-chart>
+            :selectNode="selectNode"
+            :selectCondition="selectCondition"></my-chart>
         </div>
       </div>
     </div>
@@ -55,8 +54,8 @@ export default {
       default: 0
     },
     index: Number,
-    forceUpdate: Function,
-    selectNode: Function
+    selectNode: Function,
+    selectCondition: Function
   },
   methods: {
     getClass() {
@@ -71,6 +70,9 @@ export default {
       } else {
         return ''
       }
+    },
+    handleConditionClick() {
+      this.selectCondition(this.data)
     }
   }
 }
@@ -137,11 +139,15 @@ export default {
   height: 24px;
   line-height: 24px;
   text-align: center;
-  background: #E6F7FF;
-  border: 1px solid #91D5FF;
+  background: #ffffff;
+  border: 1px solid #DFE1E6;
   border-radius: 4px;
   z-index: 1;
   cursor: pointer;
+}
+.active {
+  background: #E6F7FF;
+  border: 1px solid #91D5FF;
 }
 .relative {
   position: relative;
