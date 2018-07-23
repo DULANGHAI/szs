@@ -29,7 +29,7 @@
                 </el-form-item>
                 <el-form-item label="账号">
                   <el-select v-if="!view" v-model="form.execution_account" placeholder="请选择">
-                    <el-option v-for="item in account_arr" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    <el-option v-for="(item, index) in account_arr" :key="index" :label="item" :value="item"></el-option>
                   </el-select>
                   <div v-if="view">{{form.execution_account}}</div>
                 </el-form-item>
@@ -88,10 +88,10 @@
             <svg-icon icon-class="add_job" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">添加作业</div>
           </div>
-          <!-- <div class="op-item" :class="{disable: conditionDisable}">
-            <svg-icon icon-class="condition_job" :style="{ transform: 'scale(1.5)' }" />
-            <div class="mart-10">条件编辑</div>
-          </div> -->
+          <div class="op-item" :class="{disable: endDisable}" @click="openEndModel">
+            <svg-icon icon-class="end_job" :style="{ transform: 'scale(1.5)' }" />
+            <div class="mart-10">结束节点</div>
+          </div>
           <div class="op-item" @click="enlarge">
             <svg-icon icon-class="enlarge" :style="{ transform: 'scale(1.5)' }" />
             <div class="mart-10">放大</div>
@@ -129,6 +129,8 @@
 
     <!-- 添加作业的model -->
     <add-job-model :show.sync="showAddModel" :addNode="addNode"></add-job-model>
+    <!-- 添加结束节点的model -->
+    <add-end-model :show.sync="showEndModel" :addNode="addNode"></add-end-model>
     <!-- 条件编辑 -->
     <condition-model :data="conditionNode" :show.sync="showConditionModel" :addCondition="addCondition"></condition-model>
   </div>
@@ -142,6 +144,7 @@ import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import MyChart from './components/MyChart'
 import AddJobModel from './components/AddJobModel'
+import AddEndModel from './components/AddEndModel'
 import ConditionModel from './components/ConditionModel'
 import CommandShow from './components/CommandShow'
 
@@ -156,6 +159,7 @@ export default {
     ScriptOption,
     MyChart,
     AddJobModel,
+    AddEndModel,
     ConditionModel,
     CommandShow
   },
@@ -196,16 +200,7 @@ export default {
         applications: '',
         status: false
       },
-      account_arr: [
-        {
-          label: '账号一',
-          value: 1
-        },
-        {
-          label: '账号二',
-          value: 2
-        }
-      ],
+      account_arr: ['account1', 'account2'],
       ip_arr: [],
       applications_arr: [],
       systemAndLang: {},
@@ -215,6 +210,7 @@ export default {
       uniqueId: +new Date(),
       scale: 10,
       showAddModel: false,
+      showEndModel: false,
       showConditionModel: false
     }
   },
@@ -226,15 +222,19 @@ export default {
         return false
       }
     },
-    conditionDisable() {
-      if (this.conditionNode.id === undefined) {
-        return true
-      } else {
-        return false
+    endDisable() {
+      if (this.uniqueId) {
+        if (this.selected.id === undefined ||
+        (this.selected.next && this.selected.next.length !== 0) ||
+        (this.selected.type.indexOf('end_') === 0)) {
+          return true
+        } else {
+          return false
+        }
       }
     },
     removeDisable() {
-      if (this.selected.id === undefined) {
+      if (this.selected.type === undefined) {
         return true
       } else {
         return false
@@ -326,6 +326,8 @@ export default {
     removeNode() {
       if (this.scheduling.id === this.selected.id && this.scheduling.timestr === this.selected.timestr) {
         this.scheduling = {}
+      } else if (this.scheduling.id === undefined && this.selected.id === undefined && this.scheduling.timestr === this.selected.timestr) {
+        this.scheduling = {}
       } else {
         // 递归查找减掉数据
         const temp = this.doRemove(this.scheduling, this.selected)
@@ -350,6 +352,9 @@ export default {
     },
     openJobModel() {
       this.showAddModel = true
+    },
+    openEndModel() {
+      this.showEndModel = true
     },
     /**
      * 提交操作

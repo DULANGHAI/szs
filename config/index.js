@@ -16,8 +16,8 @@ module.exports = {
         changeOrigin: true
       },
       '/v1': {
-        target: 'http://10.111.2.41:5000',
-        // target: 'http://172.16.139.74:5000',
+        // target: 'http://10.111.2.41:5000',
+        target: 'http://172.16.139.74:5000',
         changeOrigin: true
       }
     },

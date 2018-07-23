@@ -15,7 +15,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="作业名">
-              <el-input v-model="form.job_name" placeholder="请输入"></el-input>
+              <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="作业类型">
-              <el-select v-model="form.job_type" placeholder="请选择">
+              <el-select v-model="form.type" placeholder="请选择">
                 <el-option label="普通作业" value="普通作业"></el-option>
                 <el-option label="应用更新&发布" value="应用更新&发布"></el-option>
                 <el-option label="应用下线" value="应用下线"></el-option>
@@ -44,7 +44,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="创建人">
-              <el-select v-model="form.job_creator" placeholder="请选择">
+              <el-select v-model="form.creator" placeholder="请选择">
                 <el-option v-for="(item, index) in job_creator_arr" :key="index" :label="item.name" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
@@ -132,12 +132,12 @@ export default {
   data() {
     return {
       form: {
-        job_name: '',
+        name: '',
         system_type: '',
-        job_type: '',
-        job_creator: '',
-        job_start_time: '',
-        job_end_time: '',
+        type: '',
+        creator: '',
+        start_time: '',
+        end_time: '',
         page: 1,
         per_page: 10
       },
@@ -230,12 +230,12 @@ export default {
     },
     refresh() {
       this.form = {
-        job_name: '',
+        name: '',
         system_type: '',
-        job_type: '',
-        job_creator: '',
-        job_start_time: '',
-        job_end_time: '',
+        type: '',
+        creator: '',
+        start_time: '',
+        end_time: '',
         page: 1,
         per_page: 10
       }

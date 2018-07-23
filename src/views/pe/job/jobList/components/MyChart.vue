@@ -13,6 +13,11 @@
         <command-option v-if="data.type === 'command'" :data.sync="data" :uniqueId="uniqueId"
           :selected="selected"
           :selectNode="selectNode"></command-option>
+        <end-option v-else-if="data.type.indexOf('end_') === 0"
+          :data.sync="data"
+          :uniqueId="uniqueId"
+          :selected="selected"
+          :selectNode="selectNode"></end-option>
       </div>
       <!-- 横线 -->
       <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
@@ -36,11 +41,13 @@
 
 <script>
 import CommandOption from './CommandOption'
+import EndOption from './EndOption'
 
 export default {
   name: 'my-chart',
   components: {
-    CommandOption
+    CommandOption,
+    EndOption
   },
   props: {
     uniqueId: Number,
