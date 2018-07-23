@@ -9,15 +9,16 @@
             </el-breadcrumb-item>
           </transition-group>
           <span role="presentation" class="el-breadcrumb__separator">/</span>
-          <el-select v-model="ywzSelect" size="mini" placeholder="请选择" @change="ywzChange">
-            <el-option
-              v-for="item in ywzList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
+          <el-dropdown @command="ywzChange" trigger="click">
+            <el-button size="mini">
+              {{ywzSelectName}}<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in ywzList" :command="item.id">{{item.name}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-breadcrumb>
+        
       </div>
     </template>
     <div class="container-title">
@@ -101,11 +102,13 @@ export default {
       zizuList: [], // 子组list =》 子组列表
       yyList: [], // 语言list =》 列表
       ywzSelect: '', // 面包 =》 业务组select
+      ywzSelectName: '',
       zzSelect: '',
       listLoading: true,
       yySelection: [],
       app_id: '',
-      app_name: ''
+      app_name: '',
+      command_name: ''
     }
   },
   watch: {
@@ -159,8 +162,14 @@ export default {
     },
     // 选择业务组select
     ywzChange(id) {
+      this.ywzSelect = id
       this.getZizu(id)
       this.isfile = false
+      for (var item in this.ywzList) {
+        if (this.ywzList[item].id === id) {
+          this.ywzSelectName = this.ywzList[item].name
+        }
+      }
     },
     // 子组select
     zzChange(id) {
@@ -172,12 +181,21 @@ export default {
     zzDetail(id) {
       this.isSpeed = 2
       this.ywzChange(id)
+      for (var item in this.ywzList) {
+        if (this.ywzList[item].id === id) {
+          this.ywzSelect = this.ywzList[item].name
+        }
+      }
       this.ywzSelect = id
     },
     // 打开语言组显示
     yyDetail(id) {
       this.isSpeed = 2
       this.getYuyan(id)
+    },
+    // 选择
+    handleCommand(command) {
+      this.command_name = command
     },
     getYuyan(id) {
       this.yyList = []

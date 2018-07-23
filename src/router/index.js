@@ -153,9 +153,9 @@ export const constantRouterMap = [
         meta: { title: '版本库', icon: 'banben' },
         children: [
           {
-            path: 'example1',
-            name: '风险命令库',
-            component: () => import('@/views/scriptLibrary/index'),
+            path: 'risk',
+            name: 'risk',
+            component: () => import('@/views/risk/index'),
             meta: { title: '风险命令库' }
           },
           {

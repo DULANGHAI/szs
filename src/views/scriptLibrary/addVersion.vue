@@ -4,47 +4,77 @@
     :visible.sync="dialogVisible"
     width="35%"
     class="pb-dialog">
-    <el-form :model="form">
-      <el-form-item label="活动名称">
-        <el-input v-model="form.name" auto-complete="off" placeholder="请输入"></el-input>
+    <el-form :model="form" :rules="rules" ref="ruleForm">
+      <el-form-item label="版本名称" prop="name">
+        <el-input v-model="form.name" auto-complete="off" placeholder="请输入版本名称"></el-input>
       </el-form-item>
-      <el-form-item label="活动区域">
-        <el-select v-model="form.version" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+      <el-form-item label="选择版本复制（选填）">
+        <el-select v-model="form.branch" placeholder="请选择版本">
+          <el-option
+            v-for="item in branchOptions"
+            :key="item.project_id"
+            :label="item.name"
+            :value="item.name">
+          </el-option>
         </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="doSubmit()">确 定</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
+  import { postBranch } from '@/api/script'
+  import { Message } from 'element-ui'
+
+  const formData = {
+    'name': '',
+    'branch': ''
+  }
   export default {
+    props: ['branch', 'project_id'],
     data() {
       return {
+        form: JSON.parse(JSON.stringify(formData)),
         dialogVisible: false,
         versionList: [],
-        form: {
-          name: '',
-          version: ''
+        branchOptions: [],
+        rules: {
+          name: [
+            { required: true, message: '名称不能为空', trigger: 'blur' }
+          ]
         }
       }
     },
     methods: {
       doCreate(flag, item) {
         this.dialogVisible = true
-        console.log(333)
+        this.branchOptions = this.$props.branch
+        this.form = Object.assign({}, formData)
+        this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
       },
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done()
-          })
-          .catch(_ => {})
+      doSubmit() {
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+            var successCallBack = () => {
+              this.$emit('getfilelist')
+              Message.success('添加成功！')
+              this.dialogVisible = false
+            }
+            var params = {
+              'name': this.form.name,
+              'copy_from': this.form.branch
+            }
+            postBranch(this.$props.project_id, params).then(response => {
+              successCallBack()
+            }).catch(error => {
+              Message.error(error)
+            })
+          }
+        })
       }
     }
   }
