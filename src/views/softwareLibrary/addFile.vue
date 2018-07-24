@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    :title="is_directory ? '新建文件夹' : '新建文件' "
+    :title="type ? '新建文件夹' : '新建文件' "
     :visible.sync="dialogVisible"
     width="35%"
     class="pb-dialog">
     <el-form :model="form" :rules="rules" ref="ruleForm">
-      <el-form-item :label="is_directory ? '文件夹名称' : '文件名称' " prop="name">
+      <el-form-item :label="type ? '文件夹名称' : '文件名称' " prop="name">
         <el-input v-model="form.name" auto-complete="off" placeholder="请输入"></el-input>
       </el-form-item>
     </el-form>
@@ -29,7 +29,7 @@
       return {
         dialogVisible: false,
         versionList: [],
-        is_directory: false,
+        type: false,
         form: JSON.parse(JSON.stringify(formData)),
         isEdit: false,
         rules: {
@@ -44,7 +44,7 @@
         this.dialogVisible = true
         this.form = Object.assign({}, formData)
         this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
-        this.is_directory = directory
+        this.type = directory
         this.isEdit = flag
         if (flag) {
           this.form.name = item.name
@@ -61,7 +61,7 @@
             if (this.isEdit) {
               const params = {
                 'path': this.$props.filePath,
-                'is_directory': this.is_directory,
+                'type': this.type,
                 'name': this.form.name,
                 'branch': this.$props.branch
               }
@@ -73,7 +73,7 @@
             } else {
               const params = {
                 'path': this.$props.filePath,
-                'is_directory': this.is_directory,
+                'type': this.type,
                 'name': this.form.name,
                 'branch': this.$props.branch
               }

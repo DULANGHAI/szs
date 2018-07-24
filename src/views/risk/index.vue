@@ -41,7 +41,7 @@
               <el-form-item label="创建人">
                 <el-autocomplete
                   v-model="form.creator"
-                  :fetch-suggestions="querySearchAsync"
+                  :fetch-suggestions="creatorAutoSearch"
                   placeholder="请输入创建人"
                   @select="handleSelect"
                 ></el-autocomplete>
@@ -51,7 +51,7 @@
               <el-form-item label="命令">
                 <el-autocomplete
                   v-model="form.name"
-                  :fetch-suggestions="querySearchAsync"
+                  :fetch-suggestions="nameAutoSearch"
                   placeholder="请输入命令"
                   @select="handleSelect"
                 ></el-autocomplete>
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getRiskList, deleteRisk } from '@/api/resouce/versionLibrary/risk'
+import { getRiskList, deleteRisk, searchRisk } from '@/api/resouce/versionLibrary/risk'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message, MessageBox } from 'element-ui'
@@ -135,12 +135,9 @@ import AddRisk from './addRisk' // 新建风险命令
 
 const formData = {
   'name': '',
-  'datatime': [],
-  'user': '',
-  'target_system': ''
+  'datatime': []
 }
 export default {
-  name: 'ScriptLibrary',
   components: {
     Breadcrumb,
     RiskLevel,
@@ -251,19 +248,41 @@ export default {
         })
       }).catch(() => { })
     },
-    querySearchAsync(queryString, cb) {
-      var restaurants = this.restaurants
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants
-
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        cb(results)
-      }, 3000 * Math.random())
-    },
-    createStateFilter(queryString) {
-      return (state) => {
-        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+    creatorAutoSearch(queryString, cb) {
+      const params = {
+        'creator': queryString
       }
+      var list = []
+      searchRisk(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.creator
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    nameAutoSearch(queryString, cb) {
+      const params = {
+        'name': queryString
+      }
+      var list = []
+      searchRisk(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.name
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    unique(arr) {
+      const res = new Map()
+      return arr.filter((arr) => !res.has(arr.value) && res.set(arr.value, 1))
     },
     // 选择展示页数
     handleSizeChange(val) {

@@ -37,3 +37,12 @@ export function deleteRisk(ids) {
     }
   })
 }
+
+// 风险=》搜索 创建人 命令
+export function searchRisk(params) {
+  return request({
+    url: '/v1/repository/risk/search',
+    method: 'get',
+    params
+  })
+}

@@ -37,3 +37,13 @@ export function deleteWhite(ids) {
     }
   })
 }
+
+// 白名单=》搜索 创建人 命令
+export function searchWhite(params) {
+  return request({
+    url: '/v1/repository/whitelist/search',
+    method: 'get',
+    params
+  })
+}
+

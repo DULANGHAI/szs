@@ -48,7 +48,7 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-button size="mini" :disabled="is_sltmount" @click.native="$refs.app.doCreate(true, multipleSelection[0].is_directory, multipleSelection[0])">编辑</el-button>
+                <el-button size="mini" :disabled="is_sltmount" @click.native="$refs.app.doCreate(true, multipleSelection[0].type, multipleSelection[0])">编辑</el-button>
                 <el-dropdown trigger="click">
                   <span class="el-dropdown-link">
                     <el-button size="mini">上传</el-button>
@@ -80,7 +80,7 @@
               </el-table-column>
               <el-table-column
                 label="文件名">
-                <template slot-scope="scope"><el-button type="text" size="small" @click="isfiletype(scope.row.is_directory, scope.row.full_path)"> <svg-icon :icon-class="scope.row.is_directory ? 'wenjianjia' : 'wenjian'" /> {{ scope.row.name }}</el-button></template>
+                <template slot-scope="scope"><el-button type="text" size="small" @click="isfiletype(scope.row.type, scope.row.full_path)"> <svg-icon :icon-class="scope.row.type ? 'wenjianjia' : 'wenjian'" /> {{ scope.row.name }}</el-button></template>
               </el-table-column>
               <el-table-column
                 prop="comment"
