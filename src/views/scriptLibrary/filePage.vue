@@ -6,7 +6,7 @@
           <div class="tabs-contents" style="position:relative">
             <div class="file-nav">
               <div class="file-nav-left">
-                <el-select v-model="branch" size="mini" placeholder="请选择">
+                <el-select v-model="branch" filterable size="mini" placeholder="请选择">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -125,7 +125,7 @@
                 min-width="30%"
                 show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <el-button type="text" size="small"><span class="text-yc" :title="scope.row.id">{{ scope.row.id}}</span></el-button>
+                  <el-button type="text" size="small"><span class="text-yc" show-overflow-tooltip :title="scope.row.id">{{ scope.row.id}}</span></el-button>
                   <el-button type="text" size="small">复制</el-button>
                   <el-button type="text" size="small">浏览文件</el-button>
                 </template>
@@ -248,13 +248,13 @@ export default {
         label: 'master'
       }],
       levelOptions: [{
-        label: '低风险',
+        label: '低危',
         value: 1
       }, {
-        label: '中风险',
+        label: '中危',
         value: 2
       }, {
-        label: '高风险',
+        label: '高危',
         value: 3
       }],
       editForm: JSON.parse(JSON.stringify(formData)),

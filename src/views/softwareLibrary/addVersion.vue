@@ -12,9 +12,8 @@
         <el-select v-model="form.branch" placeholder="请选择版本">
           <el-option
             v-for="item in branchOptions"
-            :key="item.project_id"
             :label="item.name"
-            :value="item.project_id">
+            :value="item.name">
           </el-option>
         </el-select>
       </el-form-item>
@@ -59,8 +58,8 @@
       doSubmit() {
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            var successCallBack = () => {
-              this.$emit('getfilelist')
+            var successCallBack = (name) => {
+              this.$emit('getfilelist', name)
               Message.success('添加成功！')
               this.dialogVisible = false
             }
@@ -69,7 +68,7 @@
               'copy_from': this.form.branch
             }
             postBranch(this.$props.project_id, params).then(response => {
-              successCallBack()
+              successCallBack(response.name)
             }).catch(error => {
               Message.error(error)
             })

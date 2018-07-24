@@ -152,11 +152,18 @@ dl, dd, p {
     color:#409eff
   }
 }
-
 .container-body-wrap {
   .el-form-item__content{
     overflow: hidden;
   }
 }
-
+.list-paging{
+  margin-top: 20px;
+  text-align: right;
+}
+.risk-body {
+  .el-range-separator{
+    width: 25px;
+  }
+}
 

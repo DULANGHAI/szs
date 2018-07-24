@@ -133,6 +133,17 @@ export function getBranchList(project_id) {
   })
 }
 
+// 删除版本
+export function deleteBranch(project_id, name) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/branch',
+    method: 'delete',
+    data: {
+      name: name
+    }
+  })
+}
+
 // 新建版本
 export function postBranch(project_id, params) {
   return request({

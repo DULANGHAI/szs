@@ -4,7 +4,7 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      命令白名单
+      风险命令库
     </div>
     <div class="container-body-wrap risk-body">
       <template>
@@ -14,7 +14,7 @@
           label-width="70px"
           label-position="right">
           <el-row>
-            <el-col :span="10">
+            <el-col :span="9">
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="form.datatime"
@@ -24,6 +24,17 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期">
                 </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5">
+              <el-form-item label="风险等级">
+                <el-select v-model="form.risk_level" placeholder="请选择版本">
+                  <el-option
+                    v-for="item in levelOptions"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="5">
@@ -46,17 +57,17 @@
                 ></el-autocomplete>
               </el-form-item>
             </el-col>
-            <el-col :span="4" style="text-align:right">
-              <el-button size="small" type="primary" @click.native="getList">查询</el-button>
-              <el-button size="small" @click.native="searchReset">重置</el-button>
-            </el-col>
           </el-row>
         </el-form>
         <div class="file-nav">
-          <div class="file-nav-right">
-            <el-button size="small" @click.native="$refs.app.doCreate(false)">添加命令白名单</el-button>
+          <div class="file-nav-left">
+            <el-button size="small" @click.native="$refs.app.doCreate(false)">添加风险命令</el-button>
             <el-button size="small" :disabled="is_sltmount" @click.native="$refs.app.doCreate(true, multipleSelection[0])">编辑</el-button>
             <el-button size="small" :disabled="is_dltmount" @click.native="FileDelete(SelectionArray)">删除</el-button>
+          </div>
+          <div class="file-nav-right">
+            <el-button size="small" type="primary" @click.native="getList">查询</el-button>
+            <el-button size="small" @click.native="searchReset">重置</el-button>
           </div>
         </div>
       </template>
@@ -82,6 +93,12 @@
             label="命令">
           </el-table-column>
           <el-table-column
+            label="风险等级">
+            <template slot-scope="scope">
+              <risk-level :level="scope.row.risk_level"></risk-level>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="comment"
             label="备注">
           </el-table-column>
@@ -93,6 +110,7 @@
       </template>
       <div class="list-paging">
         <el-pagination
+          v-if="this.totalPage > 0"
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -109,11 +127,11 @@
 </template>
 
 <script>
-import { getWhiteList, deleteWhite } from '@/api/resouce/versionLibrary/whitelist'
+import { getRiskList, deleteRisk } from '@/api/resouce/versionLibrary/risk'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message, MessageBox } from 'element-ui'
-import AddRisk from './addWhiteList' // 新建风险命令
+import AddRisk from './addRisk' // 新建风险命令
 
 const formData = {
   'name': '',
@@ -122,6 +140,7 @@ const formData = {
   'target_system': ''
 }
 export default {
+  name: 'ScriptLibrary',
   components: {
     Breadcrumb,
     RiskLevel,
@@ -152,6 +171,31 @@ export default {
       totalPage: 0, // list总数
       creator: '',
       timeout: null,
+      pickerOptions1: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
       listData: [],
       form: JSON.parse(JSON.stringify(formData))
     }
@@ -177,13 +221,14 @@ export default {
       const params = {
         'page': this.currentPage,
         'per_page': this.pageSizes || 10,
+        'risk_level': this.form.risk_level,
         'end_time': this.form.datatime[1] || null,
         'start_time': this.form.datatime[0] || null,
         'name': this.form.name,
         'creator': this.form.creator
       }
       this.listLoading = true
-      getWhiteList(params).then(response => {
+      getRiskList(params).then(response => {
         this.listData = response.items
         this.listLoading = false
         this.totalPage = response.total
@@ -197,8 +242,8 @@ export default {
     },
     // 删除文件
     FileDelete(id) {
-      MessageBox.confirm('此操作将永久删除该命令，是否继续', '删除命令白名单', { type: 'error' }).then(() => {
-        deleteWhite(id).then(response => {
+      MessageBox.confirm('此操作将永久删除该命令，是否继续', '删除风险命令', { type: 'error' }).then(() => {
+        deleteRisk(id).then(response => {
           this.getList()
           Message.success('删除成功')
         }).catch(error => {
