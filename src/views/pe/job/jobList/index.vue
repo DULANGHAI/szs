@@ -28,10 +28,7 @@
           <el-col :span="6">
             <el-form-item label="作业类型">
               <el-select v-model="form.type" placeholder="请选择">
-                <el-option label="普通作业" value="普通作业"></el-option>
-                <el-option label="应用更新&发布" value="应用更新&发布"></el-option>
-                <el-option label="应用下线" value="应用下线"></el-option>
-                <el-option label="日常检查" value="日常检查"></el-option>
+                <el-option v-for="(item, index) in Object.keys(job_type_map)" :key="index" :label="job_type_map[item]" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -69,9 +66,9 @@
       <div class="toolbar">
         <el-button size="small" type="primary" icon="el-icon-plus" plain @click="goAdd">添加</el-button>
         <div>
-          <el-button size="small" plain :disabled="multipleStart">启用</el-button>
-          <el-button size="small" plain :disabled="multipleStop">停用</el-button>
-          <el-button size="small" type="danger" plain :disabled="multipleDelete">删除</el-button>
+          <el-button size="small" plain :disabled="multipleStart" @click="handleMultipleStart">启用</el-button>
+          <el-button size="small" plain :disabled="multipleStop" @click="handleMultipleStop">停用</el-button>
+          <el-button size="small" type="danger" plain :disabled="multipleDelete" @click="handleMultipleDelete">删除</el-button>
         </div>
       </div>
 
@@ -89,7 +86,7 @@
           <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="updated_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
-          <el-table-column prop="job_type" label="作业类型"></el-table-column>
+          <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
           <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
@@ -122,7 +119,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 
-import { getLanguageApi, getJobListApi } from '@/api/pe/jobManage/jobList'
+import { getLanguageApi, getJobListApi, changeJobStatusApi, deleteJobApi } from '@/api/pe/jobManage/jobList'
 
 export default {
   components: {
@@ -130,6 +127,12 @@ export default {
     RiskLevel
   },
   data() {
+    this.job_type_map = {
+      ordinary: '普通作业',
+      update: '应用更新&发布',
+      quit: '应用下线',
+      inspection: '日常检查'
+    }
     return {
       form: {
         name: '',
@@ -203,6 +206,9 @@ export default {
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
+    formatterJobType(row) {
+      return this.job_type_map[row.job_type]
+    },
     formatterEnable(row) {
       if (row.status) {
         return '启用'
@@ -256,6 +262,84 @@ export default {
     goView(id) {
       this.$router.push({
         path: `/pe/jobManage/jobView/${id}/1`
+      })
+    },
+    getTaskIds() {
+      const ids = []
+      this.multipleSelection.forEach(item => {
+        ids.push(item.id)
+      })
+      return ids
+    },
+    changeTaskStatus(data) {
+      changeJobStatusApi(data).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
+      })
+    },
+    deleteTasks(data) {
+      deleteJobApi(data).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
+      })
+    },
+    handleMultipleStart() {
+      this.$confirm('确认要启用这些作业吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success'
+      }).then(() => {
+        const ids = this.getTaskIds()
+        this.changeTaskStatus({
+          task_ids: ids,
+          is_enable: true
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消启用'
+        })
+      })
+    },
+    handleMultipleStop() {
+      this.$confirm('确认要停用这些任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = this.getTaskIds()
+        this.changeTaskStatus({
+          task_ids: ids,
+          is_enable: false
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消停用'
+        })
+      })
+    },
+    handleMultipleDelete() {
+      this.$confirm('确认要删除这些任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = this.getTaskIds()
+        this.deleteTasks({
+          task_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }

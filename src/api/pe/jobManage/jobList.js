@@ -57,3 +57,39 @@ export function getJobDataApi(id) {
     method: 'get'
   })
 }
+
+/**
+ * 更新作业
+ * @param {Object} data
+ */
+export function updateJobApi(data) {
+  return request({
+    url: `/v1/jobs/${data.id}`,
+    method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 启用或禁用多个作业
+ * @param {Object} data
+ */
+export function changeJobStatusApi(data) {
+  return request({
+    url: '/v1/jobs/',
+    method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 删除多个任务
+ * @param {Object} data
+ */
+export function deleteJobApi(data) {
+  return request({
+    url: '/v1/jobs/',
+    method: 'delete',
+    data: data
+  })
+}
