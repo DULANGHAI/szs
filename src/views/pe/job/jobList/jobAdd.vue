@@ -128,7 +128,7 @@
     </div>
 
     <!-- 添加作业的model -->
-    <add-job-model :show.sync="showAddModel" :addNode="addNode"></add-job-model>
+    <add-job-model :show.sync="showAddModel" :addNode="addNode" :systemType="form.system_type"></add-job-model>
     <!-- 添加结束节点的model -->
     <add-end-model :show.sync="showEndModel" :addNode="addNode"></add-end-model>
     <!-- 条件编辑 -->
@@ -216,7 +216,7 @@ export default {
   },
   computed: {
     addDisable() {
-      if (this.selected.id === undefined && this.scheduling.id !== undefined) {
+      if (this.selected.id === undefined && this.scheduling.id !== undefined || this.form.system_type === '') {
         return true
       } else {
         return false
@@ -258,7 +258,13 @@ export default {
     }
   },
   methods: {
-    systemChange() {},
+    systemChange() {
+      this.scheduling = {}
+      this.selected = {} // 选中的节点
+      this.conditionNode = {} // 选中的条件节点
+      this.uniqueId = +new Date()
+      this.scale = 10
+    },
     enlarge() {
       if (this.scale < 10) {
         this.scale++

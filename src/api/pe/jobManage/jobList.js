@@ -46,3 +46,14 @@ export function getJobListApi(params) {
     params: params
   })
 }
+
+/**
+ * 通过ID获取作业信息（查看、编辑用）
+ * @param {Number} id
+ */
+export function getJobDataApi(id) {
+  return request({
+    url: `/v1/jobs/${id}`,
+    method: 'get'
+  })
+}

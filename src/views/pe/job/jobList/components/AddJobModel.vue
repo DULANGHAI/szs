@@ -45,7 +45,8 @@ export default {
       type: Boolean,
       default: false
     },
-    addNode: Function
+    addNode: Function,
+    systemType: String
   },
   components: {
     ScriptOption,
@@ -73,6 +74,7 @@ export default {
     firstData(e) {
       this.loading = true
       this.form.name = e.target.value
+      this.form.target_system = this.systemType
       getJobItemApi(this.form).then(res => {
         this.loading = false
         this.jobArr = res.items
@@ -84,6 +86,7 @@ export default {
     remoteMethod(query) {
       this.loading = true
       this.form.name = query
+      this.form.target_system = this.systemType
       getJobItemApi(this.form).then(res => {
         this.loading = false
         this.jobArr = res.items
@@ -118,6 +121,9 @@ export default {
       this.$emit('update:show', false)
     },
     handleOk() {
+      if (!this.selectedObj.next) {
+        this.selectedObj.next = []
+      }
       this.addNode(this.selectedObj)
       this.cancel()
     }

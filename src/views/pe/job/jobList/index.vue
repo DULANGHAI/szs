@@ -93,7 +93,7 @@
           <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
-              <risk-level :level="scope.row.task_risk_level"></risk-level>
+              <risk-level :level="scope.row.risk_level"></risk-level>
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" :formatter="formatterEnable"></el-table-column>
@@ -101,8 +101,8 @@
           <el-table-column prop="success_rate" label="成功率"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small" >编辑</el-button>
-              <el-button type="text" size="small" >查看</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
               <el-button type="text" size="small" >{{scope.row.status ? '停用' : '启用'}}</el-button>
               <el-button type="text" size="small" class="danger" >删除</el-button>
             </template>
@@ -246,6 +246,16 @@ export default {
     goAdd() {
       this.$router.push({
         path: '/pe/jobManage/jobAdd'
+      })
+    },
+    goEdit(id) {
+      this.$router.push({
+        path: `/pe/jobManage/jobEdit/${id}`
+      })
+    },
+    goView(id) {
+      this.$router.push({
+        path: `/pe/jobManage/jobView/${id}/1`
       })
     }
   }

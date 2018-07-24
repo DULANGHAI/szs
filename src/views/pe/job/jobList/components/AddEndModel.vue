@@ -38,7 +38,8 @@ export default {
         type: '',
         description: '',
         is_warning: true,
-        timestr: +new Date()
+        timestr: +new Date(),
+        next: []
       }
     }
   },

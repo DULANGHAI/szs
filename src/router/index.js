@@ -126,6 +126,22 @@ export const constantRouterMap = [
             hidden: true
           },
           {
+            path: 'jobEdit/:id',
+            name: '编辑作业',
+            component: () => import('@/views/pe/job/jobList/jobAdd'),
+            meta: { title: '编辑作业' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'jobView/:id/:view',
+            name: '查看作业',
+            component: () => import('@/views/pe/job/jobList/jobAdd'),
+            meta: { title: '查看作业' },
+            hidden: true,
+            props: true
+          },
+          {
             path: 'timingJob',
             name: '定时作业',
             component: () => import('@/views/pe/job/timingJob/index'),
