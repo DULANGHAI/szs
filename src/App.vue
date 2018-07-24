@@ -39,4 +39,9 @@ export default {
   height: 6px;
   background: #F5222D;
 }
+
+// 颜色
+.active-blue {
+  color: #46a1ff;
+}
 </style>

@@ -85,25 +85,25 @@
           style="width: 100%"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="task_name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="task_creator" label="创建人"></el-table-column>
+          <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="updated_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
-          <el-table-column prop="task_type" label="系统类型"></el-table-column>
-          <el-table-column prop="task_language" label="作业类型"></el-table-column>
-          <el-table-column prop="task_description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="system_type" label="系统类型"></el-table-column>
+          <el-table-column prop="job_type" label="作业类型"></el-table-column>
+          <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
               <risk-level :level="scope.row.task_risk_level"></risk-level>
             </template>
           </el-table-column>
-          <el-table-column prop="task_is_enable" label="状态" :formatter="formatterEnable"></el-table-column>
-          <el-table-column prop="task_approver" label="执行次数"></el-table-column>
-          <el-table-column prop="task_approver" label="成功率"></el-table-column>
+          <el-table-column prop="status" label="状态" :formatter="formatterEnable"></el-table-column>
+          <el-table-column prop="frequency" label="执行次数"></el-table-column>
+          <el-table-column prop="success_rate" label="成功率"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
               <el-button type="text" size="small" >编辑</el-button>
               <el-button type="text" size="small" >查看</el-button>
-              <el-button type="text" size="small" >{{scope.row.task_is_enable ? '停用' : '启用'}}</el-button>
+              <el-button type="text" size="small" >{{scope.row.status ? '停用' : '启用'}}</el-button>
               <el-button type="text" size="small" class="danger" >删除</el-button>
             </template>
           </el-table-column>
@@ -164,7 +164,7 @@ export default {
 
         let enable = 0
         for (let i = 0; i < length; i++) {
-          if (arr[i].task_is_enable) {
+          if (arr[i].status) {
             enable++
           }
         }
@@ -194,7 +194,7 @@ export default {
   },
   methods: {
     rowStyle({ row, rowIndex }) {
-      if (!row.task_is_enable) {
+      if (!row.status) {
         return {
           color: '#BFBFBF'
         }
@@ -204,8 +204,8 @@ export default {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterEnable(row) {
-      if (row.task_is_enable) {
-        return '可用'
+      if (row.status) {
+        return '启用'
       }
       return '停用'
     },

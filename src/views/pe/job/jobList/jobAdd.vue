@@ -376,7 +376,9 @@ export default {
         job_task_id_list: job_task_id_list
       }
       createJobApi(data).then(res => {
-
+        this.$router.push({
+          path: '/pe/jobManage/jobList'
+        })
       })
     },
     getTaskIdList(data, res) {

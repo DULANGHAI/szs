@@ -130,6 +130,12 @@ export const constantRouterMap = [
             name: '定时作业',
             component: () => import('@/views/pe/job/timingJob/index'),
             meta: { title: '定时作业' }
+          },
+          {
+            path: 'instantJob',
+            name: '即时作业',
+            component: () => import('@/views/pe/job/instantJob/index'),
+            meta: { title: '即时作业' }
           }
         ]
       }
