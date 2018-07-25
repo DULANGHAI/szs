@@ -34,3 +34,15 @@ export function getInstantListApi(params) {
     params: params
   })
 }
+
+/**
+ * 执行作业
+ * @param {Object} data
+ */
+export function doTaskApi(data) {
+  return request({
+    url: '/v1/scheduler/ansible-tasks',
+    method: 'post',
+    data: data
+  })
+}

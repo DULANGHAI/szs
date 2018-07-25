@@ -127,7 +127,9 @@
         <div class="block-title">{{selected.name}}的配置</div>
         <div class="block-content">
           <!-- 命令类型 -->
-          <command-show :data="selected"></command-show>
+          <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
+          <!-- 脚本类型 -->
+          <script-show v-if="selected.type === 'script'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
         </div>
       </div>
     </div>
@@ -137,7 +139,12 @@
     <!-- 添加结束节点的model -->
     <add-end-model :show.sync="showEndModel" :addNode="addNode"></add-end-model>
     <!-- 条件编辑 -->
-    <condition-model :view="view" :data="conditionNode" :show.sync="showConditionModel" :addCondition="addCondition"></condition-model>
+    <condition-model v-if="showConditionModel"
+      :view="view"
+      :uniqueId="uniqueId"
+      :data="conditionNode"
+      :show.sync="showConditionModel"
+      :addCondition="addCondition"></condition-model>
   </div>
 </template>
 
@@ -152,6 +159,7 @@ import AddJobModel from './components/AddJobModel'
 import AddEndModel from './components/AddEndModel'
 import ConditionModel from './components/ConditionModel'
 import CommandShow from './components/CommandShow'
+import ScriptShow from './components/ScriptShow'
 
 import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi } from '@/api/pe/jobManage/jobList'
 
@@ -166,7 +174,8 @@ export default {
     AddJobModel,
     AddEndModel,
     ConditionModel,
-    CommandShow
+    CommandShow,
+    ScriptShow
   },
   data() {
     this.job_type_map = {
@@ -262,7 +271,8 @@ export default {
         .then(res => {
           this.systemAndLang = res[0]
           this.form = res[1]
-          this.scheduling = res[1].scheduling
+          this.form.target_ip = JSON.parse(res[1].target_ip).host
+          this.scheduling = JSON.parse(res[1].scheduling)
         }).catch(err => {
           console.log(err)
         })
@@ -294,12 +304,25 @@ export default {
     },
     selectNode(obj) {
       this.selected = obj
+      this.uniqueId = +new Date()
     },
     selectCondition(obj) {
+      if (!obj.condition) {
+        obj.condition = {
+          type: '',
+          value: '',
+          parent: obj.parentstr
+        }
+      }
       this.conditionNode = obj
       this.showConditionModel = true
     },
-    addCondition() {
+    addCondition(data) {
+      if (!data.type) {
+        delete this.conditionNode.condition
+      } else {
+        this.conditionNode.condition = data
+      }
       this.doCondition(this.scheduling, this.conditionNode)
       this.conditionNode = {}
       this.uniqueId = +new Date()
@@ -390,13 +413,15 @@ export default {
         name: this.form.name,
         description: this.form.description,
         execution_account: this.form.execution_account,
-        target_ip: this.form.target_ip,
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
         frequency: this.form.frequency,
         system_type: this.form.system_type,
         job_type: this.form.job_type,
         applications: this.form.applications,
         status: this.form.status,
-        scheduling: this.scheduling,
+        scheduling: JSON.stringify(this.scheduling),
         job_task_id_list: job_task_id_list
       }
       createJobApi(data).then(res => {
@@ -431,14 +456,18 @@ export default {
         name: this.form.name,
         description: this.form.description,
         execution_account: this.form.execution_account,
-        target_ip: this.form.target_ip,
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
         frequency: this.form.frequency,
         system_type: this.form.system_type,
         job_type: this.form.job_type,
         applications: this.form.applications,
         status: this.form.status,
-        scheduling: this.scheduling,
-        job_task_id_list: job_task_id_list
+        scheduling: JSON.stringify(this.scheduling),
+        job_task_id_list: job_task_id_list,
+        creator: this.form.creator,
+        success_rate: this.form.success_rate
       }
       updateJobApi(data).then(res => {
         this.$router.push({

@@ -180,8 +180,7 @@ export default {
       scriptOptions: [],
       scriptVersionOptions: [],
       selectedScript: {}, // 选中的脚本
-      selectedVersion: {},
-      test: ''
+      selectedVersion: {}
     }
   },
   watch: {

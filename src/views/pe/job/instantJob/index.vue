@@ -46,7 +46,7 @@
                 <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">创建</div>
               </div>
-              <div class="op-item">
+              <div class="op-item" @click="doTask">
                 <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">执行</div>
               </div>
@@ -108,7 +108,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import JobItem from './components/JobItem'
 
-import { getLanguageApi, getJobListApi, getInstantListApi } from '@/api/pe/jobManage/instantJob'
+import { getLanguageApi, getJobListApi, getInstantListApi, doTaskApi } from '@/api/pe/jobManage/instantJob'
 
 export default {
   components: {
@@ -185,6 +185,13 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    doTask() {
+      doTaskApi({
+        job_info: JSON.stringify(this.multipleSelection[0])
+      }).then(() => {
+
+      })
     }
   }
 }

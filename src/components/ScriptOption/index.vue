@@ -8,7 +8,7 @@
           <div class="path">{{data.full_path}}</div>
         </div>
       </div>
-      <div class="comment">{{'介绍：' + data.comment}}</div>
+      <div class="comment">{{'介绍：' + (data.comment || data.description)}}</div>
     </div>
     <risk-level :level="data.risk_level"></risk-level>
   </div>
