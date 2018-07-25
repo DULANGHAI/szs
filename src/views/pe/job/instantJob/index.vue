@@ -47,6 +47,14 @@
                 <div class="mart-10">创建</div>
               </div>
               <div class="op-item">
+                <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
+                <div class="mart-10">执行</div>
+              </div>
+              <div class="op-item">
+                <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
+                <div class="mart-10">停止</div>
+              </div>
+              <div class="op-item">
                 <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">刷新</div>
               </div>
@@ -54,11 +62,11 @@
             <div class="flex">
               <div class="op-item">
                 <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
-                <div class="mart-10">创建</div>
+                <div class="mart-10">任务编辑</div>
               </div>
               <div class="op-item">
                 <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
-                <div class="mart-10">刷新</div>
+                <div class="mart-10">作业编辑</div>
               </div>
               <div class="op-item">
                 <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
@@ -67,7 +75,28 @@
             </div>
           </div>
           <!-- 列表 -->
+          <div class="table">
+            <el-table
+              ref="table"
+              :data="dataInstant"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @selection-change="handleSelectionChange">
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column prop="execution_id" label="执行ID" width="100px" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column prop="creator" label="执行人"></el-table-column>
+              <el-table-column prop="job_type" label="类型" :formatter="formatterJobType"></el-table-column>
+              <el-table-column prop="status" label="状态"></el-table-column>
+              <el-table-column prop="result" label="结果"></el-table-column>
+              <el-table-column prop="created_at" label="提交时间"></el-table-column>
+              <el-table-column prop="start_time" label="开始时间"></el-table-column>
+            </el-table>
+          </div>
           <!-- 分页 -->
+          <div class="pagination" v-if="total">
+            <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
+          </div>
         </div>
       </div>
     </div>
@@ -88,6 +117,12 @@ export default {
     JobItem
   },
   data() {
+    this.job_type_map = {
+      ordinary: '普通作业',
+      update: '应用更新&发布',
+      quit: '应用下线',
+      inspection: '日常检查'
+    }
     return {
       form1: { // 左侧的作业筛选列表
         name: '',
@@ -103,9 +138,11 @@ export default {
         page: 1,
         per_page: 10
       },
+      total: 0,
       system_type_arr: [],
       dataJob: [],
-      dataInstant: []
+      dataInstant: [],
+      multipleSelection: []
     }
   },
   created() {
@@ -138,6 +175,16 @@ export default {
       getJobListApi(params).then(res => {
         this.dataJob = res.items
       })
+    },
+    handlePageChange(val) {
+      this.form.page = val
+      this.getListData()
+    },
+    formatterJobType(row) {
+      return this.job_type_map[row.job_type]
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 }
@@ -197,5 +244,17 @@ export default {
 }
 .mart-10 {
   margin-top: 10px;
+}
+.table {
+  margin-top: 18px;
+  & /deep/ .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

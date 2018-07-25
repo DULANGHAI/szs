@@ -317,6 +317,7 @@ export default {
     },
     addNode(item) {
       item.timestr = +new Date()
+      item.parentstr = this.selected.timestr
       if (this.scheduling.id === undefined) {
         item.node_level = 0
         this.scheduling = item
