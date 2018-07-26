@@ -67,7 +67,7 @@
               </el-table-column>
               <el-table-column
                 label="文件名">
-                <template slot-scope="scope"><el-button type="text" size="small" @click="isfiletype(scope.row.type, scope.row.full_path)"> <svg-icon :icon-class="scope.row.type ? 'wenjianjia' : 'wenjian'" /> {{ scope.row.name }}</el-button></template>
+                <template slot-scope="scope"><el-button type="text" size="small" @click="isfiletype(scope.row.type, scope.row.full_path)"> <svg-icon :icon-class="scope.row.type === 'tree' ? 'wenjianjia' : 'wenjian'" /> {{ scope.row.name }}</el-button></template>
               </el-table-column>
               <el-table-column
                 prop="comment"
@@ -440,7 +440,7 @@ export default {
     },
     // 点击文件判断类型进行操作
     isfiletype(type, path) {
-      if (type === true) {
+      if (type === 'tree') {
         this.getfilelist(path)
       } else {
         this.frArray(path)

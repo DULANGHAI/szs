@@ -175,8 +175,8 @@ export default {
       const params = {
         'page': this.currentPage,
         'per_page': this.pageSizes || 10,
-        'end_time': this.form.datatime[1] || null,
-        'start_time': this.form.datatime[0] || null,
+        'end_time': this.form.datatime && this.form.datatime[1] || null,
+        'start_time': this.form.datatime && this.form.datatime[0] || null,
         'name': this.form.name,
         'creator': this.form.creator
       }

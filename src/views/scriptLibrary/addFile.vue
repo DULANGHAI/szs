@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    :title="type ? '新建文件夹' : '新建文件' "
+    :title="type === 'tree' ? '新建文件夹' : '新建文件' "
     :visible.sync="dialogVisible"
     width="35%"
     class="pb-dialog">
     <el-form :model="form" :rules="rules" ref="ruleForm">
-      <el-form-item :label="type ? '文件夹名称' : '文件名称' " prop="name">
+      <el-form-item :label="type === 'tree' ? '文件夹名称' : '文件名称' " prop="name">
         <el-input v-model="form.name" auto-complete="off" placeholder="请输入"></el-input>
       </el-form-item>
     </el-form>
@@ -29,7 +29,7 @@
       return {
         dialogVisible: false,
         versionList: [],
-        type: false,
+        type: 'tree',
         form: JSON.parse(JSON.stringify(formData)),
         isEdit: false,
         rules: {

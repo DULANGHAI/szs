@@ -95,12 +95,12 @@
       },
       // 上传成功后的回调
       uploadSuccess(response, file, fileList) {
-        console.log('上传文件', response, file, fileList)
+        // console.log('上传文件', response, file, fileList)
         this.fileList = fileList
       },
       // 移除上传文件列表
       handleRemove(file, fileList) {
-        console.log(fileList)
+        // console.log(fileList)
         this.fileList = fileList
       },
       // 上传文件大小
@@ -150,7 +150,8 @@
               'path': this.$props.path,
               'comment': this.form.comment,
               'risk_level': this.form.risk_level,
-              'branch': this.$props.branch
+              'branch': this.$props.branch,
+              'repository_type': 'applications'
             }
 
             uploadAppFile(this.$props.project_id, params).then(response => {
