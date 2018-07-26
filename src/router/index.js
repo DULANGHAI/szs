@@ -244,37 +244,41 @@ export const constantRouterMap = [
     ]
   },
 
-  // 系统管理
+  // 3.系统管理
+    // 用户管理
+    // 角色管理
+    //   角色
+    //   权限
+    // 审计和通知
+    //   审计
+    //   通知
+    // 系统配置
+    
   {
-    path: '/resource',
+    path: '/SystemManage',
     component: Layout,
-    redirect: '/resource/example1',
-    name: 'Resource',
-    meta: { title: '系统管理', icon: 'ziyuan' },
+    redirect: '/SystemManage/user',
+    name: 'SystemManage',
+    meta: { title: '系统管理', icon: 'example'},
     children: [
+      // 1.用户管理
       {
-        path: 'example1',
-        name: 'Example1',
-        component: () => import('@/views/example1/index'),
+        path: 'user',
+        name: 'users',
+        component: () => import('@/views/sysmanage/user/index'),
         meta: { title: '用户管理' }
-      },
-      {
-        path: 'example1',
-        name: 'Example1',
-        component: () => import('@/views/example1/index'),
-        meta: { title: '角色管理' }
       },
       {
         path: 'example2',
         name: 'Example2',
         component: () => import('@/views/example2/index'),
-        meta: { title: '系统审计' }
+        meta: { title: 'Example2' }
       },
       {
         path: 'example3',
         name: 'Example3',
         component: () => import('@/views/example3/index'),
-        meta: { title: '系统配置' }
+        meta: { title: 'Example3' }
       }
     ]
   },
