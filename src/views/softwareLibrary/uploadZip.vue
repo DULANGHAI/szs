@@ -157,7 +157,8 @@
               'path': this.$props.path,
               'comment': this.form.comment,
               'risk_level': this.form.risk_level,
-              'branch': this.$props.branch
+              'branch': this.$props.branch,
+              'repository_type': 'applications'
             }
 
             uploadAppFile(this.$props.project_id, params).then(response => {

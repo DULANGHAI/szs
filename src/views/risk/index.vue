@@ -160,7 +160,6 @@ export default {
       is_dltmount: true,
       multipleSelection: [],
       SelectionArray: [],
-      restaurants: [],
       currentPage: 1, // 当前页面
       pageSizesArray: [10, 20, 30, 40], // 可选每页数量
       pageSizes: '',
@@ -219,8 +218,8 @@ export default {
         'page': this.currentPage,
         'per_page': this.pageSizes || 10,
         'risk_level': this.form.risk_level,
-        'end_time': this.form.datatime[1] || null,
-        'start_time': this.form.datatime[0] || null,
+        'end_time': this.form.datatime && this.form.datatime[1] || null,
+        'start_time': this.form.datatime && this.form.datatime[0] || null,
         'name': this.form.name,
         'creator': this.form.creator
       }

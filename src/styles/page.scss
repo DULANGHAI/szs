@@ -59,7 +59,6 @@
   }
   .el-tabs__content{
     margin: 0px 22px;
-    background: #fff;
     min-height: 100%;
   }
   .tabs-contents{
@@ -165,5 +164,34 @@ dl, dd, p {
   .el-range-separator{
     width: 25px;
   }
+}
+.review-body {
+  .el-range-separator{
+    width: 25px;
+  }
+  .el-date-editor .el-range__icon{
+    display: none;
+  }
+  .review-body-wrap{
+    margin: 24px 0px;
+    background: #fff;
+    padding:29px 32px;
+    .el-form-item__content {
+      overflow: hidden;
+    }
+  }
+}
+
+.tabs-contents{
+  background: #fff;
+}
+.diff-content-header{
+  height: 36px;
+  width: 100%;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 10px 10px;
+  overflow: hidden;
+  margin-bottom: -1px;
 }
 

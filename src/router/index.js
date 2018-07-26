@@ -212,25 +212,22 @@ export const constantRouterMap = [
             meta: { title: '配置文件库' }
           },
           {
-            path: 'examine',
-            name: 'examine',
-            component: () => import('@/views/examine/index'),
+            path: 'review',
+            name: 'review',
+            component: () => import('@/views/review/index'),
             meta: { title: '文件审批' }
+          },
+          {
+            path: 'review/detail/:id',
+            name: 'reviewDetail',
+            component: () => import('@/views/review/detail'),
+            meta: { title: '文件审批' },
+            hidden: true,
+            props: true
           }
         ]
       }
     ]
-  },
-  {
-    path: '/repository/examine/detail',
-    name: 'examineDetail',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: '/repository/examine/detail/:id',
-      name: 'examineDetail',
-      component: () => import('@/views/examine/detail')
-    }]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
