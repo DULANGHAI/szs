@@ -2,7 +2,7 @@
   <div>
     <el-form ref="form" label-width="84px" size="small" label-position="left">
       <el-form-item label="任务类型">
-        <div>{{data.type}}</div>
+        <div>{{taskTypeMap[data.type]}}</div>
       </el-form-item>
 
       <div style="display: flex;">
@@ -14,7 +14,7 @@
         </el-form-item>
       </div>
 
-      <el-form-item label="命令" v-if="data.type === 'command'">
+      <el-form-item label="命令">
         <div>{{data.command}}</div>
       </el-form-item>
 
@@ -47,6 +47,15 @@ export default {
   },
   components: {
     RiskLevel
+  },
+  data() {
+    return {
+      taskTypeMap: {
+        command: '命令',
+        script: '脚本',
+        file: '文件分发'
+      }
+    }
   }
 }
 </script>

@@ -59,9 +59,20 @@ export function deleteTaskApi(data) {
 /**
  * 查询所有的脚本
  */
-export function getAllScriptApi() {
+export function getAllScriptApi(params) {
   return request({
-    url: '',
+    url: '/v1/repository/script',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 查询脚本版本
+ */
+export function getScriptVersionApi(id) {
+  return request({
+    url: `/v1/repository/script/${id}`,
     method: 'get'
   })
 }

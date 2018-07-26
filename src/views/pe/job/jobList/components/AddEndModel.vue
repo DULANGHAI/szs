@@ -3,9 +3,9 @@
     <el-form :label-position="'top'" label-width="80px">
       <el-form-item label="作业类型">
         <el-select v-model="form.type">
-          <el-option value="end_success">执行成功</el-option>
-          <el-option value="end_failed">执行失败</el-option>
-          <el-option value="end_rollback">执行失败但回滚成功</el-option>
+          <el-option label="执行成功" value="end_success"></el-option>
+          <el-option label="执行失败" value="end_failed"></el-option>
+          <el-option label="执行失败但回滚成功" value="end_rollback"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="备注">
@@ -38,7 +38,8 @@ export default {
         type: '',
         description: '',
         is_warning: true,
-        timestr: +new Date()
+        timestr: +new Date(),
+        next: []
       }
     }
   },

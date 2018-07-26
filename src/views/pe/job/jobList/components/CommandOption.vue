@@ -32,9 +32,6 @@ export default {
   },
   methods: {
     handleSelect() {
-      // const res = this.data
-      // res.risk_level = 1
-      // this.$emit('update:data', res)
       if (this.data.id === this.selected.id && this.data.timestr === this.selected.timestr) {
         this.selectNode({})
       } else {

@@ -100,7 +100,7 @@
           <el-table-column prop="type" label="类型" :formatter="formatterTaskType"></el-table-column>
           <el-table-column prop="language" label="语言"></el-table-column>
           <el-table-column prop="target_system" label="目标系统"></el-table-column>
-          <el-table-column prop="task_description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
               <risk-level :level="scope.row.risk_level"></risk-level>

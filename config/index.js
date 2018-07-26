@@ -15,6 +15,10 @@ module.exports = {
         target: "https://easy-mock.com/mock/5950a2419adc231f356a6636/vue-admin",
         changeOrigin: true
       },
+      '/v1/scheduler': {
+        target: 'http://10.111.2.41:5100/',
+        changeOrigin: true
+      },
       '/v1': {
         // target: 'http://10.111.2.41:5000',
         target: 'http://172.16.139.74:5000',

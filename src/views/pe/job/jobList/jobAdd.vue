@@ -5,9 +5,20 @@
     </div>
     <div class="container-title">
       <div>{{$route.name}}</div>
-      <div>
+      <!-- 添加作业按钮组 -->
+      <div v-if="!view && !id">
         <el-button type="primary" @click="submitAll">提交</el-button>
-        <el-button>重置</el-button>
+        <el-button @click="goBack">返回</el-button>
+      </div>
+      <!-- 查看的按钮组 -->
+      <div v-if="view">
+        <el-button type="primary" @click="goEdit">编辑</el-button>
+        <el-button @click="goBack">返回</el-button>
+      </div>
+      <!-- 编辑的按钮组 -->
+      <div v-if="!view && id">
+        <el-button type="primary" @click="update">提交</el-button>
+        <el-button @click="goBack">返回</el-button>
       </div>
     </div>
 
@@ -34,9 +45,6 @@
                   <div v-if="view">{{form.execution_account}}</div>
                 </el-form-item>
                 <el-form-item label="目标IP">
-                  <!-- <el-select v-if="!view" v-model="form.target_ip" placeholder="请选择">
-                    <el-option v-for="item in ip_arr" :key="item" :label="item" :value="item"></el-option>
-                  </el-select> -->
                   <treeselect v-if="!view" v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
                   <div v-if="view">{{form.target_ip}}</div>
                 </el-form-item>
@@ -57,12 +65,9 @@
                 </el-form-item>
                 <el-form-item label="作业类型">
                   <el-radio-group v-if="!view" v-model="form.job_type">
-                    <el-radio label="普通作业">普通作业</el-radio>
-                    <el-radio label="应用更新&发布">应用更新&发布</el-radio>
-                    <el-radio label="应用下线">应用下线</el-radio>
-                    <el-radio label="日常检查">日常检查</el-radio>
+                    <el-radio v-for="(item, index) in Object.keys(job_type_map)" :key="index" :label="item">{{job_type_map[item]}}</el-radio>
                   </el-radio-group>
-                  <div v-if="view">{{form.job_type}}</div>
+                  <div v-if="view">{{job_type_map[form.job_type]}}</div>
                 </el-form-item>
                 <el-form-item v-if="form.job_type === '应用更新&发布' || form.job_type === '应用下线'" label="应用实例">
                   <el-select v-if="!view" v-model="form.applications" placeholder="请选择">
@@ -122,17 +127,24 @@
         <div class="block-title">{{selected.name}}的配置</div>
         <div class="block-content">
           <!-- 命令类型 -->
-          <command-show :data="selected"></command-show>
+          <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
+          <!-- 脚本类型 -->
+          <script-show v-if="selected.type === 'script'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
         </div>
       </div>
     </div>
 
     <!-- 添加作业的model -->
-    <add-job-model :show.sync="showAddModel" :addNode="addNode"></add-job-model>
+    <add-job-model :show.sync="showAddModel" :addNode="addNode" :systemType="form.system_type"></add-job-model>
     <!-- 添加结束节点的model -->
     <add-end-model :show.sync="showEndModel" :addNode="addNode"></add-end-model>
     <!-- 条件编辑 -->
-    <condition-model :data="conditionNode" :show.sync="showConditionModel" :addCondition="addCondition"></condition-model>
+    <condition-model v-if="showConditionModel"
+      :view="view"
+      :uniqueId="uniqueId"
+      :data="conditionNode"
+      :show.sync="showConditionModel"
+      :addCondition="addCondition"></condition-model>
   </div>
 </template>
 
@@ -147,8 +159,9 @@ import AddJobModel from './components/AddJobModel'
 import AddEndModel from './components/AddEndModel'
 import ConditionModel from './components/ConditionModel'
 import CommandShow from './components/CommandShow'
+import ScriptShow from './components/ScriptShow'
 
-import { getLanguageApi, createJobApi } from '@/api/pe/jobManage/jobList'
+import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi } from '@/api/pe/jobManage/jobList'
 
 export default {
   props: ['id', 'view'],
@@ -161,9 +174,16 @@ export default {
     AddJobModel,
     AddEndModel,
     ConditionModel,
-    CommandShow
+    CommandShow,
+    ScriptShow
   },
   data() {
+    this.job_type_map = {
+      ordinary: '普通作业',
+      update: '应用更新&发布',
+      quit: '应用下线',
+      inspection: '日常检查'
+    }
     return {
       options: [
         {
@@ -196,7 +216,7 @@ export default {
         target_ip: null,
         frequency: 1,
         system_type: '',
-        job_type: '普通作业',
+        job_type: 'ordinary',
         applications: '',
         status: false
       },
@@ -204,6 +224,7 @@ export default {
       ip_arr: [],
       applications_arr: [],
       systemAndLang: {},
+
       scheduling: {},
       selected: {}, // 选中的节点
       conditionNode: {}, // 选中的条件节点
@@ -216,7 +237,9 @@ export default {
   },
   computed: {
     addDisable() {
-      if (this.selected.id === undefined && this.scheduling.id !== undefined) {
+      if (this.selected.id === undefined && this.scheduling.id !== undefined ||
+        this.form.system_type === '' ||
+        this.view) {
         return true
       } else {
         return false
@@ -226,7 +249,8 @@ export default {
       if (this.uniqueId) {
         if (this.selected.id === undefined ||
         (this.selected.next && this.selected.next.length !== 0) ||
-        (this.selected.type.indexOf('end_') === 0)) {
+        (this.selected.type.indexOf('end_') === 0) ||
+        this.view) {
           return true
         } else {
           return false
@@ -234,7 +258,7 @@ export default {
       }
     },
     removeDisable() {
-      if (this.selected.type === undefined) {
+      if (this.selected.type === undefined || this.view) {
         return true
       } else {
         return false
@@ -243,9 +267,12 @@ export default {
   },
   created() {
     if (this.id) {
-      Promise.all([getLanguageApi()])
+      Promise.all([getLanguageApi(), getJobDataApi(this.id)])
         .then(res => {
           this.systemAndLang = res[0]
+          this.form = res[1]
+          this.form.target_ip = JSON.parse(res[1].target_ip).host
+          this.scheduling = JSON.parse(res[1].scheduling)
         }).catch(err => {
           console.log(err)
         })
@@ -258,7 +285,13 @@ export default {
     }
   },
   methods: {
-    systemChange() {},
+    systemChange() {
+      this.scheduling = {}
+      this.selected = {} // 选中的节点
+      this.conditionNode = {} // 选中的条件节点
+      this.uniqueId = +new Date()
+      this.scale = 10
+    },
     enlarge() {
       if (this.scale < 10) {
         this.scale++
@@ -271,12 +304,25 @@ export default {
     },
     selectNode(obj) {
       this.selected = obj
+      this.uniqueId = +new Date()
     },
     selectCondition(obj) {
+      if (!obj.condition) {
+        obj.condition = {
+          type: '',
+          value: '',
+          parent: obj.parentstr
+        }
+      }
       this.conditionNode = obj
       this.showConditionModel = true
     },
-    addCondition() {
+    addCondition(data) {
+      if (!data.type) {
+        delete this.conditionNode.condition
+      } else {
+        this.conditionNode.condition = data
+      }
       this.doCondition(this.scheduling, this.conditionNode)
       this.conditionNode = {}
       this.uniqueId = +new Date()
@@ -294,6 +340,7 @@ export default {
     },
     addNode(item) {
       item.timestr = +new Date()
+      item.parentstr = this.selected.timestr
       if (this.scheduling.id === undefined) {
         item.node_level = 0
         this.scheduling = item
@@ -366,13 +413,15 @@ export default {
         name: this.form.name,
         description: this.form.description,
         execution_account: this.form.execution_account,
-        target_ip: this.form.target_ip,
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
         frequency: this.form.frequency,
         system_type: this.form.system_type,
         job_type: this.form.job_type,
         applications: this.form.applications,
         status: this.form.status,
-        scheduling: this.scheduling,
+        scheduling: JSON.stringify(this.scheduling),
         job_task_id_list: job_task_id_list
       }
       createJobApi(data).then(res => {
@@ -390,6 +439,41 @@ export default {
           }
         }
       }
+    },
+    goBack() {
+      this.$router.back()
+    },
+    goEdit() {
+      this.$router.push({
+        path: `/pe/jobManage/jobEdit/${this.id}`
+      })
+    },
+    update() {
+      const job_task_id_list = []
+      this.getTaskIdList(this.scheduling, job_task_id_list)
+      const data = {
+        id: this.form.id,
+        name: this.form.name,
+        description: this.form.description,
+        execution_account: this.form.execution_account,
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
+        frequency: this.form.frequency,
+        system_type: this.form.system_type,
+        job_type: this.form.job_type,
+        applications: this.form.applications,
+        status: this.form.status,
+        scheduling: JSON.stringify(this.scheduling),
+        job_task_id_list: job_task_id_list,
+        creator: this.form.creator,
+        success_rate: this.form.success_rate
+      }
+      updateJobApi(data).then(res => {
+        this.$router.push({
+          path: '/pe/jobManage/jobList'
+        })
+      })
     }
   }
 }
