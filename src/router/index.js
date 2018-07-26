@@ -142,9 +142,9 @@ export const constantRouterMap = [
             props: true
           },
           {
-            path: 'timingJob',
+            path: 'timedJob',
             name: '定时作业',
-            component: () => import('@/views/pe/job/timingJob/index'),
+            component: () => import('@/views/pe/job/timedJob/index'),
             meta: { title: '定时作业' }
           },
           {

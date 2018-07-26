@@ -33,9 +33,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20">查询</el-button>
-            <el-button size="small" icon="el-icon-refresh">重置</el-button>
-            
+            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="search">查询</el-button>
+            <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
         </el-row>
         <el-row>
@@ -98,10 +97,10 @@
           <el-table-column prop="success_rate" label="成功率"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goEdit(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.status">编辑</el-button>
               <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
-              <el-button type="text" size="small" >{{scope.row.status ? '停用' : '启用'}}</el-button>
-              <el-button type="text" size="small" class="danger" >删除</el-button>
+              <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.status ? '停用' : '启用'}}</el-button>
+              <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)" :disabled="scope.row.status">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -297,8 +296,8 @@ export default {
       }).then(() => {
         const ids = this.getTaskIds()
         this.changeTaskStatus({
-          task_ids: ids,
-          is_enable: true
+          job_ids: ids,
+          status: true
         })
       }).catch(() => {
         this.$message({
@@ -315,8 +314,8 @@ export default {
       }).then(() => {
         const ids = this.getTaskIds()
         this.changeTaskStatus({
-          task_ids: ids,
-          is_enable: false
+          job_ids: ids,
+          status: false
         })
       }).catch(() => {
         this.$message({
@@ -333,7 +332,64 @@ export default {
       }).then(() => {
         const ids = this.getTaskIds()
         this.deleteTasks({
-          task_ids: ids
+          job_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleSingleStatus(row) {
+      if (row.status) { // 处在启用状态，要停用
+        this.$confirm('确认要停用这条任务吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const ids = []
+          ids.push(row.id)
+          this.changeTaskStatus({
+            job_ids: ids,
+            status: false
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消停用'
+          })
+        })
+      } else {
+        this.$confirm('确认要启用这条任务吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'success'
+        }).then(() => {
+          const ids = []
+          ids.push(row.id)
+          this.changeTaskStatus({
+            job_ids: ids,
+            status: true
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消启用'
+          })
+        })
+      }
+    },
+    handleSingleDelete(id) {
+      this.$confirm('确认要删除这条任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = []
+        ids.push(id)
+        this.deleteTasks({
+          job_ids: ids
         })
       }).catch(() => {
         this.$message({
