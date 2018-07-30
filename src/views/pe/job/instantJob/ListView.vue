@@ -26,7 +26,7 @@
         <!-- 列表 -->
         <div class="job-list">
           <div v-for="(item, index) in dataJob" :key="index">
-            <job-item :data="item"></job-item>
+            <job-item :uniqueId="uniqueId" :data="item" :selected="selectedJob" :selectNode="selectNode"></job-item>
           </div>
           <infinite-loading ref="infiniteLoading" @infinite="loadMore" spinner="spiral">
             <span slot="no-more">
@@ -40,31 +40,23 @@
         <!-- 操作列表 -->
         <div class="tool-box">
           <div class="flex">
-            <div class="op-item">
+            <div class="op-item" @click="createInstant">
               <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">创建</div>
             </div>
-            <div class="op-item" @click="doTask">
+            <div class="op-item" @click="doTask" :class="{disable: multipleSelection.length !== 1}">
               <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
             </div>
-            <div class="op-item">
+            <div class="op-item" @click="refresh">
               <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">刷新</div>
             </div>
           </div>
           <div class="flex">
-            <div class="op-item">
-              <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
-              <div class="mart-10">任务编辑</div>
-            </div>
-            <div class="op-item">
-              <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
-              <div class="mart-10">作业编辑</div>
-            </div>
-            <div class="op-item">
+            <div class="op-item" @click="handleMultipleDelete">
               <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
-              <div class="mart-10">创建</div>
+              <div class="mart-10">删除</div>
             </div>
           </div>
         </div>
@@ -74,17 +66,18 @@
             ref="table"
             :data="dataInstant"
             tooltip-effect="dark"
-            style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="execution_id" label="执行ID" width="100px" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="creator" label="执行人"></el-table-column>
             <el-table-column prop="job_type" label="类型" :formatter="formatterJobType"></el-table-column>
-            <el-table-column prop="status" label="状态"></el-table-column>
-            <el-table-column prop="result" label="结果"></el-table-column>
-            <el-table-column prop="created_at" label="提交时间"></el-table-column>
-            <el-table-column prop="start_time" label="开始时间"></el-table-column>
+            <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button type="text" size="small" @click="handleJobSet(scope.row)">作业配置</el-button>
+                <el-button type="text" size="small" @click="handleTaskSet(scope.row)">任务配置</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <!-- 分页 -->
@@ -100,7 +93,7 @@
 import InfiniteLoading from 'vue-infinite-loading'
 import JobItem from './components/JobItem'
 
-import { getLanguageApi, getJobListApi, getInstantListApi, doTaskApi } from '@/api/pe/jobManage/instantJob'
+import { getLanguageApi, getJobListApi, getInstantListApi, doTaskApi, createInstantApi, deleteInstantApi } from '@/api/pe/jobManage/instantJob'
 
 export default {
   components: {
@@ -126,6 +119,7 @@ export default {
         per_page: 10
       },
       dataJob: [],
+      selectedJob: {},
       form2: { // 右边的即时作业列表
         page: 1,
         per_page: 10
@@ -133,13 +127,15 @@ export default {
       total: 0,
       system_type_arr: [],
       dataInstant: [],
-      multipleSelection: []
+      multipleSelection: [],
+      uniqueId: +new Date()
     }
   },
   watch: {
     'form1.name'(val, oldVal) {
       this.form1.page = 1
       this.dataJob = []
+      this.selectedJob = {}
       this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
     }
   },
@@ -148,6 +144,7 @@ export default {
       .then(res => {
         this.system_type_arr = this.handleSystemData(res[0])
         this.dataInstant = res[1].items
+        this.total = res[1].total
       })
   },
   mounted() {
@@ -168,19 +165,19 @@ export default {
     systemClick(item) {
       if (this.form1.system_type !== item.value) {
         this.form1.system_type = item.value
-        // this.getListData(1)
         this.form1.page = 1
         this.dataJob = []
         this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
       }
     },
     getListData(index) {
-      const params = this.form1
+      const params = this.form2
       if (index) {
         params.page = index
       }
-      getJobListApi(params).then(res => {
-        this.dataJob = res.items
+      getInstantListApi(params).then(res => {
+        this.dataInstant = res.items
+        this.total = res.total
       })
     },
     loadMore($state) {
@@ -206,8 +203,12 @@ export default {
         this.$refs.infiniteLoading.isComplete = true
       })
     },
+    selectNode(obj) {
+      this.selectedJob = obj
+      this.uniqueId = +new Date()
+    },
     handlePageChange(val) {
-      this.form.page = val
+      this.form2.page = val
       this.getListData()
     },
     formatterJobType(row) {
@@ -215,6 +216,19 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    createInstant() {
+      if (!this.selectedJob.id) {
+        this.$message({
+          showClose: true,
+          message: '请先选中一条作业',
+          type: 'error'
+        })
+      } else {
+        createInstantApi({ job_id: this.selectedJob.id }).then(res => {
+          this.getListData(1)
+        })
+      }
     },
     doTask() {
       const data = this.multipleSelection[0]
@@ -224,6 +238,42 @@ export default {
         job_info: JSON.stringify(data)
       }).then(() => {
 
+      })
+    },
+    refresh() {
+      this.getListData(1)
+    },
+    getJobIds() {
+      const ids = []
+      this.multipleSelection.forEach(item => {
+        ids.push(item.id)
+      })
+      return ids
+    },
+    handleMultipleDelete() {
+      this.$confirm('确认要删除这些作业吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = this.getJobIds()
+        this.deleteTasks({
+          job_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    deleteTasks(data) {
+      deleteInstantApi(data).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
       })
     }
   }

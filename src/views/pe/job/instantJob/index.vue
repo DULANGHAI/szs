@@ -8,7 +8,7 @@
     </div>
     <div class="container-body">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="定时作业" name="first">
+        <el-tab-pane label="即时作业" name="first">
           <div class="tabs-contents">
             <list-view></list-view>
           </div>

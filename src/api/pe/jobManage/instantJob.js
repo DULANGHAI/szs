@@ -46,6 +46,30 @@ export function getInstantListApi(params) {
 }
 
 /**
+ * 创建即时作业
+ * @param {Object} data
+ */
+export function createInstantApi(data) {
+  return request({
+    url: '/v1/jobs/instant/',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 删除即时作业
+ * @param {Object} data
+ */
+export function deleteInstantApi(data) {
+  return request({
+    url: '/v1/jobs/instant/',
+    method: 'delete',
+    data: data
+  })
+}
+
+/**
  * 执行作业
  * @param {Object} data
  */
