@@ -45,6 +45,9 @@ export default {
     },
     setExpress(str) {
       this.express = str
+    },
+    reset() {
+      this.express = ''
     }
   }
 }

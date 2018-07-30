@@ -33,9 +33,10 @@ export function getJobListApi(params) {
       name: params.name,
       system_type: params.system_type,
       job_type: params.job_type,
-      target_ip: JSON.stringify({
-        host: params.target_ip
-      }),
+      // target_ip: JSON.stringify({
+      //   host: params.target_ip
+      // }),
+      target_ip: '',
       creator: params.creator,
       start_time: params.start_time,
       end_time: params.end_time,
@@ -61,9 +62,9 @@ export function createJobApi(data) {
  * 更新定时作业
  * @param {Object} data
  */
-export function updateJobApi(data) {
+export function updateJobApi(id, data) {
   return request({
-    url: `/v1/jobs/timed/${data.id}`,
+    url: `/v1/jobs/timed/${id}`,
     method: 'put',
     data: data
   })

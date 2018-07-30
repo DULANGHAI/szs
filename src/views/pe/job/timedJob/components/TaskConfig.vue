@@ -1,52 +1,56 @@
 <template>
-  <el-dialog title="任务配置" :visible="show" :show-close="false" :width="'800px'"
+  <div class="task-config-container">
+
+    <el-dialog title="任务配置" :visible="show" :show-close="false" :width="'800px'"
     @open="handleOpen" @close="handleClose">
-    <el-form :label-position="'left'" label-width="90px" size="small">
-      
-      <!-- 作业编排 -->
-      <div class="block-item">
-        <div class="block-title ">作业编排</div>
-        <!-- 操作 -->
-        <div class="tool-box">
-          <div class="op-item" @click="enlarge">
-            <svg-icon icon-class="enlarge" :style="{ transform: 'scale(1.5)' }" />
-            <div class="mart-10">放大</div>
+      <el-form :label-position="'left'" label-width="90px" size="small">
+        
+        <!-- 作业编排 -->
+        <div class="block-item">
+          <div class="block-title ">请选中任务节点进行配置</div>
+          <!-- 操作 -->
+          <div class="tool-box">
+            <div class="op-item" @click="enlarge">
+              <svg-icon icon-class="enlarge" :style="{ transform: 'scale(1.5)' }" />
+              <div class="mart-10">放大</div>
+            </div>
+            <div class="op-item" @click="narrow">
+              <svg-icon icon-class="narrow" :style="{ transform: 'scale(1.5)' }" />
+              <div class="mart-10">缩小</div>
+            </div>
           </div>
-          <div class="op-item" @click="narrow">
-            <svg-icon icon-class="narrow" :style="{ transform: 'scale(1.5)' }" />
-            <div class="mart-10">缩小</div>
+          <!-- 流程图 -->
+          <div class="chart-content">
+            <!-- 多套一层用来缩放 -->
+            <div v-if="scheduling.id" :style="{transform: 'scale('+ scale / 10 +')'}">
+              <my-chart :uniqueId="uniqueId"
+                :data.sync="scheduling"
+                :selected="selected"
+                :selectNode="selectNode"
+                :selectCondition="selectCondition"></my-chart>
+            </div>
           </div>
         </div>
-        <!-- 流程图 -->
-        <div class="chart-content">
-          <!-- 多套一层用来缩放 -->
-          <div v-if="scheduling.id" :style="{transform: 'scale('+ scale / 10 +')'}">
-            <my-chart :uniqueId="uniqueId"
-              :data.sync="scheduling"
-              :selected="selected"
-              :selectNode="selectNode"
-              :selectCondition="selectCondition"></my-chart>
+        <!-- 配置 -->
+        <div v-if="selected.id" class="block-item">
+          <div class="block-title">{{selected.name}}的配置</div>
+          <div class="block-content">
+            <!-- 命令类型 -->
+            <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
+            <!-- 脚本类型 -->
+            <script-show v-if="selected.type === 'script'" :data.sync="selected" :key="uniqueId"></script-show>
           </div>
         </div>
-      </div>
-      <!-- 配置 -->
-      <div v-if="selected.id" class="block-item">
-        <div class="block-title">{{selected.name}}的配置</div>
-        <div class="block-content">
-          <!-- 命令类型 -->
-          <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
-          <!-- 脚本类型 -->
-          <script-show v-if="selected.type === 'script'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
-        </div>
-      </div>
 
-    </el-form>
+      </el-form>
 
-    <div slot="footer" class="dialog-footer">
-      <el-button>取 消</el-button>
-      <el-button type="primary" @click="submit">确 定</el-button>
-    </div>
-  </el-dialog>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
+      </div>
+    </el-dialog>
+
+  </div>
 </template>
 
 <script>
@@ -58,7 +62,8 @@ import { updateJobApi } from '@/api/pe/jobManage/timedJob'
 
 export default {
   props: {
-    data: Object
+    data: Object,
+    refresh: Function
   },
   components: {
     MyChart,
@@ -123,17 +128,23 @@ export default {
         'timed_expression': this.data.timed_expression,
         'scheduling': JSON.stringify(this.scheduling),
         'frequency': this.data.frequency,
-        'target_ip': JSON.stringify({
-          host: this.data.target_ip
-        }),
+        'target_ip': this.data.target_ip,
         'timed_type': this.data.timed_type
 
       }
       updateJobApi(this.data.id, data).then(res => {
+        this.refresh()
         this.cancel()
       })
     },
     cancel() {
+      this.show = false
+      this.scheduling = {}
+      this.selected = {} // 选中的节点
+      this.conditionNode = {} // 选中的条件节点
+      this.uniqueId = +new Date()
+      this.scale = 10
+
       this.show = false
     }
   }
@@ -141,6 +152,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.task-config-container {
+  & /deep/ .el-dialog__body {
+    line-height: inherit;
+  }
+}
 .block-item {
   border-radius: 4px;
   background: #ffffff;
@@ -149,7 +165,6 @@ export default {
   }
 }
 .block-title {
-  padding: 16px 32px;
   font-size: 18px;
   color: rgba(0,0,0,0.85);
   line-height: 28px;

@@ -162,8 +162,6 @@ export default {
     multipleSelection(arr) {
       const length = arr.length
       if (length) {
-        this.multipleDelete = false
-
         let enable = 0
         for (let i = 0; i < length; i++) {
           if (arr[i].status) {
@@ -173,12 +171,15 @@ export default {
         if (enable === length) {
           this.multipleStart = true
           this.multipleStop = false
+          this.multipleDelete = true
         } else if (enable === 0) {
           this.multipleStart = false
           this.multipleStop = true
+          this.multipleDelete = false
         } else {
           this.multipleStart = true
           this.multipleStop = true
+          this.multipleDelete = true
         }
       } else {
         this.multipleStart = true

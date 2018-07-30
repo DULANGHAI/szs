@@ -78,7 +78,7 @@
       <el-row>
         <el-col :span="11">
           <el-form-item label="启用">
-            <el-switch v-model="form.status" :disabled="type !== 'add'"></el-switch>
+            <el-switch v-model="form.status" :active-value="1" :inactive-value="0" :disabled="type !== 'add'"></el-switch>
           </el-form-item>
         </el-col>
       </el-row>
@@ -105,7 +105,8 @@ import { createJobApi, updateJobApi } from '@/api/pe/jobManage/timedJob'
 export default {
   props: {
     type: String,
-    data: Object
+    data: Object,
+    refresh: Function
   },
   components: {
     JobItem,
@@ -129,7 +130,7 @@ export default {
         timed_type: 'check',
         timed_expression: '',
         frequency: '',
-        status: ''
+        status: 0
       },
       // 用来查询作业的参数
       jobform: {
@@ -183,6 +184,9 @@ export default {
   },
   watch: {
     selectJob(val) {
+      if (!val.id) {
+        return
+      }
       this.form.job_id = val.id
       this.form.execution_account = val.execution_account
       this.form.description = val.description
@@ -263,6 +267,33 @@ export default {
       }
     },
     cancel() {
+      this.form = {
+        job_id: '',
+        name: '',
+        execution_account: '',
+        description: '',
+        target_ip: [],
+        timed_type: 'check',
+        timed_expression: '',
+        frequency: '',
+        status: 0
+      }
+      this.jobform = {
+        name: '',
+        type: '',
+        target_system: '',
+        language: '',
+        risk_level: '',
+        creator: '',
+        page: 1,
+        per_page: 10
+      }
+      this.jobArr = []
+      this.selectJob = {}
+
+      this.$refs.chooseTimed.reset()
+      this.$refs.customTimed.reset()
+
       this.show = false
     },
     submit() {
@@ -287,6 +318,7 @@ export default {
           'description': this.form.description
         }
         createJobApi(data).then(res => {
+          this.refresh(1)
           this.cancel()
         })
       } else {
@@ -303,6 +335,7 @@ export default {
 
         }
         updateJobApi(this.data.id, data).then(res => {
+          this.refresh()
           this.cancel()
         })
       }

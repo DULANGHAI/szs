@@ -201,6 +201,18 @@ export default {
           }
         }
       }
+    },
+    reset() {
+      this.minute_type = 'every'
+      this.minute = []
+      this.hour_type = 'every'
+      this.hour = []
+      this.day_type = 'every'
+      this.day = []
+      this.month_type = 'every'
+      this.month = []
+      this.dayofweek_type = 'every'
+      this.dayofweek = []
     }
   }
 }

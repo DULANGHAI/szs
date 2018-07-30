@@ -89,14 +89,14 @@
             <risk-level :level="scope.row.risk_level"></risk-level>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态"></el-table-column>
+        <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
         <el-table-column prop="frequency" label="执行次数"></el-table-column>
-        <el-table-column prop="" label="上次执行时间" :formatter="formatterTime2"></el-table-column>
+        <el-table-column prop="last_time" label="上次执行时间" :formatter="formatterTime2"></el-table-column>
         <el-table-column prop="success_rate" label="成功率"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleJobSet(scope.row)">定时作业配置</el-button>
-            <el-button type="text" size="small" @click="handleTaskSet(scope.row)">任务配置</el-button>
+            <el-button type="text" size="small" @click="handleJobSet(scope.row)" :disabled="scope.row.status === 1 ? true : false">定时作业配置</el-button>
+            <el-button type="text" size="small" @click="handleTaskSet(scope.row)" :disabled="scope.row.status === 1 ? true : false">任务配置</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -108,9 +108,9 @@
     </div>
 
     <!-- 添加/编辑 定时作业model -->
-    <add-timed ref="addModel" :type="addType" :data="needSetJob"></add-timed>
+    <add-timed ref="addModel" :type="addType" :data="needSetJob" :refresh="getListData"></add-timed>
     <!-- 任务配置 -->
-    <task-config ref="taskConfig" :data="needSetJob" ></task-config>
+    <task-config ref="taskConfig" :data="needSetJob" :refresh="getListData"></task-config>
   </div>
 </template>
 
@@ -194,8 +194,6 @@ export default {
     multipleSelection(arr) {
       const length = arr.length
       if (length) {
-        this.multipleDelete = false
-
         let enable = 0
         for (let i = 0; i < length; i++) {
           if (arr[i].status) {
@@ -205,12 +203,15 @@ export default {
         if (enable === length) {
           this.multipleStart = true
           this.multipleStop = false
+          this.multipleDelete = true
         } else if (enable === 0) {
           this.multipleStart = false
           this.multipleStop = true
+          this.multipleDelete = false
         } else {
           this.multipleStart = true
           this.multipleStop = true
+          this.multipleDelete = true
         }
       } else {
         this.multipleStart = true
@@ -238,11 +239,17 @@ export default {
       return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterTime2(row) {
-      return this.$dayjs(row.last_time).format('YYYY-MM-DD HH:mm:ss')
+      if (row.last_time) {
+        return this.$dayjs(row.last_time).format('YYYY-MM-DD HH:mm:ss')
+      }
+      return '/'
     },
     formatterIp(row) {
       const data = JSON.parse(row.target_ip).host
       return data.toString()
+    },
+    formatterStatus(row) {
+      return row.status === 1 ? '启用' : '禁用'
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
