@@ -41,7 +41,7 @@ export function getInstantListApi(params) {
  */
 export function doTaskApi(data) {
   return request({
-    url: '/v1/scheduler/ansible-tasks',
+    url: '/v1/jobs/instant/carry-out',
     method: 'post',
     data: data
   })

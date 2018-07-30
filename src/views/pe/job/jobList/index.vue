@@ -263,7 +263,7 @@ export default {
         path: `/pe/jobManage/jobView/${id}/1`
       })
     },
-    getTaskIds() {
+    getJobIds() {
       const ids = []
       this.multipleSelection.forEach(item => {
         ids.push(item.id)
@@ -294,7 +294,7 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        const ids = this.getTaskIds()
+        const ids = this.getJobIds()
         this.changeTaskStatus({
           job_ids: ids,
           status: true
@@ -312,7 +312,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const ids = this.getTaskIds()
+        const ids = this.getJobIds()
         this.changeTaskStatus({
           job_ids: ids,
           status: false
@@ -330,7 +330,7 @@ export default {
         cancelButtonText: '取消',
         type: 'error'
       }).then(() => {
-        const ids = this.getTaskIds()
+        const ids = this.getJobIds()
         this.deleteTasks({
           job_ids: ids
         })

@@ -54,6 +54,10 @@ export default {
     padding: 0px 24px;
     background: #fff;
   }
+  & /deep/ .choose-container .el-tabs__nav-scroll {
+    padding: 0;
+    background: inherit;
+  }
   & /deep/ .container-body .el-tabs__content {
     margin: 0px 24px;
     background: #fff;
@@ -62,28 +66,5 @@ export default {
   & /deep/ .tabs-contents {
     padding: 29px 32px;
   }
-}
-.margl-20 {
-  margin-left: 20px;
-}
-.toolbar {
-  margin-top: 30px;
-  display: flex;
-  justify-content: space-between;
-}
-.table {
-  margin-top: 18px;
-  & /deep/ .ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-.danger {
-  color: #f56c6c;
-}
-.pagination {
-  display: flex;
-  justify-content: flex-end;
 }
 </style>
