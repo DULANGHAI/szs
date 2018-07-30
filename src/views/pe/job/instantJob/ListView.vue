@@ -28,6 +28,11 @@
           <div v-for="(item, index) in dataJob" :key="index">
             <job-item :data="item"></job-item>
           </div>
+          <infinite-loading ref="infiniteLoading" @infinite="loadMore" spinner="spiral">
+            <span slot="no-more">
+              没有更多数据了
+            </span>
+          </infinite-loading>
         </div>
       </div>
       <!-- 右侧内容 -->
@@ -42,10 +47,6 @@
             <div class="op-item" @click="doTask">
               <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
-            </div>
-            <div class="op-item">
-              <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
-              <div class="mart-10">停止</div>
             </div>
             <div class="op-item">
               <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
@@ -96,12 +97,14 @@
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
 import JobItem from './components/JobItem'
 
 import { getLanguageApi, getJobListApi, getInstantListApi, doTaskApi } from '@/api/pe/jobManage/instantJob'
 
 export default {
   components: {
+    InfiniteLoading,
     JobItem
   },
   data() {
@@ -122,24 +125,37 @@ export default {
         page: 1,
         per_page: 10
       },
+      dataJob: [],
       form2: { // 右边的即时作业列表
         page: 1,
         per_page: 10
       },
       total: 0,
       system_type_arr: [],
-      dataJob: [],
       dataInstant: [],
       multipleSelection: []
     }
   },
+  watch: {
+    'form1.name'(val, oldVal) {
+      this.form1.page = 1
+      this.dataJob = []
+      this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
+    }
+  },
   created() {
-    Promise.all([getLanguageApi(), getJobListApi(this.form1), getInstantListApi(this.form2)])
+    Promise.all([getLanguageApi(), getInstantListApi(this.form2)])
       .then(res => {
         this.system_type_arr = this.handleSystemData(res[0])
-        this.dataJob = res[1].items
-        this.dataInstant = res[2].items
+        this.dataInstant = res[1].items
       })
+  },
+  mounted() {
+    setTimeout(() => {
+      this.$nextTick(() => {
+
+      })
+    }, 20)
   },
   methods: {
     handleSystemData(data) {
@@ -152,7 +168,10 @@ export default {
     systemClick(item) {
       if (this.form1.system_type !== item.value) {
         this.form1.system_type = item.value
-        this.getListData(1)
+        // this.getListData(1)
+        this.form1.page = 1
+        this.dataJob = []
+        this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
       }
     },
     getListData(index) {
@@ -162,6 +181,29 @@ export default {
       }
       getJobListApi(params).then(res => {
         this.dataJob = res.items
+      })
+    },
+    loadMore($state) {
+      getJobListApi(this.form1).then(res => {
+        if (res.items.length === 0) {
+          $state.loaded()
+          $state.complete()
+          this.$refs.infiniteLoading.isComplete = true
+        } else {
+          this.dataJob = this.dataJob.concat(res.items)
+          $state.loaded()
+          if (res.pages > res.page) {
+            this.form1.page++
+            this.$refs.infiniteLoading.isLoading = false
+          } else {
+            $state.complete()
+            this.$refs.infiniteLoading.isComplete = true
+          }
+        }
+      }).catch(() => {
+        $state.loaded()
+        $state.complete()
+        this.$refs.infiniteLoading.isComplete = true
       })
     },
     handlePageChange(val) {
@@ -190,7 +232,7 @@ export default {
 
 <style lang="scss" scoped>
 .container-body {
-  margin: 24px;
+  // margin: 24px;
   border-radius: 4px;
   background-color: #fff;
   & /deep/ .el-select {
@@ -202,8 +244,8 @@ export default {
 }
 .left {
   width: 300px;
-  padding: 29px 0;
-  min-height: 700px;
+  padding: 29px 0 0;
+  // min-height: 700px;
   border-right: 1px solid #E8E8E8;
   .job-filter {
     display: flex;
@@ -213,6 +255,7 @@ export default {
   .job-list {
     margin-top: 10px;
     overflow-y: auto;
+    height: 600px;
   }
 }
 .right {

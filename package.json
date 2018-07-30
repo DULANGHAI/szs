@@ -24,6 +24,7 @@
     "vue": "2.5.10",
     "vue-code-diff": "0.0.4",
     "vue-codemirror-lite": "^1.0.4",
+    "vue-infinite-loading": "^2.3.1",
     "vue-router": "3.0.1",
     "vuex": "3.0.1"
   },

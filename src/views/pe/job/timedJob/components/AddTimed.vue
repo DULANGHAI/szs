@@ -30,9 +30,7 @@
         </el-col>
         <el-col :span="11" :offset="2">
           <el-form-item label="账号" label-width="60px">
-            <el-select v-model="form.execution_account" placeholder="请选择">
-              <el-option v-for="(item, index) in account_arr" :key="index" :label="item" :value="item"></el-option>
-            </el-select>
+            <el-input v-model="form.execution_account" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -145,7 +143,6 @@ export default {
       },
       jobArr: [],
       selectJob: {},
-      account_arr: ['account1', 'account2'],
       options: [
         {
           id: 'a',

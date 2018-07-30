@@ -39,9 +39,7 @@
                   <div v-if="view">{{form.description}}</div>
                 </el-form-item>
                 <el-form-item label="账号">
-                  <el-select v-if="!view" v-model="form.execution_account" placeholder="请选择">
-                    <el-option v-for="(item, index) in account_arr" :key="index" :label="item" :value="item"></el-option>
-                  </el-select>
+                  <el-input v-if="!view" v-model="form.execution_account" placeholder="请输入"></el-input>
                   <div v-if="view">{{form.execution_account}}</div>
                 </el-form-item>
                 <el-form-item label="目标IP">
@@ -220,7 +218,6 @@ export default {
         applications: '',
         status: false
       },
-      account_arr: ['account1', 'account2'],
       ip_arr: [],
       applications_arr: [],
       systemAndLang: {},

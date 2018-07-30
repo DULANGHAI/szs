@@ -92,7 +92,7 @@
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-import { getLanguageApi, getRecordListApi, getCreatorApi } from '@/api/pe/jobManage/timedJob'
+import { getLanguageApi, getRecordListApi, getCreatorApi } from '@/api/pe/jobManage/instantJob'
 
 export default {
   components: {
@@ -138,7 +138,7 @@ export default {
         creator: '',
         start_time: '',
         end_time: '',
-        execution_type: 'timed',
+        execution_type: 'instant',
         page: 1,
         per_page: 10
       },

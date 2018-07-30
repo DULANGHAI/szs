@@ -83,7 +83,7 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="creator" label="创建人"></el-table-column>
-          <el-table-column prop="updated_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
+          <el-table-column prop="created_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
           <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
           <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
@@ -204,7 +204,7 @@ export default {
       }
     },
     formatterTime(row) {
-      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterJobType(row) {
       return this.job_type_map[row.job_type]
