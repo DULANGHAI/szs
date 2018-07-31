@@ -310,12 +310,12 @@ export default {
   }
 }
 .container-content {
-  display: flex;
+  overflow: hidden;
 }
 .left {
+  float: left;
   width: 300px;
   padding: 29px 0 0;
-  // min-height: 700px;
   border-right: 1px solid #E8E8E8;
   .job-filter {
     display: flex;
@@ -329,7 +329,8 @@ export default {
   }
 }
 .right {
-  flex: 1;
+  overflow: hidden;
+  margin-left: 300px;
   padding: 29px 0;
   .tool-box {
     padding: 0 20px;
