@@ -85,6 +85,11 @@
           <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
         </div>
       </div>
+
+      <!-- 编辑作业 -->
+      <job-config ref="jobConfig" :data="needSetJob" :refresh="getListData"></job-config>
+      <!-- 任务配置 -->
+      <task-config ref="taskConfig" :data="needSetJob" :refresh="getListData"></task-config>
     </div>
   </div>
 </template>
@@ -92,13 +97,17 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import JobItem from './components/JobItem'
+import TaskConfig from './components/TaskConfig'
+import JobConfig from './components/JobConfig'
 
 import { getLanguageApi, getJobListApi, getInstantListApi, doTaskApi, createInstantApi, deleteInstantApi } from '@/api/pe/jobManage/instantJob'
 
 export default {
   components: {
     InfiniteLoading,
-    JobItem
+    JobItem,
+    TaskConfig,
+    JobConfig
   },
   data() {
     this.job_type_map = {
@@ -128,7 +137,8 @@ export default {
       system_type_arr: [],
       dataInstant: [],
       multipleSelection: [],
-      uniqueId: +new Date()
+      uniqueId: +new Date(),
+      needSetJob: null // 需要配置的作业信息
     }
   },
   watch: {
@@ -275,6 +285,16 @@ export default {
         })
         this.getListData()
       })
+    },
+    // 作业配置
+    handleJobSet(row) {
+      this.needSetJob = row
+      this.$refs.jobConfig.showMoel()
+    },
+    // 任务配置
+    handleTaskSet(row) {
+      this.needSetJob = row
+      this.$refs.taskConfig.showMoel()
     }
   }
 }

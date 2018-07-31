@@ -70,6 +70,18 @@ export function deleteInstantApi(data) {
 }
 
 /**
+ * 更新即时作业
+ * @param {Object} data
+ */
+export function updateJobApi(id, data) {
+  return request({
+    url: `/v1/jobs/instant/${id}`,
+    method: 'put',
+    data: data
+  })
+}
+
+/**
  * 执行作业
  * @param {Object} data
  */
