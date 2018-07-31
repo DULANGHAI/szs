@@ -16,7 +16,7 @@ export function getLanguageApi() {
  */
 export function getCreatorApi() {
   return request({
-    url: '/v1/jobs/timed-creator/',
+    url: '/v1/jobs/timed/creator/',
     method: 'get'
   })
 }

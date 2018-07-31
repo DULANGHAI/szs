@@ -76,6 +76,7 @@
         <el-table-column prop="time" label="执行耗时"></el-table-column>
         <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
         <el-table-column prop="status" label="状态"></el-table-column>
+        <el-table-column prop="result" label="结果"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="text" size="small">执行</el-button>
@@ -126,8 +127,8 @@ export default {
           label: 'b'
         },
         {
-          id: 'c',
-          label: 'c'
+          id: '10.111.2.40',
+          label: '10.111.2.40'
         }
       ],
       form: {
