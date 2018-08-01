@@ -74,7 +74,8 @@
           </el-table-column>
           <el-table-column
             prop="name"
-            label="提交时间">
+            label="提交时间"
+            sortable>
           </el-table-column>
           <el-table-column
             label="风险等级">
