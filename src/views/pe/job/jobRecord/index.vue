@@ -92,7 +92,7 @@
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
-          <el-table-column prop="start_time" label="执行时间" :formatter="formatterTime1"></el-table-column>
+          <el-table-column prop="start_time" label="执行时间" width="160px" :formatter="formatterTime1"></el-table-column>
           <el-table-column prop="creator" label="执行人"></el-table-column>
           <el-table-column prop="execution_type" label="执行方式" :formatter="formatterExecutionType"></el-table-column>
           <el-table-column prop="name" label="作业名"></el-table-column>
@@ -100,7 +100,7 @@
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
           <el-table-column prop="target_ip" label="目标IP" :formatter="formatterTargetIp"></el-table-column>
           <el-table-column prop="time" label="执行耗时"></el-table-column>
-          <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
+          <el-table-column prop="end_time" label="结束时间" width="160px" :formatter="formatterTime2"></el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
           <el-table-column prop="result" label="结果"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
@@ -212,7 +212,8 @@ export default {
       return this.job_type_map[row.job_type]
     },
     formatterTargetIp(row) {
-      return JSON.parse(row.target_ip).host.toString()
+      // return JSON.parse(row.target_ip).host.toString()
+      return row.target_ip
     },
     init() {
       Promise.all([getLanguageApi(), getListApi(this.form), getCreatorApi()])
@@ -237,7 +238,14 @@ export default {
       this.getListData(1)
     },
     refresh() {},
-    goView() {}
+    goView(id) {
+      this.$router.push({
+        path: `/pe/jobManage/recordDetail/${id}`
+      })
+    },
+    handlePageChange(val) {
+      this.getListData(val)
+    }
   }
 }
 </script>

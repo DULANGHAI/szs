@@ -231,7 +231,7 @@ export default {
         // 2.确定选中的脚本是哪个
         this.selectedScript = this.computeSelectedScript(res)
         // 3.获取脚本版本选项
-        getScriptVersionApi(this.selectedScript.id).then(res1 => {
+        getScriptVersionApi(this.selectedScript.file_id).then(res1 => {
           this.scriptVersionOptions = res1
           // 4.确定选中的版本是哪个
           this.selectedVersion = this.computeSelectedVersion(res1)
@@ -293,7 +293,7 @@ export default {
     },
     scriptChange(val) {
       this.selectedVersion = {}
-      getScriptVersionApi(val.id).then(res => {
+      getScriptVersionApi(val.file_id).then(res => {
         this.scriptVersionOptions = res
       })
     },
