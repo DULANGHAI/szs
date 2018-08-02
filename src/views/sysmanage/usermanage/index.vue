@@ -166,10 +166,9 @@ import Breadcrumb from '@/components/Breadcrumb'
 // import adduser from './adduser' // 新建用户
 
 export default {
-  name: 'user',
+  name: 'usermanage',
   components: {
   Breadcrumb,
-  // adduser
   },
     data() {
       return {

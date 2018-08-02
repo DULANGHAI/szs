@@ -263,23 +263,29 @@ export const constantRouterMap = [
     children: [
       // 1.用户管理
       {
-        path: 'user',
-        name: 'users',
-        component: () => import('@/views/sysmanage/user/index'),
+        path: 'usermanage',
+        name: 'usermanage',
+        component: () => import('@/views/sysmanage/usermanage/index'),
         meta: { title: '用户管理' }
       },
       {
-        path: 'example2',
-        name: 'Example2',
-        component: () => import('@/views/example2/index'),
-        meta: { title: 'Example2' }
+        path: 'rolermanage',
+        name: 'rolermanage',
+        component: () => import('@/views/sysmanage/rolermanage/index'),
+        meta: { title: '角色管理' },
       },
       {
-        path: 'example3',
-        name: 'Example3',
-        component: () => import('@/views/example3/index'),
-        meta: { title: 'Example3' }
-      }
+        path: 'audit',
+        name: 'audit',
+        component: () => import('@/views/sysmanage/audit/index'),
+        meta: { title: '系统审计' }
+      },
+      {
+        path: 'sysconfig',
+        name: 'sysconfig',
+        component: () => import('@/views/sysmanage/sysconfig/index'),
+        meta: { title: '系统配置' }
+      },
     ]
   },
 
