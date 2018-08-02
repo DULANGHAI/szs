@@ -12,7 +12,7 @@
         size="small"
         label-width="70px"
         label-position="right">
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="任务名">
               <el-input v-model="form.name" placeholder="请输入"></el-input>
@@ -42,7 +42,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="风险等级">
               <el-select v-model="form.risk_level" placeholder="请选择">

@@ -12,7 +12,7 @@
         size="small"
         label-width="70px"
         label-position="right">
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="作业名">
               <el-input v-model="form.name" placeholder="请输入"></el-input>
@@ -37,7 +37,7 @@
             <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="创建人">
               <el-select v-model="form.creator" placeholder="请选择">
