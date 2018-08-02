@@ -78,9 +78,8 @@
         </div>
         <!-- 文件分发 -->
         <div v-if="form.type === 'file'">
-          <el-form-item label="文件分发">
-            <div>接口没有，暂时放下</div>
-          </el-form-item>
+          <el-form-item label="文件分发"></el-form-item>
+          <file-select ref="fileSelect" :view="view"></file-select>
           <div style="display: flex;">
             <el-form-item label="文件所有者">
               <el-input v-if="!view" v-model="form.file_owner" placeholder="请输入"></el-input>
@@ -142,6 +141,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
+import FileSelect from './components/FileSelect'
 
 import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 
@@ -150,7 +150,8 @@ export default {
   components: {
     Breadcrumb,
     RiskLevel,
-    ScriptOption
+    ScriptOption,
+    FileSelect
   },
   data() {
     return {
@@ -167,6 +168,7 @@ export default {
         script_parameter: '',
         script_version: '',
 
+        file_selection: '',
         file_owner: '',
         file_permission: '',
         is_replace: false,
@@ -206,6 +208,8 @@ export default {
             // 如果是脚本任务还需再请求一些接口
             if (res[0].type === 'script') {
               this.doWhenScript()
+            } else if (res[0].type === 'file') { // 处理文件分发任务
+              this.doWhenFile()
             }
           })
         }).catch(err => {
@@ -237,6 +241,13 @@ export default {
           this.selectedVersion = this.computeSelectedVersion(res1)
         })
       })
+    },
+    /**
+     * 当查看、编辑遇到文件分发任务时还需处理
+     */
+    doWhenFile() {
+      const data = JSON.parse(this.form.file_selection)
+      this.$refs.fileSelect.setData(data)
     },
     computeSelectedScript(res) {
       let result = {}
@@ -311,6 +322,7 @@ export default {
         script_parameter: '',
         script_version: '',
 
+        file_selection: '',
         file_owner: '',
         file_permission: '',
         is_replace: false,
@@ -322,7 +334,8 @@ export default {
       }
     },
     submit() {
-      if (this.form.risk_level) {
+      if (this.form.type === 'file' ||
+        this.form.type !== 'file' && this.form.risk_level) {
         if (this.form.id) {
           upadateTaskApi(this.form.id, this.form).then(res => {
             if (res.id) {
@@ -332,6 +345,9 @@ export default {
             }
           })
         } else {
+          if (this.form.type === 'file') {
+            this.form.file_selection = JSON.stringify(this.$refs.fileSelect.getData())
+          }
           createTaskApi(this.form).then(res => {
             if (res.id) {
               this.$router.push({

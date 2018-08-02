@@ -244,7 +244,6 @@ export default {
       const data = this.multipleSelection[0]
       data.scheduling = JSON.stringify(JSON.parse(data.scheduling))
       doTaskApi({
-        // job_info: JSON.stringify(this.multipleSelection[0])
         job_info: JSON.stringify(data)
       }).then(() => {
 
