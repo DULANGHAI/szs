@@ -208,6 +208,20 @@ export const constantRouterMap = [
     children: [
       // 1.资源管理
       // 2.应用管理
+      {
+        path: 'applications',
+        component: Layout,
+        name: 'Applications',
+        meta: { title: '应用管理', icon: 'banben' },
+        children: [
+          {
+            path: 'applist',
+            name: 'applist',
+            component: () => import('@/views/resouce/applications/index'),
+            meta: { title: '应用列表' }
+          }
+        ]
+      },
       // 3.版本库
       {
         path: 'repository',
@@ -218,50 +232,50 @@ export const constantRouterMap = [
           {
             path: 'risk',
             name: 'risk',
-            component: () => import('@/views/risk/index'),
+            component: () => import('@/views/resouce/risk/index'),
             meta: { title: '风险命令库' }
           },
           {
             path: 'whitelist',
             name: 'whitelist',
-            component: () => import('@/views/whitelist/index'),
+            component: () => import('@/views/resouce/whitelist/index'),
             meta: { title: '命令白名单' }
           },
           {
             path: 'software',
             name: 'softwareLibrary',
-            component: () => import('@/views/softwareLibrary/index'),
+            component: () => import('@/views/resouce/softwareLibrary/index'),
             meta: { title: '软件包库' }
           },
           {
             path: 'script',
             name: 'scriptLibrary',
-            component: () => import('@/views/scriptLibrary/index'),
+            component: () => import('@/views/resouce/scriptLibrary/index'),
             meta: { title: '脚本库' }
           },
+          // {
+          //   path: 'script/file',
+          //   name: 'fileList',
+          //   hidden: true,
+          //   component: () => import('@/views/resouce/scriptLibrary/filelist'),
+          //   meta: { title: '脚本库' }
+          // },
           {
-            path: 'script/file',
-            name: 'fileList',
-            hidden: true,
-            component: () => import('@/views/scriptLibrary/filelist'),
-            meta: { title: '脚本库' }
-          },
-          {
-            path: 'example2',
-            name: '配置文件库',
-            component: () => import('@/views/example2/index'),
+            path: 'config',
+            name: 'configFileLibrary',
+            component: () => import('@/views/resouce/configFileLibrary/index'),
             meta: { title: '配置文件库' }
           },
           {
             path: 'review',
             name: 'review',
-            component: () => import('@/views/review/index'),
+            component: () => import('@/views/resouce/review/index'),
             meta: { title: '文件审批' }
           },
           {
             path: 'review/detail/:id',
             name: 'reviewDetail',
-            component: () => import('@/views/review/detail'),
+            component: () => import('@/views/resouce/review/detail'),
             meta: { title: '文件审批' },
             hidden: true,
             props: true

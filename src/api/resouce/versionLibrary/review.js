@@ -9,6 +9,14 @@ export function getReviewList(params) {
   })
 }
 
+// 撤销审批
+export function getReviewRevoke(id) {
+  return request({
+    url: '/v1/repository/review/' + id,
+    method: 'put'
+  })
+}
+
 // 文件审批详情
 export function getReviewDetail(id) {
   return request({

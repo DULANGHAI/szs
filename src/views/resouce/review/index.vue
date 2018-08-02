@@ -41,14 +41,14 @@
             <el-col :span="7">
               <el-form-item label="文件类型">
                 <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :label="item.label" :value="item.value"></el-option>
+                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="状态">
                 <el-select v-model="form.status" placeholder="请选择">
-                  <el-option v-for="item in fileStutas" :label="item.label" :value="item.value"></el-option>
+                  <el-option v-for="item in fileStutas" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -117,6 +117,7 @@
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="goDetail(scope.row.id)">查看</el-button>
+              <el-button v-if="form.isStatus==='cancel'" type="text" size="small" @click="revoke(scope.row.id)">撤销</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -139,10 +140,10 @@
 </template>
 
 <script>
-import { getReviewList } from '@/api/resouce/versionLibrary/review'
+import { getReviewList, getReviewRevoke } from '@/api/resouce/versionLibrary/review'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 
 const formData = {
   'datatime': []
@@ -222,6 +223,17 @@ export default {
         }
       })
     },
+    // 撤销
+    revoke(id) {
+      MessageBox.confirm('此操作将撤销该文件审批，是否继续', '撤销文件审批', { type: 'warning' }).then(() => {
+        getReviewRevoke(id).then(response => {
+          Message.success('操作成功')
+          this.getList()
+        }).catch(error => {
+          Message.error(error)
+        })
+      }).catch(() => { })
+    },
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
@@ -262,6 +274,9 @@ export default {
             case 'initial':
               fstatus = '<span>审批中</span>'
               break
+            case 'cancel':
+              fstatus = '<span>已撤销</span>'
+              break
             case 'pending':
               fstatus = '<span>审批中</span>'
               break
@@ -281,6 +296,7 @@ export default {
             'risk_level': item.risk_level,
             'approver': item.approver || '/',
             'status': fstatus,
+            'isStatus': item.status,
             'id': item.id
           }
         })

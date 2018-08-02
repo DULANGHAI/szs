@@ -2,6 +2,10 @@
   background-color: #fff;
   padding-left: 12px;
 }
+.CodeMirror{
+  height: auto !important;
+  max-height: 700px !important;
+}
 .container-title{
   background: #fff;
   font-size: 22px;
@@ -9,8 +13,8 @@
   padding: 20px 0px 30px 22px;
 }
 .container-body-wrap{
-  margin: 24px;
-  padding: 29px 32px;
+  margin: 25px;
+  padding: 25px 25px;
   border-radius: 4px;
   background-color: #fff;
 }
@@ -52,6 +56,32 @@
     border-left: 1px solid #ddd;
   }
 }
+.tabs-contents{
+  .file-content-header{
+    height: 36px;
+    width:100%;
+    background: #f7f7f7;
+    border:1px solid #ddd;
+    padding: 10px 10px;
+    overflow: hidden;
+  }
+  .file-content-header-left{
+    float:left;
+    span{
+      padding-left: 5px;
+    }
+  }
+  .CodeMirror{
+    border:1px solid #ddd;
+  }
+  .file-content-header-right{
+    float: right;
+    span{
+      display: inline-block;
+      margin-left: 5px;
+    }
+  }
+}
 .pb-library .container-body{
   .el-tabs__nav-scroll{
     padding: 0px 22px;
@@ -62,7 +92,7 @@
     min-height: 100%;
   }
   .tabs-contents{
-    padding: 30px;
+    padding: 25px;
   }
   .tabs-contents .el-table th{
     background-color: #fafafa;
@@ -169,13 +199,20 @@ dl, dd, p {
   .el-range-separator{
     width: 25px;
   }
+  .el-range-editor--small .el-range__close-icon{
+    display: none;
+  }
   .el-date-editor .el-range__icon{
     display: none;
   }
+  .el-date-editor .el-range-input{
+    width: 44%;
+    font-size: 12px;
+  }
   .review-body-wrap{
-    margin: 24px 0px;
+    margin: 25px 0px;
     background: #fff;
-    padding:29px 32px;
+    padding:25px 25px;
     .el-form-item__content {
       overflow: hidden;
     }
@@ -194,4 +231,6 @@ dl, dd, p {
   overflow: hidden;
   margin-bottom: -1px;
 }
-
+.d2h-file-wrapper{
+  padding-bottom: 5px;
+}

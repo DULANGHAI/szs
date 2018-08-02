@@ -8,117 +8,63 @@
               <router-link :to="item.redirect||item.path">{{item.meta.title}}</router-link>
             </el-breadcrumb-item>
           </transition-group>
-          <template v-if="isSpeed === 1">
-            <span role="presentation" class="el-breadcrumb__separator">/</span>
-            <el-select v-model="ywzSelect" size="mini" placeholder="请选择" @change="ywzChange">
-              <el-option
-                v-for="item in ywzList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </template>
-          <template v-if="isSpeed === 2">
-            <span role="presentation" class="el-breadcrumb__separator">/</span>
-            <el-select v-model="ywzSelect" size="mini" placeholder="请选择" @change="ywzChange">
-              <el-option
-                v-for="item in ywzList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-            <span role="presentation" class="el-breadcrumb__separator">/</span>
-            <el-select v-model="zzSelect" size="mini" placeholder="请选择" @change="zzChange">
-              <el-option
-                v-for="item in zizuList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </template>
+          <span role="presentation" class="el-breadcrumb__separator">/</span>
+          <el-dropdown @command="ywzChange" trigger="click">
+            <el-button size="mini">
+              {{ywzSelectName}}<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in ywzList" :command="item.id">{{item.name}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-breadcrumb>
+        
       </div>
     </template>
     <div class="container-title">
-      脚本
+      软件包库
     </div>
     <div class="container-body-wrap" v-if="!isfile">
-      <!-- <template v-if="isSpeed === 1">
-        <dl class="ovinfo-dl">
-          <dd v-for="item in ywzList" @click="zzDetail(item.id)">
-            <span>{{ item.name }}</span>
-            <div>{{ item.description }}</div>
-          </dd>
-        </dl>
-      </template> -->
-      <template v-if="isSpeed === 1">
-        <el-table
-          ref="multipleTable"
-          :data="zizuList"
-          tooltip-effect="dark"
-          style="width: 100%"
-          v-loading.body="listLoading" 
-          element-loading-text="Loading"
-          empty-text="暂无数据">
-          <el-table-column
-            label="项目名"
-            min-width="30%"
-            show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-button type="text" size="small" @click="yyDetail(scope.row.id)">{{ scope.row.name}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="description"
-            label="提交说明">
-          </el-table-column>
-        </el-table>
-      </template>
-      <template v-if="isSpeed === 2">
-        <div style="text-align:right;margin-bottom:15px;">
-          <el-button size="mini" @click.native="$refs.addproject.doCreate(false)">添加</el-button>
-        </div>
-        <el-table
-          ref="yyTable"
-          :data="yyList"
-          style="width: 100%"
-          v-loading.body="listLoading" 
-          element-loading-text="Loading"
-          empty-text="暂无数据">
-          <el-table-column
-            label="项目名"
-            min-width="30%"
-            show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goFileDetail(scope.row.id, scope.row.name)">{{ scope.row.name}}</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="description"
-            label="提交说明">
-          </el-table-column>
-          <el-table-column
-            prop="created_user"
-            label="创建人">
-          </el-table-column>
-          <el-table-column
-            prop="created_at"
-            :formatter="formatterTime"
-            label="创建时间">
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            min-width="30%"
-            show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-button type="text" size="small" @click="yyListDelete(scope.row.id)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
+      <div style="text-align:right;margin-bottom:15px;">
+        <el-button size="mini" @click.native="$refs.addproject.doCreate(false)">添加</el-button>
+      </div>
+      <el-table
+        ref="yyTable"
+        :data="yyList"
+        style="width: 100%"
+        v-loading.body="listLoading" 
+        element-loading-text="Loading"
+        empty-text="暂无数据">
+        <el-table-column
+          label="项目名"
+          min-width="30%"
+          show-overflow-tooltip>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="goFileDetail(scope.row.id, scope.row.name)">{{ scope.row.name}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="description"
+          label="提交说明">
+        </el-table-column>
+        <el-table-column
+          prop="created_user"
+          label="创建人">
+        </el-table-column>
+        <el-table-column
+          prop="created_at"
+          :formatter="formatterTime"
+          label="创建时间">
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          min-width="30%"
+          show-overflow-tooltip>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="yyListDelete(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
     <div class="container-body" v-if="isfile">
       <file-page ref="create" :app_id="app_id" :app_name="app_name"></file-page>
@@ -145,22 +91,24 @@ export default {
   },
   data() {
     return {
-      r_type: 'scripts',
+      r_type: 'applications',
       levelList: null,
       value4: '',
       isZizu: false,
-      isSpeed: 1,
+      isSpeed: 2,
       isfile: false,
       activeName: 'file',
       ywzList: [],
       zizuList: [], // 子组list =》 子组列表
       yyList: [], // 语言list =》 列表
       ywzSelect: '', // 面包 =》 业务组select
+      ywzSelectName: '',
       zzSelect: '',
       listLoading: true,
       yySelection: [],
       app_id: '',
-      app_name: ''
+      app_name: '',
+      command_name: ''
     }
   },
   watch: {
@@ -189,21 +137,23 @@ export default {
       getRepository().then(response => {
         this.ywzList = response
         this.zzDetail(response[0].id)
+        this.getYuyan(response[0].id)
       }).catch(error => {
         Message.error(error)
       })
     },
     // 加载子组列表
-    getZizu(id) {
+    getZizu(id, name) {
       this.zizuList = []
+      this.yyList = []
       this.listLoading = true
-      getRepositoryZizu(id, this.r_type).then(response => {
+      getRepositoryZizu(name, this.r_type).then(response => {
         this.zizuList = response
         if (response.length > 0) {
           this.zzSelect = response[0].id
           this.getYuyan(response[0].id)
         } else {
-          this.isSpeed = 1
+          this.isSpeed = 2
         }
         this.listLoading = false
       }).catch(error => {
@@ -212,8 +162,14 @@ export default {
     },
     // 选择业务组select
     ywzChange(id) {
-      this.getZizu(id)
+      this.ywzSelect = id
       this.isfile = false
+      for (var item in this.ywzList) {
+        if (this.ywzList[item].id === id) {
+          this.getZizu(id, this.ywzList[item].name)
+          this.ywzSelectName = this.ywzList[item].name
+        }
+      }
     },
     // 子组select
     zzChange(id) {
@@ -223,14 +179,23 @@ export default {
     },
     // 打开子组显示
     zzDetail(id) {
-      this.isSpeed = 1
+      this.isSpeed = 2
       this.ywzChange(id)
+      for (var item in this.ywzList) {
+        if (this.ywzList[item].id === id) {
+          this.ywzSelect = this.ywzList[item].name
+        }
+      }
       this.ywzSelect = id
     },
     // 打开语言组显示
     yyDetail(id) {
       this.isSpeed = 2
       this.getYuyan(id)
+    },
+    // 选择
+    handleCommand(command) {
+      this.command_name = command
     },
     getYuyan(id) {
       this.yyList = []

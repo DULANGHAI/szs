@@ -12,6 +12,7 @@
         <el-select v-model="form.risk_level" placeholder="请选择版本">
           <el-option
             v-for="item in levelOptions"
+            :key="item.label"
             :label="item.label"
             :value="item.value">
           </el-option>

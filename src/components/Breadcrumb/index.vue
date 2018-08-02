@@ -4,7 +4,8 @@
       <transition-group name="breadcrumb">
         <el-breadcrumb-item v-for="(item,index)  in levelList" :key="item.path" v-if="item.meta.title">
           <span v-if="item.redirect||index==levelList.length-1" class="no-redirect">{{item.meta.title}}</span>
-          <router-link v-else :to="item.redirect||item.path">{{item.meta.title}}</router-link>
+          <!-- <router-link v-else :to="item.redirect||item.path">{{item.meta.title}}</router-link> -->
+          <span v-else>{{item.meta.title}}</span>
         </el-breadcrumb-item>
       </transition-group>
     </el-breadcrumb>

@@ -28,7 +28,8 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <span style="padding-left: 10px;" class="pathspan">
-                  <a style="display: inline-block;" @click="getfilelist('/')">{{ this.project_name }} </a>
+                  <a style="display: inline-block;" @click="getfilelist()">{{ this.project_name }} </a>
+                  <span v-if="pathSpan.length >= 1" role="presentation" class="el-breadcrumb__separator">/</span>
                   <el-breadcrumb separator="/" style="display: inline-block;vertical-align: middle;">
                     <el-breadcrumb-item v-for="(item, index) in pathSpan"><a v-if="index !== pathSpan.length -1" @click="breadItem(index)">{{ item }}</a><span v-else>{{ item }}</span></el-breadcrumb-item>
                   </el-breadcrumb>
@@ -40,10 +41,10 @@
                     <el-button size="mini">新建</el-button>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item class="clearfix" @click.native="$refs.app.doCreate(false, true)">
+                    <el-dropdown-item class="clearfix" @click.native="$refs.app.doCreate(false, 'tree')">
                       新建文件夹
                     </el-dropdown-item>
-                    <el-dropdown-item class="clearfix" @click.native="$refs.app.doCreate(false, false)">
+                    <el-dropdown-item class="clearfix" @click.native="$refs.app.doCreate(false, 'blob')">
                       新建文件
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -87,13 +88,6 @@
                 label="最近提交">
               </el-table-column>
               <el-table-column
-                label="风险等级"
-                show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <risk-level :level="scope.row.risk_level"></risk-level>
-                </template>
-              </el-table-column>
-              <el-table-column
                 prop="created_at"
                 label="更新时间"
                 :formatter="formatterTime"
@@ -103,40 +97,44 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="版本历史" name="history">
-          <div class="tabs-contents">
-            <div class="file-nav">
-              <div class="file-nav-left">
+          <template v-if="!historyfilediff">
+            <div class="tabs-contents">
+              <div class="file-nav">
+                <div class="file-nav-left">
+                </div>
               </div>
+              <el-table
+                ref="multipleTable"
+                :data="historyData"
+                tooltip-effect="dark"
+                style="width: 100%"
+                empty-text="暂无数据">
+                <el-table-column
+                  prop="committed_date"
+                  label="提交时间"
+                  :formatter="formatterTime"
+                  min-width="20%">
+                </el-table-column>
+                <el-table-column
+                  prop="title"
+                  label="提交说明">
+                </el-table-column>
+                <el-table-column
+                  prop="rank"
+                  label="hash"
+                  min-width="20%"
+                  show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <el-button type="text" size="small" @click="filelookhash(scope.row.id, scope.row.title, scope.row.committer_name)"><span class="text-yc" :title="scope.row.id">{{ scope.row.id}}</span></el-button>
+                    <el-button type="text" size="small" @click="filebrowse(scope.row.id)">浏览文件</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
             </div>
-            <el-table
-              ref="multipleTable"
-              :data="historyData"
-              tooltip-effect="dark"
-              style="width: 100%"
-              empty-text="暂无数据">
-              <el-table-column
-                prop="committed_date"
-                label="提交时间"
-                :formatter="formatterTime"
-                min-width="20%">
-              </el-table-column>
-              <el-table-column
-                prop="title"
-                label="提交说明">
-              </el-table-column>
-              <el-table-column
-                prop="rank"
-                label="hash"
-                min-width="30%"
-                show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <el-button type="text" size="small"><span class="text-yc" :title="scope.row.id">{{ scope.row.id}}</span></el-button>
-                  <el-button type="text" size="small">复制</el-button>
-                  <el-button type="text" size="small">浏览文件</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
+          </template>
+          <template v-else>
+            <file-diff ref="diff" :project_id="project_id" :branch="branch" :fid="hashdiff_id" :hashdiff_title="hashdiff_title" :hashdiff_user="hashdiff_user"></file-diff>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </template>
@@ -144,16 +142,17 @@
       <div class="container-body-wrap">
         <div class="file-nav">
           <div class="file-nav-left">
-            <el-select v-model="branch" size="mini" placeholder="请选择">
+            <el-select v-model="branch" filterable @change="selectBranch" size="mini" placeholder="请选择分支">
               <el-option
                 v-for="item in branchOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.name"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
             <span style="padding-left: 10px;" class="pathspan">
-              <a style="display: inline-block;" @click="getfilelist('/')">{{ this.project_name }} </a>
+              <a style="display: inline-block;" @click="getfilelist()">{{ this.project_name }} </a>
+              <span v-if="pathSpan.length >= 1" role="presentation" class="el-breadcrumb__separator">/</span>
               <el-breadcrumb separator="/" style="display: inline-block;vertical-align: middle;">
                 <el-breadcrumb-item v-for="(item, index) in pathSpan"><a v-if="index !== pathSpan.length -1" @click="breadItem(index)">{{ item }}</a><span v-else>{{ item }}</span></el-breadcrumb-item>
               </el-breadcrumb>
@@ -161,7 +160,7 @@
           </div>
           <div class="file-nav-right" v-if="!is_editContent">
             <el-button size="mini" @click="editFileContent(true)">编辑</el-button>
-            <el-button size="mini">删除</el-button>
+            <el-button size="mini" @click="FileDelete(SelectionArray)">删除</el-button>
           </div>
         </div>
         <div class="file-content">
@@ -170,10 +169,10 @@
               <svg-icon icon-class="wenjian" />
               <span>{{codeFileName}}</span>
             </div>
-            <div class="file-content-header-right">
+            <!-- <div class="file-content-header-right">
               <span>风险等级</span>
               <span><risk-level :level="codeFileRiskLevel"></risk-level></span>
-            </div>
+            </div> -->
           </div>
           <div class="cm-container">
             <codemirror v-model="codeFileContent" @change="change" ref="myEditor" :options="codeOptions"></codemirror>
@@ -215,6 +214,7 @@ import AddVersion from './addVersion' // 新建版本
 import AddFile from './AddFile' // 新建文件
 import UploadFile from './uploadFile' // 上传文件
 import UploadZip from './uploadZip' // 上传压缩包
+import FileDiff from './filediff' // hash 文件diff
 import { getFileList, getVersionHistory, deleteAppFile, getAppFile, putAppFile, getBranchList, deleteBranch } from '@/api/script'
 import { Message, MessageBox } from 'element-ui'
 import RiskLevel from '@/components/RiskLevel'
@@ -242,7 +242,8 @@ export default {
     RiskLevel,
     CodeDiff,
     codemirror,
-    CodeMirror
+    CodeMirror,
+    FileDiff
   },
   data() {
     return {
@@ -273,13 +274,17 @@ export default {
       is_sltmount: true, // 禁用编辑状态是否开启
       is_dltmount: true,
       is_editContent: false, // 是否处于编辑状态
+      historyfilediff: false, // 展示hash文件diff面板
+      hashdiff_id: '', // 接受可传递的id
+      hashdiff_title: '',
+      hashdiff_user: '',
       codeOptions: { // 文件内容配置
         tabSize: 2,
         lineNumbers: true,
         lineWrapping: true,
         readOnly: 'nocursor', // 是否编辑
         line: true,
-        mode: 'python, shell',
+        mode: 'python',
         theme: 'default'
       },
       branch: '',
@@ -320,6 +325,7 @@ export default {
     handleClick(tab, event) {
       if (tab.name === 'history') {
         this.getVersionHistory()
+        this.historyfilediff = false
       } else {
         this.pathSpan = []
         this.getfilelist()
@@ -346,7 +352,7 @@ export default {
       this.SelectionID = val
       var sary_path = []
       for (const item in val) {
-        sary_path.push(val[item].id)
+        sary_path.push(val[item].file_id)
       }
       this.SelectionArray = sary_path
       val.length > 0 ? this.is_dltmount = false : this.is_dltmount = true
@@ -374,10 +380,11 @@ export default {
       }
       this.fileLoading = true
       this.fileDetailWrap = false
+      this.pathSpan = []
       getFileList(this.$props.app_id, file_path).then(response => {
         this.fileData = response
         this.fileLoading = false
-        if (row !== undefined) this.frArray(row)
+        if (row !== undefined && row !== '/') this.frArray(row)
         if (response.length > 0) {
           this.ckPath = response[0].path
         }
@@ -396,12 +403,28 @@ export default {
         Message.error(error)
       })
     },
+    // 查看版本历史的hash文件diff
+    filelookhash(fid, title, user) {
+      this.historyfilediff = true
+      this.hashdiff_id = fid
+      this.hashdiff_title = title
+      this.hashdiff_user = user
+    },
+    // 浏览文件 =》 将文件版本上呈现一个hash版本文件列表
+    filebrowse(id) {
+      this.activeName = 'file'
+      this.branchOptions.push({
+        'name': id
+      })
+      this.branch = id
+      this.selectBranch()
+    },
     // 获取版本
     getBranch(new_name) {
       getBranchList(this.$props.app_id).then(response => {
         this.branchOptions = response
         this.branch = new_name !== undefined ? new_name : (response[0].name || '')
-        this.getfilelist('/')
+        this.getfilelist()
       }).catch(error => {
         Message.error(error)
       })
@@ -430,6 +453,7 @@ export default {
         this.codeFileName = response.name
         this.codeFileRiskLevel = response.risk_level
         this.editForm = response || []
+        this.SelectionArray = [response.file_id]
       }).catch(error => {
         Message.error(error)
       })
@@ -458,12 +482,6 @@ export default {
     // 下载文件
     FileDownload(id) {
       window.open('/v1/repository/project/' + this.project_id + '/files/download?id=' + id)
-      // DownAppFile(this.project_id, params).then(response => {
-      //   this.getfilelist(this.ckPath)
-      //   this.fileLoading = false
-      // }).catch(error => {
-      //   Message.error(error)
-      // })
     },
     // 点击文件判断类型进行操作
     isfiletype(type, path) {
@@ -477,7 +495,7 @@ export default {
     },
     // 选择版本
     selectBranch() {
-      this.getfilelist('/')
+      this.getfilelist()
     },
     // 编辑文件内容
     editFileContent(type) {
@@ -498,6 +516,12 @@ export default {
     },
     // 确定编辑文件内容
     submitEdit() {
+      const successCallBack = () => {
+        Message.success('编辑成功')
+        this.$router.push({
+          name: 'review'
+        })
+      }
       const params = {
         'content': this.codeFileContent,
         'comment': this.editForm.comment,
@@ -507,7 +531,7 @@ export default {
         'repository_type': 'applications'
       }
       putAppFile(this.project_id, params).then(response => {
-        console.log(777)
+        successCallBack()
       }).catch(error => {
         Message.error(error)
       })
