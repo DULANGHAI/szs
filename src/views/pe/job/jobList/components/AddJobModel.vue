@@ -22,7 +22,7 @@
           @change="change">
           <el-option v-for="item in jobArr" :key="form.type + item.id" :label="item.name" :value="item.name">
             <command-option v-if="form.type === 'command'" :data="item"></command-option>
-            <script-option v-if="form.type === 'script'" :data="item"></script-option>
+            <script-option v-else :data="item"></script-option>
           </el-option>
         </el-select>
       </el-form-item>

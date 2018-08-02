@@ -39,6 +39,8 @@
             <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
             <!-- 脚本类型 -->
             <script-show v-if="selected.type === 'script'" :data.sync="selected" :key="uniqueId"></script-show>
+            <!-- 文件分发类型 -->
+          <file-show v-if="selected.type === 'file'" :view="view" :data.sync="selected" :key="uniqueId"></file-show>
           </div>
         </div>
 
@@ -57,6 +59,7 @@
 import MyChart from '@/views/pe/job/joblist/components/MyChart'
 import CommandShow from '@/views/pe/job/joblist/components/CommandShow'
 import ScriptShow from '@/views/pe/job/joblist/components/ScriptShow'
+import FileShow from '@/views/pe/job/joblist/components/FileShow'
 
 import { updateJobApi } from '@/api/pe/jobManage/timedJob'
 
@@ -68,7 +71,8 @@ export default {
   components: {
     MyChart,
     CommandShow,
-    ScriptShow
+    ScriptShow,
+    FileShow
   },
   data() {
     return {

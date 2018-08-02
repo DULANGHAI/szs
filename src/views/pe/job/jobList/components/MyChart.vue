@@ -10,9 +10,11 @@
       
       <!-- 当前节点 -->
       <div>
-        <command-option v-if="data.type === 'command' || data.type === 'script'" :data.sync="data" :uniqueId="uniqueId"
+        <!-- 命令、脚本、文件分发任务先都用这个渲染 -->
+        <command-option v-if="data.type === 'command' || data.type === 'script' || data.type === 'file'" :data.sync="data" :uniqueId="uniqueId"
           :selected="selected"
           :selectNode="selectNode"></command-option>
+        <!-- 结束节点 -->
         <end-option v-else-if="data.type.indexOf('end_') === 0"
           :data.sync="data"
           :uniqueId="uniqueId"

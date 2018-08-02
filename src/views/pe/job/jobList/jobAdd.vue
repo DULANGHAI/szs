@@ -128,6 +128,8 @@
           <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
           <!-- 脚本类型 -->
           <script-show v-if="selected.type === 'script'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
+          <!-- 文件分发类型 -->
+          <file-show v-if="selected.type === 'file'" :view="view" :data.sync="selected" :key="uniqueId"></file-show>
         </div>
       </div>
     </div>
@@ -158,6 +160,7 @@ import AddEndModel from './components/AddEndModel'
 import ConditionModel from './components/ConditionModel'
 import CommandShow from './components/CommandShow'
 import ScriptShow from './components/ScriptShow'
+import FileShow from './components/FileShow'
 
 import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi } from '@/api/pe/jobManage/jobList'
 
@@ -173,7 +176,8 @@ export default {
     AddEndModel,
     ConditionModel,
     CommandShow,
-    ScriptShow
+    ScriptShow,
+    FileShow
   },
   data() {
     this.job_type_map = {
