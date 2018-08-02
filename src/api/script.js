@@ -152,3 +152,11 @@ export function postBranch(project_id, params) {
     data: params
   })
 }
+
+// 获取项目名
+export function getAppInfo(project_id) {
+  return request({
+    url: '/v1/repository/project/' + project_id + '/info',
+    method: 'get'
+  })
+}

@@ -18,11 +18,10 @@
             </el-dropdown-menu>
           </el-dropdown>
         </el-breadcrumb>
-        
       </div>
     </template>
     <div class="container-title">
-      软件包库
+      配置文件库
     </div>
     <div class="container-body-wrap" v-if="!isfile">
       <div style="text-align:right;margin-bottom:15px;">
@@ -91,7 +90,7 @@ export default {
   },
   data() {
     return {
-      r_type: 'applications',
+      r_type: 'configurations',
       levelList: null,
       value4: '',
       isZizu: false,
@@ -143,11 +142,11 @@ export default {
       })
     },
     // 加载子组列表
-    getZizu(id) {
+    getZizu(id, name) {
       this.zizuList = []
       this.yyList = []
       this.listLoading = true
-      getRepositoryZizu(id, this.r_type).then(response => {
+      getRepositoryZizu(name, this.r_type).then(response => {
         this.zizuList = response
         if (response.length > 0) {
           this.zzSelect = response[0].id
@@ -163,10 +162,10 @@ export default {
     // 选择业务组select
     ywzChange(id) {
       this.ywzSelect = id
-      this.getZizu(id)
       this.isfile = false
       for (var item in this.ywzList) {
         if (this.ywzList[item].id === id) {
+          this.getZizu(id, this.ywzList[item].name)
           this.ywzSelectName = this.ywzList[item].name
         }
       }

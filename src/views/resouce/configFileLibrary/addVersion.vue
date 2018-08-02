@@ -12,6 +12,7 @@
         <el-select v-model="form.branch" placeholder="请选择版本">
           <el-option
             v-for="item in branchOptions"
+            :key="item.name"
             :label="item.name"
             :value="item.name">
           </el-option>
