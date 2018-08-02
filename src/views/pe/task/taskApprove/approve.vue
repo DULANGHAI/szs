@@ -185,6 +185,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 
+import { getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 import { getLanguageApi, getAllScriptApi, getTaskDataApi, submitApproveApi } from '@/api/pe/taskManage/taskApprove'
 
 export default {
@@ -221,24 +222,8 @@ export default {
 
         approval_comments: ''
       },
-      systemAndLang: {
-        windows: ['windows1', 'windows2', 'windows3'],
-        linux: ['linux1', 'linux2', 'linux3']
-      },
-      scriptOptions: [
-        {
-          name: 'install_tomcat',
-          full_path: '/ops/linux/python/install_tomcat.py',
-          comment: '执行安装tomcat的运维指令，tomcat版本为6.7.1',
-          risk_level: 1
-        },
-        {
-          name: 'install_tomcat',
-          full_path: '/ops/linux/python/install_tomcat.py',
-          comment: '执行安装tomcat的运维指令，tomcat版本为6.7.1',
-          risk_level: 1
-        }
-      ],
+      systemAndLang: {},
+      scriptOptions: [],
       scriptVersionOptions: [],
       origin: {
         risk_level: ''
@@ -253,6 +238,12 @@ export default {
           this.origin.risk_level = res[0].risk_level
           this.scriptOptions = res[1].items
           this.systemAndLang = res[2]
+          this.$nextTick(() => {
+            // 如果是脚本任务还需再请求一些接口
+            if (res[0].type === 'script') {
+              this.doWhenScript()
+            }
+          })
         }).catch(err => {
           console.log(err)
         })
@@ -266,6 +257,55 @@ export default {
 
   },
   methods: {
+    /**
+     * 当查看、编辑遇到脚本任务时还需处理
+     */
+    doWhenScript() {
+      // 1.先获取脚本选项
+      const id = this.getLanguageId(this.form.language)
+      getAllScriptApi({ id: id }).then(res => {
+        this.scriptOptions = res
+        // 2.确定选中的脚本是哪个
+        this.selectedScript = this.computeSelectedScript(res)
+        // 3.获取脚本版本选项
+        getScriptVersionApi(this.selectedScript.file_id).then(res1 => {
+          this.scriptVersionOptions = res1
+          // 4.确定选中的版本是哪个
+          this.selectedVersion = this.computeSelectedVersion(res1)
+        })
+      })
+    },
+    getLanguageId(val) {
+      let result = ''
+      const data = this.systemAndLang[this.form.target_system]
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].name === val) {
+          result = data[i].id
+          break
+        }
+      }
+      return result
+    },
+    computeSelectedScript(res) {
+      let result = {}
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].full_path === this.form.script) {
+          result = res[i]
+          break
+        }
+      }
+      return result
+    },
+    computeSelectedVersion(res) {
+      let result = {}
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].commit_sha === this.form.script_version) {
+          result = res[i]
+          break
+        }
+      }
+      return result
+    },
     systemChange() {
       this.form.language = ''
     },

@@ -33,9 +33,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20">查询</el-button>
-            <el-button size="small" icon="el-icon-refresh">重置</el-button>
-            
+            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="search">查询</el-button>
+            <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
         </el-row>
         <el-row>
@@ -84,7 +83,7 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="creator" label="创建人"></el-table-column>
-          <el-table-column prop="updated_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
+          <el-table-column prop="created_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
           <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
           <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
@@ -98,10 +97,10 @@
           <el-table-column prop="success_rate" label="成功率"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goEdit(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.status">编辑</el-button>
               <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
-              <el-button type="text" size="small" >{{scope.row.status ? '停用' : '启用'}}</el-button>
-              <el-button type="text" size="small" class="danger" >删除</el-button>
+              <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.status ? '停用' : '启用'}}</el-button>
+              <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)" :disabled="scope.row.status">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -163,8 +162,6 @@ export default {
     multipleSelection(arr) {
       const length = arr.length
       if (length) {
-        this.multipleDelete = false
-
         let enable = 0
         for (let i = 0; i < length; i++) {
           if (arr[i].status) {
@@ -174,12 +171,15 @@ export default {
         if (enable === length) {
           this.multipleStart = true
           this.multipleStop = false
+          this.multipleDelete = true
         } else if (enable === 0) {
           this.multipleStart = false
           this.multipleStop = true
+          this.multipleDelete = false
         } else {
           this.multipleStart = true
           this.multipleStop = true
+          this.multipleDelete = true
         }
       } else {
         this.multipleStart = true
@@ -204,7 +204,7 @@ export default {
       }
     },
     formatterTime(row) {
-      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterJobType(row) {
       return this.job_type_map[row.job_type]
@@ -264,7 +264,7 @@ export default {
         path: `/pe/jobManage/jobView/${id}/1`
       })
     },
-    getTaskIds() {
+    getJobIds() {
       const ids = []
       this.multipleSelection.forEach(item => {
         ids.push(item.id)
@@ -295,10 +295,10 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(() => {
-        const ids = this.getTaskIds()
+        const ids = this.getJobIds()
         this.changeTaskStatus({
-          task_ids: ids,
-          is_enable: true
+          job_ids: ids,
+          status: true
         })
       }).catch(() => {
         this.$message({
@@ -313,10 +313,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const ids = this.getTaskIds()
+        const ids = this.getJobIds()
         this.changeTaskStatus({
-          task_ids: ids,
-          is_enable: false
+          job_ids: ids,
+          status: false
         })
       }).catch(() => {
         this.$message({
@@ -331,9 +331,66 @@ export default {
         cancelButtonText: '取消',
         type: 'error'
       }).then(() => {
-        const ids = this.getTaskIds()
+        const ids = this.getJobIds()
         this.deleteTasks({
-          task_ids: ids
+          job_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleSingleStatus(row) {
+      if (row.status) { // 处在启用状态，要停用
+        this.$confirm('确认要停用这条任务吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const ids = []
+          ids.push(row.id)
+          this.changeTaskStatus({
+            job_ids: ids,
+            status: false
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消停用'
+          })
+        })
+      } else {
+        this.$confirm('确认要启用这条任务吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'success'
+        }).then(() => {
+          const ids = []
+          ids.push(row.id)
+          this.changeTaskStatus({
+            job_ids: ids,
+            status: true
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消启用'
+          })
+        })
+      }
+    },
+    handleSingleDelete(id) {
+      this.$confirm('确认要删除这条任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = []
+        ids.push(id)
+        this.deleteTasks({
+          job_ids: ids
         })
       }).catch(() => {
         this.$message({

@@ -39,9 +39,7 @@
                   <div v-if="view">{{form.description}}</div>
                 </el-form-item>
                 <el-form-item label="账号">
-                  <el-select v-if="!view" v-model="form.execution_account" placeholder="请选择">
-                    <el-option v-for="(item, index) in account_arr" :key="index" :label="item" :value="item"></el-option>
-                  </el-select>
+                  <el-input v-if="!view" v-model="form.execution_account" placeholder="请输入"></el-input>
                   <div v-if="view">{{form.execution_account}}</div>
                 </el-form-item>
                 <el-form-item label="目标IP">
@@ -130,6 +128,8 @@
           <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
           <!-- 脚本类型 -->
           <script-show v-if="selected.type === 'script'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
+          <!-- 文件分发类型 -->
+          <file-show v-if="selected.type === 'file'" :view="view" :data.sync="selected" :key="uniqueId"></file-show>
         </div>
       </div>
     </div>
@@ -160,6 +160,7 @@ import AddEndModel from './components/AddEndModel'
 import ConditionModel from './components/ConditionModel'
 import CommandShow from './components/CommandShow'
 import ScriptShow from './components/ScriptShow'
+import FileShow from './components/FileShow'
 
 import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi } from '@/api/pe/jobManage/jobList'
 
@@ -175,7 +176,8 @@ export default {
     AddEndModel,
     ConditionModel,
     CommandShow,
-    ScriptShow
+    ScriptShow,
+    FileShow
   },
   data() {
     this.job_type_map = {
@@ -205,8 +207,8 @@ export default {
           label: 'b'
         },
         {
-          id: 'c',
-          label: 'c'
+          id: '10.111.2.40',
+          label: '10.111.2.40'
         }
       ],
       form: {
@@ -220,7 +222,6 @@ export default {
         applications: '',
         status: false
       },
-      account_arr: ['account1', 'account2'],
       ip_arr: [],
       applications_arr: [],
       systemAndLang: {},

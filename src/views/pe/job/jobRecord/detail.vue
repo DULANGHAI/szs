@@ -8,14 +8,14 @@
     </div>
     <div class="container-body">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="即时作业" name="first">
+        <el-tab-pane label="执行路径" name="first">
           <div class="tabs-contents">
-            <list-view></list-view>
+            <record-path></record-path>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="执行记录" name="second">
+        <el-tab-pane label="日志" name="second">
           <div class="tabs-contents">
-            <record-view></record-view>
+            <record-log v-if="activeName === 'second'"></record-log>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -25,14 +25,15 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
-import ListView from './ListView'
-import RecordView from './RecordView'
+import RecordPath from './components/path'
+import RecordLog from './components/log'
 
 export default {
+  props: ['id'],
   components: {
     Breadcrumb,
-    ListView,
-    RecordView
+    RecordPath,
+    RecordLog
   },
   data() {
     return {
@@ -48,7 +49,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
 .container {
   & /deep/ .container-body .el-tabs__nav-scroll {
     padding: 0px 24px;

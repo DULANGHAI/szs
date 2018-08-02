@@ -1,5 +1,5 @@
 <template>
-  <div class="script-option" :class="{'selected': data.id === selected.id && data.timestr === selected.timestr}" @click="handleSelect" :uniqueId="uniqueId">
+  <div class="script-option" :uniqueId="uniqueId" :class="getClass">
     <div class="flex">
       <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
       <div>
@@ -11,7 +11,7 @@
       <div>创建人：{{data.creator}}</div>
       <div v-if="data.language">语言：{{data.language}}</div>
     </div>
-    <div v-if="data.next && data.next.length" class="after-line"></div>
+    <div v-if="data.next && data.next.length" class="after-line" :class="getClass2"></div>
   </div>
 </template>
 
@@ -23,20 +23,36 @@ export default {
     uniqueId: Number,
     data: {
       type: Object
-    },
-    selected: Object,
-    selectNode: Function
+    }
   },
   components: {
     RiskLevel
   },
-  methods: {
-    handleSelect() {
-      if (this.data.id === this.selected.id && this.data.timestr === this.selected.timestr) {
-        this.selectNode({})
-      } else {
-        this.selectNode(this.data)
+  computed: {
+    getClass() {
+      if (this.data.result_status === 'success') {
+        return 'execution-status-success'
+      } else if (this.data.result_status === 'failed') {
+        return 'execution-status-failed'
       }
+    },
+    getClass2() {
+      if (this.getSuccessBro().indexOf(1) !== -1) {
+        return 'execution-status-success'
+      }
+    }
+  },
+  methods: {
+    getSuccessBro() {
+      if (this.data.next && this.data.next.length > 1) {
+        return this.data.next.map((item, index) => {
+          if (item.result_status === 'success') {
+            return 1
+          }
+          return 0
+        })
+      }
+      return []
     }
   }
 }
@@ -52,8 +68,11 @@ export default {
   position: relative;
   cursor: pointer;
 }
-.selected {
-  border-color: #1890FF;
+.execution-status-success {
+  border-color: #67c23a;
+}
+.execution-status-failed {
+  border-color: #f56c6c;
 }
 .flex-1 {
   flex: 1;
@@ -90,5 +109,11 @@ export default {
   color: #d6e2ea;
   background-color: #DFE1E6;
   height: 30px;
+  &.execution-status-success {
+    background-color: #67c23a;
+  }
+  &.execution-status-failed {
+    background-color: #f56c6c;
+  }
 }
 </style>

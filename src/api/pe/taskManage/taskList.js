@@ -121,3 +121,26 @@ export function upadateTaskApi(id, data) {
     data: data
   })
 }
+
+/**
+ * 根据组、路径、分支请求获取该路径下文件列表
+ * @param {*} params
+ */
+export function getFileListApi(params) {
+  return request({
+    url: '/v1/bucket/',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 根据project_id获取分支
+ * @param {Number} id
+ */
+export function getBranchApi(id) {
+  return request({
+    url: `/v1/repository/project/${id}/branches`,
+    method: 'get'
+  })
+}

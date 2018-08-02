@@ -142,9 +142,9 @@ export const constantRouterMap = [
             props: true
           },
           {
-            path: 'timingJob',
+            path: 'timedJob',
             name: '定时作业',
-            component: () => import('@/views/pe/job/timingJob/index'),
+            component: () => import('@/views/pe/job/timedJob/index'),
             meta: { title: '定时作业' }
           },
           {
@@ -152,6 +152,20 @@ export const constantRouterMap = [
             name: '即时作业',
             component: () => import('@/views/pe/job/instantJob/index'),
             meta: { title: '即时作业' }
+          },
+          {
+            path: 'jobRecord',
+            name: '作业记录',
+            component: () => import('@/views/pe/job/jobRecord/index'),
+            meta: { title: '作业记录' }
+          },
+          {
+            path: 'recordDetail/:id',
+            name: '执行详情',
+            component: () => import('@/views/pe/job/jobRecord/detail'),
+            meta: { title: '执行详情' },
+            hidden: true,
+            props: true
           }
         ]
       }

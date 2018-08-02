@@ -22,73 +22,62 @@ export function getCreatorApi() {
 }
 
 /**
- * 作业列表
+ * 获取定时作业列表
  * @param {Object} params
  */
 export function getJobListApi(params) {
   return request({
-    url: '/v1/jobs/',
+    url: '/v1/jobs/timed/',
     method: 'get',
-    params: params
+    params: {
+      name: params.name,
+      system_type: params.system_type,
+      job_type: params.job_type,
+      // target_ip: JSON.stringify({
+      //   host: params.target_ip
+      // }),
+      target_ip: '',
+      creator: params.creator,
+      start_time: params.start_time,
+      end_time: params.end_time,
+      page: params.page,
+      per_page: params.per_page
+    }
   })
 }
 
 /**
- * 即使作业列表
- * @param {Object} params
- */
-export function getInstantListApi(params) {
-  return request({
-    url: '/v1/jobs/instant/',
-    method: 'get',
-    params: params
-  })
-}
-
-/**
- * 创建即时作业
+ * 创建定时作业
  * @param {Object} data
  */
-export function createInstantApi(data) {
+export function createJobApi(data) {
   return request({
-    url: '/v1/jobs/instant/',
+    url: '/v1/jobs/timed/',
     method: 'post',
     data: data
   })
 }
 
 /**
- * 删除即时作业
- * @param {Object} data
- */
-export function deleteInstantApi(data) {
-  return request({
-    url: '/v1/jobs/instant/',
-    method: 'delete',
-    data: data
-  })
-}
-
-/**
- * 更新即时作业
+ * 更新定时作业
  * @param {Object} data
  */
 export function updateJobApi(id, data) {
   return request({
-    url: `/v1/jobs/instant/${id}`,
+    url: `/v1/jobs/timed/${id}`,
     method: 'put',
     data: data
   })
 }
 
 /**
- * 执行作业
+ * 删除定时作业
  * @param {Object} data
  */
-export function doTaskApi(data) {
+export function deleteJobApi(data) {
   return request({
-    url: '/v1/jobs/instant/carry-out',
-    method: 'post',
+    url: `/v1/jobs/timed/`,
+    method: 'delete',
     data: data
   })
 }

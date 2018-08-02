@@ -1,19 +1,5 @@
 <template>
-  <div class="script-option">
-    <!-- <div class="flex-1 marr10">
-      <div class="flex">
-        <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
-        <div>
-          <div class="name">{{data.name}}</div>
-          <div class="path">
-            <div>创建人：{{data.creator}}</div>
-            <div style="margin-left: 20px;">类型：{{data.job_type}}</div>
-          </div>
-        </div>
-      </div>
-      <div class="comment">{{'介绍：' + data.description}}</div>
-    </div>
-    <risk-level :level="data.risk_level"></risk-level> -->
+  <div class="script-option" :class="{'selected': selected.id && (data.id === selected.id)}" @click="handleSelect">
     <div class="flex">
       <div class="flex-1 marr10">
         <div class="flex">
@@ -38,12 +24,25 @@ import RiskLevel from '@/components/RiskLevel'
 
 export default {
   props: {
+    uniqueId: Number,
     data: {
       type: Object
-    }
+    },
+    selected: {
+      type: Object,
+      default: {}
+    },
+    selectNode: Function
   },
   components: {
     RiskLevel
+  },
+  methods: {
+    handleSelect() {
+      if (this.data.id !== this.selected.id) {
+        this.selectNode(this.data)
+      }
+    }
   }
 }
 </script>
@@ -59,6 +58,9 @@ export default {
   &:hover {
     background-color: #F0FAFF;
   }
+}
+.selected {
+  border: 1px solid #1890FF;
 }
 .flex-1 {
   flex: 1;
