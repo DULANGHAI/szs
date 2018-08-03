@@ -183,6 +183,13 @@ export const constantRouterMap = [
             meta: { title: '流程列表' }
           },
           {
+            path: 'flowAdd',
+            name: '新建流程',
+            component: () => import('@/views/pe/flow/flowList/addFlow'),
+            meta: { title: '新建流程' },
+            hidden: true
+          },
+          {
             path: 'instantFlow',
             name: '即时流程',
             component: () => import('@/views/pe/flow/instantFlow/index'),

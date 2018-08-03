@@ -61,8 +61,6 @@ import CommandShow from '@/views/pe/job/joblist/components/CommandShow'
 import ScriptShow from '@/views/pe/job/joblist/components/ScriptShow'
 import FileShow from '@/views/pe/job/joblist//components/FileShow'
 
-import { updateJobApi } from '@/api/pe/jobManage/instantJob'
-
 export default {
   props: {
     data: Object,
@@ -126,17 +124,11 @@ export default {
      * 提交
      */
     submit() {
-      const data = {
-        'target_ip': this.data.target_ip,
-        'scheduling': JSON.stringify(this.scheduling),
-        'frequency': this.data.frequency,
-        'execution_account': this.data.execution_account
-
-      }
-      updateJobApi(this.data.id, data).then(res => {
-        this.refresh && this.refresh()
-        this.cancel()
-      })
+      const result = this.data
+      result.scheduling = JSON.stringify(this.scheduling)
+      this.$emit('update:data', result)
+      this.cancel()
+      this.refresh()
     },
     cancel() {
       this.show = false

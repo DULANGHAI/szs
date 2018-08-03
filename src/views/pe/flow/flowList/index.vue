@@ -175,7 +175,11 @@ export default {
   methods: {
     search() {},
     refresh() {},
-    goAdd() {},
+    goAdd() {
+      this.$router.push({
+        path: '/pe/flowManage/flowAdd'
+      })
+    },
     rowStyle({ row, rowIndex }) {
       if (!row.status) {
         return {

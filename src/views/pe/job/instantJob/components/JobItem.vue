@@ -8,7 +8,7 @@
             <div class="name">{{data.name}}</div>
             <div class="path">
               <div>创建人：{{data.creator}}</div>
-              <div style="margin-left: 20px;">类型：{{data.job_type}}</div>
+              <div style="margin-left: 20px;">类型：{{job_type_map[data.job_type]}}</div>
             </div>
           </div>
         </div>
@@ -36,6 +36,15 @@ export default {
   },
   components: {
     RiskLevel
+  },
+  data() {
+    this.job_type_map = {
+      ordinary: '普通作业',
+      update: '应用更新&发布',
+      quit: '应用下线',
+      inspection: '日常检查'
+    }
+    return {}
   },
   methods: {
     handleSelect() {
