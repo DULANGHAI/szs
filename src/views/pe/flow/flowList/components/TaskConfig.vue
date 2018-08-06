@@ -36,18 +36,18 @@
           <div class="block-title">{{selected.name}}的配置</div>
           <div class="block-content">
             <!-- 命令类型 -->
-            <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
+            <command-show v-if="selected.type === 'command'" :data="selected" :view="view"></command-show>
             <!-- 脚本类型 -->
-            <script-show v-if="selected.type === 'script'" :data.sync="selected" :key="uniqueId"></script-show>
+            <script-show v-if="selected.type === 'script'" :data.sync="selected" :key="uniqueId" :view="view"></script-show>
             <!-- 文件分发类型 -->
-            <file-show v-if="selected.type === 'file'" :data.sync="selected" :key="uniqueId"></file-show>
+            <file-show v-if="selected.type === 'file'" :data.sync="selected" :key="uniqueId" :view="view"></file-show>
           </div>
         </div>
 
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
+        <el-button v-if="!view" @click="cancel">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
@@ -63,6 +63,7 @@ import FileShow from '@/views/pe/job/joblist//components/FileShow'
 
 export default {
   props: {
+    view: String,
     data: Object,
     refresh: Function
   },
@@ -124,11 +125,14 @@ export default {
      * 提交
      */
     submit() {
-      const result = this.data
-      result.scheduling = JSON.stringify(this.scheduling)
-      this.$emit('update:data', result)
+      if (!this.view) {
+        const result = this.data
+        result.scheduling = JSON.stringify(this.scheduling)
+        this.$emit('update:data', result)
+
+        this.refresh()
+      }
       this.cancel()
-      this.refresh()
     },
     cancel() {
       this.show = false

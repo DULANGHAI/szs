@@ -3,24 +3,24 @@
     @open="handleOpen" @close="handleClose">
     <el-form :label-position="'left'" label-width="100px" size="small">
       <el-form-item label="账号">
-        <el-input v-model="form.execution_account" placeholder="请输入"></el-input>
+        <el-input v-model="form.execution_account" placeholder="请输入" :disabled="view === '1'"></el-input>
       </el-form-item>
       <el-form-item label="目标IP">
-        <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
+        <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" :disabled="view === '1'" />
       </el-form-item>
       <el-form-item label="重试次数">
-        <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="1"></el-input-number>
+        <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="1" :disabled="view === '1'"></el-input-number>
         次
       </el-form-item>
       <el-form-item label="失败处理方式">
-        <el-select v-model="form.xxx" placeholder="请选择">
+        <el-select v-model="form.xxx" placeholder="请选择" :disabled="view === '1'">
           <el-option v-for="(item, index) in xxx_map" :key="index" :label="item" :value="index"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取 消</el-button>
+      <el-button v-if="!view" @click="cancel">取 消</el-button>
       <el-button type="primary" @click="submit">确 定</el-button>
     </div>
   </el-dialog>
@@ -32,6 +32,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
   props: {
+    view: String,
     data: Object,
     refresh: Function
   },
@@ -102,16 +103,19 @@ export default {
      * 提交
      */
     submit() {
-      const result = this.data
+      if (!this.view) {
+        const result = this.data
 
-      result.execution_account = this.form.execution_account
-      result.target_ip = JSON.stringify({ host: this.form.target_ip })
-      result.frequency = this.form.frequency
-      result.xxx = this.form.xxx
+        result.execution_account = this.form.execution_account
+        result.target_ip = JSON.stringify({ host: this.form.target_ip })
+        result.frequency = this.form.frequency
+        result.xxx = this.form.xxx
 
-      this.$emit('update:data', result)
+        this.$emit('update:data', result)
+
+        this.refresh()
+      }
       this.cancel()
-      this.refresh()
     },
     cancel() {
       this.show = false

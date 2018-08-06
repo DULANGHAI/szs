@@ -22,3 +22,38 @@ export function getJobListApi(params) {
     params: params
   })
 }
+
+/**
+ * 创建一个流程
+ * @param {Object} data
+ */
+export function createFlowApi(data) {
+  return request({
+    url: '/v1/processes/',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 获取一个流程所有信息
+ * @param {Object} data
+ */
+export function getFlowApi(id) {
+  return request({
+    url: `/v1/processes/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 更新一个流程
+ * @param {Object} data
+ */
+export function updateFlowApi(id, data) {
+  return request({
+    url: `/v1/processes/${id}`,
+    method: 'put',
+    data: data
+  })
+}

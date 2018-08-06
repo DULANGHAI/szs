@@ -190,6 +190,22 @@ export const constantRouterMap = [
             hidden: true
           },
           {
+            path: 'flowEdit/:id',
+            name: '编辑流程',
+            component: () => import('@/views/pe/flow/flowList/addFlow'),
+            meta: { title: '编辑流程' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'flowView/:id/:view',
+            name: '查看流程',
+            component: () => import('@/views/pe/flow/flowList/addFlow'),
+            meta: { title: '查看流程' },
+            hidden: true,
+            props: true
+          },
+          {
             path: 'instantFlow',
             name: '即时流程',
             component: () => import('@/views/pe/flow/instantFlow/index'),
