@@ -16,7 +16,6 @@ export default function treeToArray(data, expandAll, parent = null, level = null
       Vue.set(record, 'parent', parent)
     }
     tmp.push(record)
-    debugger
     if (record.scheduling && Array.isArray(record.scheduling) && record.scheduling.length > 0) {
       const children = treeToArray(record.scheduling, expandAll, record, _level)
       tmp = tmp.concat(children)

@@ -63,7 +63,7 @@
               </template>
             </el-table-column>
           </el-table> -->
-          <tree-table :data="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
+          <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
             <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="job_type" label="类型"></el-table-column>
             <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
@@ -248,7 +248,10 @@ export default {
           type: 'error'
         })
       } else {
-        this.data.push(this.selectedFlow)
+        const obj = Object.assign({}, {}, this.selectedFlow)
+        this.data.push(obj)
+        // this.data.push(this.selectedFlow)
+        // console.log('this.data: ', this.data)
       }
     }
   }

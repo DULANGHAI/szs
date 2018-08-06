@@ -1,7 +1,7 @@
 <template>
   <el-table :data="formatData" :row-style="showRow" v-bind="$attrs" @selection-change="handleSelectionChange">
     <el-table-column type="selection" width="55"></el-table-column>
-    <el-table-column v-if="columns.length===0" width="150">
+    <el-table-column v-if="columns.length===0" width="150" label="序号">
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" class="ms-tree-space" :key="space"></span>
         <span class="tree-ctrl" v-if="iconShow(0,scope.row)" @click="toggleExpanded(scope.$index)">
@@ -71,6 +71,8 @@ export default {
     toggleExpanded: function(trIndex) {
       const record = this.formatData[trIndex]
       record._expanded = !record._expanded
+
+      // this.$set(this.formatData, trIndex, record)
     },
     // 图标显示
     iconShow(index, record) {
