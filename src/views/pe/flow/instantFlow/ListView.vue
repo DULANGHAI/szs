@@ -36,10 +36,6 @@
               <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
             </div>
-            <div class="op-item">
-              <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
-              <div class="mart-10">刷新</div>
-            </div>
           </div>
           <div class="flex">
             <div class="op-item">
@@ -51,7 +47,7 @@
 
         <!-- 列表 -->
         <div class="table">
-          <el-table
+          <!-- <el-table
             ref="table"
             :data="data"
             tooltip-effect="dark">
@@ -66,7 +62,18 @@
                 <el-button type="text" size="small">任务配置</el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </el-table> -->
+          <tree-table :data="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
+            <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="job_type" label="类型"></el-table-column>
+            <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button type="text" size="small">作业配置</el-button>
+                <el-button type="text" size="small">任务配置</el-button>
+              </template>
+            </el-table-column>
+          </tree-table>
         </div>
 
       </div>
@@ -78,13 +85,15 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import FlowItem from './components/FlowItem'
+import TreeTable from './components/TreeTable'
 
 import { getLanguageApi, getFlowListApi } from '@/api/pe/flowManage/instantFlow'
 
 export default {
   components: {
     InfiniteLoading,
-    FlowItem
+    FlowItem,
+    TreeTable
   },
   data() {
     this.job_type_map = {
@@ -200,7 +209,7 @@ export default {
   created() {
     Promise.all([getLanguageApi()])
       .then(res => {
-        this.system_type_arr = this.handleSystemData(res[0])
+
       })
   },
   methods: {
