@@ -13,8 +13,8 @@
         次
       </el-form-item>
       <el-form-item label="失败处理方式">
-        <el-select v-model="form.xxx" placeholder="请选择" :disabled="view === '1'">
-          <el-option v-for="(item, index) in xxx_map" :key="index" :label="item" :value="index"></el-option>
+        <el-select v-model="form.handleFailed" placeholder="请选择" :disabled="view === '1'">
+          <el-option v-for="(item, index) in Object.keys(handleFailed_map)" :key="index" :label="handleFailed_map[item]" :value="item"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -40,7 +40,10 @@ export default {
     Treeselect
   },
   data() {
-    this.xxx_map = ['暂停', '继续下一个作业']
+    this.handleFailed_map = {
+      'stop': '暂停',
+      'continue': '继续下一个作业'
+    }
     return {
       show: false,
       uniqueId: +new Date(),
@@ -48,7 +51,7 @@ export default {
         execution_account: '',
         target_ip: [],
         frequency: '',
-        xxx: ''
+        handleFailed: ''
       },
       options: [
         {
@@ -88,7 +91,7 @@ export default {
         execution_account: this.data.execution_account,
         target_ip: JSON.parse(this.data.target_ip).host,
         frequency: this.data.frequency,
-        xxx: this.data.xxx
+        handleFailed: this.data.handleFailed
       }
       this.uniqueId = +new Date()
       console.log('open callback ')
@@ -109,7 +112,7 @@ export default {
         result.execution_account = this.form.execution_account
         result.target_ip = JSON.stringify({ host: this.form.target_ip })
         result.frequency = this.form.frequency
-        result.xxx = this.form.xxx
+        result.handleFailed = this.form.handleFailed
 
         this.$emit('update:data', result)
 
@@ -124,7 +127,7 @@ export default {
         execution_account: '',
         target_ip: [],
         frequency: '',
-        xxx: ''
+        handleFailed: ''
       }
     }
   }

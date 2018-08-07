@@ -49,12 +49,17 @@
         <div class="table">
           <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
             <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
-            <el-table-column prop="job_type" label="类型"></el-table-column>
-            <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
+            <el-table-column prop="job_type" label="类型" :formatter="formatterType"></el-table-column>
+            <el-table-column prop="created_at" label="提交时间" width="160px" :formatter="formatterTime"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
               <template slot-scope="scope">
-                <el-button type="text" size="small">作业配置</el-button>
-                <el-button type="text" size="small">任务配置</el-button>
+                <div v-if="scope.row.job_type === 'manual'">
+                  <el-button type="text" size="small" @click="handleManualSet(scope.row)">编辑人工流程</el-button>
+                </div>
+                <div v-if="scope.row._level === 2 && scope.row.job_type !== 'manual'">
+                  <el-button type="text" size="small" @click="handleJobSet(scope.row)">作业配置</el-button>
+                  <el-button type="text" size="small" @click="handleTaskSet(scope.row)">任务配置</el-button>
+                </div>
               </template>
             </el-table-column>
           </tree-table>
@@ -63,6 +68,13 @@
       </div>
 
     </div>
+
+    <!-- 添加/编辑 人工流程 -->
+    <add-manual ref="addManual" :data.sync="needSetJob" :refresh="refresh"></add-manual>
+    <!-- 编辑作业 -->
+    <job-config ref="jobConfig" :data.sync="needSetJob" :refresh="refresh"></job-config>
+    <!-- 任务配置 -->
+    <task-config ref="taskConfig" :data.sync="needSetJob" :refresh="refresh"></task-config>
   </div>
 </template>
 
@@ -70,6 +82,9 @@
 import InfiniteLoading from 'vue-infinite-loading'
 import FlowItem from './components/FlowItem'
 import TreeTable from './components/TreeTable'
+import AddManual from '../flowList/components/AddManual'
+import TaskConfig from '../flowList/components/TaskConfig'
+import JobConfig from '../flowList/components/JobConfig'
 
 import { getLanguageApi, getFlowListApi } from '@/api/pe/flowManage/instantFlow'
 
@@ -77,7 +92,10 @@ export default {
   components: {
     InfiniteLoading,
     FlowItem,
-    TreeTable
+    TreeTable,
+    AddManual,
+    TaskConfig,
+    JobConfig
   },
   data() {
     this.job_type_map = {
@@ -118,6 +136,7 @@ export default {
             'deleted_at': null,
             'id': 6,
             'name': 'tasks',
+            'handleFailed': 'stop',
             'timestr': 1533363229697
           }, {
             'status': false,
@@ -139,6 +158,7 @@ export default {
             'deleted_at': null,
             'id': 5,
             'name': '文件分发作业',
+            'handleFailed': 'continue',
             'timestr': 1533363237752
           }, {
             'status': true,
@@ -160,6 +180,7 @@ export default {
             'deleted_at': null,
             'id': 4,
             'name': 'task1',
+            'handleFailed': 'stop',
             'timestr': 1533363239671
           }, {
             'job_type': 'manual',
@@ -232,7 +253,7 @@ export default {
           type: 'error'
         })
       } else {
-        // 为什么不直接this.data.push(this.selectedFlow)呢，因为这样里面的监听（set/get）会复用，我要的是一份干净的数据
+        // 为什么不直接this.data.push(this.selectedFlow)呢，因为这样里面的监听（set/get）会复用，我要的是一份干净的数据和新的监听
         const obj = this.deepClone(this.selectedFlow)
         this.data.push(obj)
       }
@@ -253,6 +274,38 @@ export default {
         }
       }
       return objClone
+    },
+    formatterType(row) {
+      if (row._level === 1) {
+        return '流程'
+      } else if (row.job_type === 'manual') {
+        return '人工流程'
+      } else {
+        return '作业'
+      }
+    },
+    formatterTime(row) {
+      if (row.created_at) {
+        return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+      }
+    },
+    // 人工流程配置
+    handleManualSet(row) {
+      this.needSetJob = row
+      this.$refs.addManual.showMoel()
+    },
+    // 作业配置
+    handleJobSet(row) {
+      this.needSetJob = row
+      this.$refs.jobConfig.showMoel()
+    },
+    // 任务配置
+    handleTaskSet(row) {
+      this.needSetJob = row
+      this.$refs.taskConfig.showMoel()
+    },
+    refresh() {
+      this.data = this.data.concat([])
     }
   }
 

@@ -202,7 +202,10 @@ export default {
       inspection: '日常检查',
       manual: '人工流程'
     }
-    this.xxx_map = ['暂停', '继续下一个作业']
+    this.handleFailed_map = {
+      'stop': '暂停',
+      'continue': '继续下一个作业'
+    }
     return {
       form: {
         name: '',
@@ -432,7 +435,7 @@ export default {
       return this.job_type_map[row.job_type]
     },
     formatterXxx(row) {
-      return this.xxx_map[row.xxx]
+      return this.handleFailed_map[row.handleFailed]
     },
     getRowKeys(row) {
       return row.timestr
