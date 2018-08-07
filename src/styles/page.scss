@@ -218,6 +218,11 @@ dl, dd, p {
     }
   }
 }
+.add-app-body {
+  .el-form-item__label{
+    width: 90px !important;
+  }
+}
 
 .tabs-contents{
   background: #fff;

@@ -180,6 +180,20 @@ export const constantRouterMap = [
     module: true,
     children: [
       // 1.资源管理
+      {
+        path: 'resouces',
+        component: Layout,
+        name: 'Resouces',
+        meta: { title: '资源管理', icon: 'banben' },
+        children: [
+          {
+            path: 'host',
+            name: 'host',
+            component: () => import('@/views/resouce/resouces/index'),
+            meta: { title: '主机组管理' }
+          }
+        ]
+      },
       // 2.应用管理
       {
         path: 'applications',
@@ -192,6 +206,14 @@ export const constantRouterMap = [
             name: 'applist',
             component: () => import('@/views/resouce/applications/index'),
             meta: { title: '应用列表' }
+          },
+          {
+            path: 'applist/add',
+            name: 'addApp',
+            component: () => import('@/views/resouce/applications/addApp'),
+            meta: { title: '添加应用' },
+            hidden: true,
+            props: true
           }
         ]
       },

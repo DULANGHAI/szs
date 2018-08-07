@@ -4,7 +4,7 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      文件审批
+      应用列表
     </div>
     <div class="container-body-wrap review-body">
       <template>
@@ -74,7 +74,7 @@
             <el-col :span="24">
               <div class="file-nav">
                 <div class="file-nav-left">
-                  <el-button size="small" >添加风险命令</el-button>
+                  <el-button size="small" @click="goCreate()">添加应用实例</el-button>
                   <el-button size="small" >编辑</el-button>
                   <el-button size="small" >删除</el-button>
                 </div>
@@ -93,7 +93,11 @@
           :data="listData"
           tooltip-effect="dark"
           style="width: 100%"
-          empty-text="暂无数据">
+          empty-text="暂无数据"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection">
+          </el-table-column>
           <el-table-column
             prop="name"
             label="实例名">
@@ -171,7 +175,7 @@
 </template>
 
 <script>
-import { getReviewList } from '@/api/resouce/versionLibrary/review'
+import { getApplicationList } from '@/api/resouce/applications/application'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
@@ -262,6 +266,15 @@ export default {
       this.form = JSON.parse(JSON.stringify(formData))
       this.getList()
     },
+    // 添加，编辑 应用
+    goCreate() {
+      this.$router.push({
+        name: 'addApp',
+        params: {
+          id: '123'
+        }
+      })
+    },
     getList() {
       const params = {
         'page': this.currentPage,
@@ -275,7 +288,7 @@ export default {
         'name': this.form.name
       }
       this.listLoading = true
-      getReviewList(params).then(response => {
+      getApplicationList(params).then(response => {
         this.listData = response.items.map(item => {
           let ftype
           switch (item.type) {
@@ -321,6 +334,9 @@ export default {
       }).catch(error => {
         Message.error(error)
       })
+    },
+    handleSelectionChange(val) {
+      console.log(val)
     },
     // 选择展示页数
     handleSizeChange(val) {
