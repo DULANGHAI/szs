@@ -13,7 +13,7 @@
         label-width="70px"
         label-position="right">
         <!-- 第一行 -->
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="执行ID">
               <el-input v-model="form.execution_id" placeholder="请输入"></el-input>
@@ -40,7 +40,7 @@
           </el-col>
         </el-row>
         <!-- 第二行 -->
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="执行方式">
               <el-select v-model="form.execution_type">
@@ -64,7 +64,7 @@
         </el-row>
 
         <!-- 第三行 -->
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="创建时间">
               <el-date-picker

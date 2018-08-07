@@ -15,7 +15,7 @@
               @focus="firstData"
               @change="change">
               <el-option v-for="(item, index) in jobArr" :key="index" :label="item.name" :value="item">
-                <job-item :data="item"></job-item>
+                <job-item :data="item" :selected="selectJob"></job-item>
               </el-option>
             </el-select>
           </el-form-item>
@@ -50,14 +50,31 @@
 
       <el-row>
         <el-col>
-          <el-form-item label="定时配置">
+          <el-form-item label="定时类型">
             <el-radio-group v-model="form.timed_type">
               <el-radio v-for="(item, index) in Object.keys(timed_type_map)" :key="index" :label="item">{{timed_type_map[item]}}</el-radio>
             </el-radio-group>
-            <div v-show="form.timed_type === 'check'">
+            <div v-show="form.timed_type === 'timed'">
+              <el-date-picker
+                v-model="form.timed_date"
+                type="datetime"
+                placeholder="选择日期时间">
+              </el-date-picker>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row v-show="form.timed_type === 'cycle'">
+        <el-col>
+          <el-form-item label="定时配置">
+            <el-radio-group v-model="form.timed_config">
+              <el-radio v-for="(item, index) in Object.keys(timed_config_map)" :key="index" :label="item">{{timed_config_map[item]}}</el-radio>
+            </el-radio-group>
+            <div v-show="form.timed_config === 'check'">
               <choose-timed ref="chooseTimed"></choose-timed>
             </div>
-            <div v-show="form.timed_type !== 'check'">
+            <div v-show="form.timed_config !== 'check'">
               <custom-timed ref="customTimed"></custom-timed>
             </div>
           </el-form-item>
@@ -114,9 +131,14 @@ export default {
   },
   data() {
     this.timed_type_map = {
+      cycle: '周期',
+      timed: '定时'
+    }
+    this.timed_config_map = {
       check: '勾选',
       custom: '自定义'
     }
+
     return {
       show: false,
       form: {
@@ -125,7 +147,9 @@ export default {
         execution_account: '',
         description: '',
         target_ip: [],
-        timed_type: 'check',
+        timed_type: 'cycle',
+        timed_config: 'check',
+        timed_date: '',
         timed_expression: '',
         frequency: '',
         status: 0
@@ -221,12 +245,14 @@ export default {
         description: this.data.description,
         target_ip: JSON.parse(this.data.target_ip).host,
         timed_type: this.data.timed_type,
+        timed_config: this.data.timed_config,
+        timed_date: this.data.timed_date,
         timed_expression: this.data.timed_expression,
         frequency: this.data.frequency,
         status: this.data.status
       }
       this.$nextTick(() => {
-        if (this.data.timed_type === 'check') {
+        if (this.data.timed_config === 'check') {
           this.$refs.chooseTimed.setExpress(this.data.timed_expression)
         } else {
           this.$refs.customTimed.setExpress(this.data.timed_expression)
@@ -263,6 +289,9 @@ export default {
         }
       }
     },
+    timedTypeChange(val) {
+
+    },
     cancel() {
       this.form = {
         job_id: '',
@@ -270,7 +299,9 @@ export default {
         execution_account: '',
         description: '',
         target_ip: [],
-        timed_type: 'check',
+        timed_type: 'cycle',
+        timed_config: 'check',
+        timed_date: '',
         timed_expression: '',
         frequency: '',
         status: 0
@@ -295,7 +326,7 @@ export default {
     },
     submit() {
       let express = ''
-      if (this.form.timed_type === 'check') {
+      if (this.form.timed_config === 'check') {
         express = this.$refs.chooseTimed.getExpress()
       } else {
         express = this.$refs.customTimed.getExpress()
@@ -306,13 +337,20 @@ export default {
           'job_id': this.form.job_id,
           'execution_account': this.form.execution_account,
           'timed_expression': express,
+          'timed_date': this.form.timed_date,
           'name': this.form.name,
           'frequency': this.form.frequency,
           'target_ip': JSON.stringify({
             host: this.form.target_ip
           }),
+          'timed_config': this.form.timed_config,
           'timed_type': this.form.timed_type,
           'description': this.form.description
+        }
+        if (data.timed_type === 'cycle') {
+          data.timed_date = ''
+        } else {
+          data.timed_expression = ''
         }
         createJobApi(data).then(res => {
           this.refresh(1)
@@ -323,13 +361,19 @@ export default {
           'description': this.form.description,
           'execution_account': this.form.execution_account,
           'timed_expression': express,
+          'timed_date': this.form.timed_date,
           'scheduling': this.data.scheduling,
           'frequency': this.form.frequency,
           'target_ip': JSON.stringify({
             host: this.form.target_ip
           }),
+          'timed_config': this.form.timed_config,
           'timed_type': this.form.timed_type
-
+        }
+        if (data.timed_type === 'cycle') {
+          data.timed_date = ''
+        } else {
+          data.timed_expression = ''
         }
         updateJobApi(this.data.id, data).then(res => {
           this.refresh()

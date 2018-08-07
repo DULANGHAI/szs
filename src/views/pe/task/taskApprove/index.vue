@@ -12,7 +12,7 @@
         size="small"
         label-width="70px"
         label-position="right">
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="任务名">
               <el-input v-model="form.name" placeholder="请输入"></el-input>
@@ -45,7 +45,7 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="审批者">
               <el-select v-model="form.approver" placeholder="请选择">
@@ -77,7 +77,7 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="6">
             <el-button size="small" type="primary" icon="el-icon-search" class="margl-70" @click="search">查询</el-button>
             <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>

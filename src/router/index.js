@@ -168,6 +168,56 @@ export const constantRouterMap = [
             props: true
           }
         ]
+      },
+      // 3.流程管理
+      {
+        path: 'flowManage',
+        component: Layout,
+        name: '流程管理',
+        meta: { title: '流程管理', icon: 'form' },
+        children: [
+          {
+            path: 'flowList',
+            name: '流程列表',
+            component: () => import('@/views/pe/flow/flowList/index'),
+            meta: { title: '流程列表' }
+          },
+          {
+            path: 'flowAdd',
+            name: '新建流程',
+            component: () => import('@/views/pe/flow/flowList/addFlow'),
+            meta: { title: '新建流程' },
+            hidden: true
+          },
+          {
+            path: 'flowEdit/:id',
+            name: '编辑流程',
+            component: () => import('@/views/pe/flow/flowList/addFlow'),
+            meta: { title: '编辑流程' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'flowView/:id/:view',
+            name: '查看流程',
+            component: () => import('@/views/pe/flow/flowList/addFlow'),
+            meta: { title: '查看流程' },
+            hidden: true,
+            props: true
+          },
+          {
+            path: 'instantFlow',
+            name: '即时流程',
+            component: () => import('@/views/pe/flow/instantFlow/index'),
+            meta: { title: '即时流程' }
+          },
+          {
+            path: 'timedFlow',
+            name: '定时流程',
+            component: () => import('@/views/pe/flow/timedFlow/index'),
+            meta: { title: '定时流程' }
+          }
+        ]
       }
     ]
   },

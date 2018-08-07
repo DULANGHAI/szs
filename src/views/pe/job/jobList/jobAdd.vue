@@ -74,8 +74,7 @@
                   <div v-if="view">{{form.applications}}</div>
                 </el-form-item>
                 <el-form-item label="启用">
-                  <el-switch v-if="!view" v-model="form.status"></el-switch>
-                  <div v-if="view">{{form.status}}</div>
+                  <el-switch v-model="form.status" :disabled="view === '1'"></el-switch>
                 </el-form-item>
               </el-form>
             </div>

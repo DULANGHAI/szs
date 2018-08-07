@@ -8,7 +8,7 @@
             <div class="name">{{data.name}}</div>
             <div class="path">
               <div>创建人：{{data.creator}}</div>
-              <div style="margin-left: 20px;">类型：{{job_type_map[data.job_type]}}</div>
+              <!-- <div style="margin-left: 20px;">类型：{{job_type_map[data.job_type]}}</div> -->
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@ export default {
   methods: {
     handleSelect() {
       if (this.data.id !== this.selected.id) {
-        this.selectNode && this.selectNode(this.data)
+        this.selectNode(this.data)
       }
     }
   }
