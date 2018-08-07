@@ -49,7 +49,7 @@ export default {
   methods: {
     handleSelect() {
       if (this.data.id !== this.selected.id) {
-        this.selectNode(this.data)
+        this.selectNode && this.selectNode(this.data)
       }
     }
   }

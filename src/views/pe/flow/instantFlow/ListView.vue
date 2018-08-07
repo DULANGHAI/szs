@@ -47,24 +47,8 @@
 
         <!-- 列表 -->
         <div class="table">
-          <!-- <el-table
-            ref="table"
-            :data="data"
-            tooltip-effect="dark">
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="creator" label="执行人"></el-table-column>
-            <el-table-column prop="job_type" label="类型"></el-table-column>
-            <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="200">
-              <template slot-scope="scope">
-                <el-button type="text" size="small">作业配置</el-button>
-                <el-button type="text" size="small">任务配置</el-button>
-              </template>
-            </el-table-column>
-          </el-table> -->
           <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
-            <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column>
+            <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
             <el-table-column prop="job_type" label="类型"></el-table-column>
             <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
@@ -248,11 +232,27 @@ export default {
           type: 'error'
         })
       } else {
-        const obj = Object.assign({}, {}, this.selectedFlow)
+        // 为什么不直接this.data.push(this.selectedFlow)呢，因为这样里面的监听（set/get）会复用，我要的是一份干净的数据
+        const obj = this.deepClone(this.selectedFlow)
         this.data.push(obj)
-        // this.data.push(this.selectedFlow)
-        // console.log('this.data: ', this.data)
       }
+    },
+    deepClone(obj) {
+      const objClone = Array.isArray(obj) ? [] : {}
+      if (obj && typeof obj === 'object') {
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            // 判断ojb子元素是否为对象，如果是，递归复制
+            if (obj[key] && typeof obj[key] === 'object') {
+              objClone[key] = this.deepClone(obj[key])
+            } else {
+              // 如果不是，简单复制
+              objClone[key] = obj[key]
+            }
+          }
+        }
+      }
+      return objClone
     }
   }
 
