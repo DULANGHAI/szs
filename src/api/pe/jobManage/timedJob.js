@@ -93,3 +93,39 @@ export function getRecordListApi(params) {
     params: params
   })
 }
+
+/**
+ * 执行定时作业-记录中
+ * @param {Object} data
+ */
+export function startJobApi(data) {
+  return request({
+    url: '/v1/jobs/carry-out/again/',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 停止定时作业-记录中
+ * @param {Object} data
+ */
+export function stopJobApi(data) {
+  return request({
+    url: '/v1/jobs/instant/stop/',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 删除定时作业-记录中
+ * @param {Object} data
+ */
+export function deleteJobRecordApi(data) {
+  return request({
+    url: '',
+    method: 'post',
+    data: data
+  })
+}

@@ -477,7 +477,6 @@ export default {
       const job_id_list = []
       this.getJobIdList(this.data, job_id_list)
       const has_manul_job = this.has_manul_job()
-
       const data = {
         'status': this.form.status,
         'name': this.form.name,
@@ -494,14 +493,11 @@ export default {
       })
     },
     getJobIdList(data, res) {
-      if (data.id && res.indexOf(data.id) === -1) {
-        res.push(data.id)
-        if (data.next && data.next.length) {
-          for (let i = 0; i < data.next.length; i++) {
-            this.getJobIdList(data.next[i], res)
-          }
+      data.forEach((item, index) => {
+        if (item.id && res.indexOf(item.id) === -1) {
+          res.push(item.id)
         }
-      }
+      })
     },
     has_manul_job() {
       let result = 0

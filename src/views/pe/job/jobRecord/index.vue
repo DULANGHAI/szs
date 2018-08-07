@@ -92,6 +92,11 @@
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
+          <el-table-column prop="execution_id" label="执行ID" width="160px">
+            <template slot-scope="scope">
+              <router-link :to="'/pe/jobManage/jobRecord/:'+scope.row.execution_id">{{scope.row.execution_id}}</router-link>
+            </template>
+          </el-table-column>
           <el-table-column prop="start_time" label="执行时间" width="160px" :formatter="formatterTime1"></el-table-column>
           <el-table-column prop="creator" label="执行人"></el-table-column>
           <el-table-column prop="execution_type" label="执行方式" :formatter="formatterExecutionType"></el-table-column>
@@ -128,6 +133,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { getLanguageApi, getCreatorApi, getListApi } from '@/api/pe/jobManage/jobRecord'
 
 export default {
+  props: ['id'],
   components: {
     Breadcrumb,
     RiskLevel,
