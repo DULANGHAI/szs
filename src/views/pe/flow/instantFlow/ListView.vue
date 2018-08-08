@@ -32,13 +32,13 @@
               <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">创建</div>
             </div>
-            <div class="op-item">
+            <div class="op-item" @click="doFlow" :class="{disable: multipleSelection.length !== 1}">
               <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
             </div>
           </div>
           <div class="flex">
-            <div class="op-item">
+            <div class="op-item" @click="handleMultipleDelete">
               <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">删除</div>
             </div>
@@ -63,6 +63,11 @@
               </template>
             </el-table-column>
           </tree-table>
+
+          <!-- 分页 -->
+          <div class="pagination" v-if="total">
+            <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
+          </div>
         </div>
 
       </div>
@@ -86,7 +91,7 @@ import AddManual from '../flowList/components/AddManual'
 import TaskConfig from '../flowList/components/TaskConfig'
 import JobConfig from '../flowList/components/JobConfig'
 
-import { getLanguageApi, getFlowListApi } from '@/api/pe/flowManage/instantFlow'
+import { getFlowListApi, getInstantListApi, createInstantApi, deleteInstantApi, doFlowApi } from '@/api/pe/flowManage/instantFlow'
 
 export default {
   components: {
@@ -110,94 +115,14 @@ export default {
         page: 1,
         per_page: 10
       },
-      dataFlow: [
-        {
-          id: 1,
-          name: '123',
-          status: true,
-          description: 'tyubniafaffafa',
-          scheduling: [{
-            'status': true,
-            'job_task_id_list': null,
-            'scheduling': `{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:14\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":5,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"task1\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"task1\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:14\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:32\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":6,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"tasks2\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"tasks2\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:32\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[{\"type\":\"end_success\",\"description\":\"\",\"is_warning\":false,\"timestr\":1533263652314,\"next\":[],\"parentstr\":1533263635045}],\"timestr\":1533263635045,\"parentstr\":1533263628915,\"condition\":{\"type\":\"success\",\"value\":\"\",\"parent\":1533263628915}}],\"timestr\":1533263628915,\"node_level\":0}`,
-            'risk_level': 3,
-            'description': 'tasks',
-            'creator': '张三',
-            'created_at': '2018-08-03T10:34:29',
-            'execution_account': 'mds',
-            'job_type': 'ordinary',
-            'updated_at': '2018-08-03T10:34:29',
-            'success_rate': 0,
-            'applications': null,
-            'frequency': 1,
-            'system_type': 'linux',
-            'target_ip': '{"host":["10.111.2.40"]}',
-            'is_deleted': false,
-            'deleted_at': null,
-            'id': 6,
-            'name': 'tasks',
-            'handleFailed': 'stop',
-            'timestr': 1533363229697
-          }, {
-            'status': false,
-            'job_task_id_list': null,
-            'scheduling': `{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T09:40:06\",\"risk_statement\":\"风险说明自动填写评估详情，用户不能修改\",\"deleted_at\":null,\"id\":2,\"file_owner\":\"王林1\",\"risk_level\":0,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"\",\"type\":\"file\",\"status\":\"无需审批\",\"file_selection\":\"[{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"},{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"}]\",\"description\":\"111111\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":true,\"is_deleted\":false,\"name\":\"文件分发任务1\",\"language\":\"\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T09:40:06\",\"file_permission\":\"root1\",\"command\":\"\",\"time_out\":1,\"next\":[{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T09:40:06\",\"risk_statement\":\"风险说明自动填写评估详情，用户不能修改\",\"deleted_at\":null,\"id\":2,\"file_owner\":\"王林2\",\"risk_level\":0,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"\",\"type\":\"file\",\"status\":\"无需审批\",\"file_selection\":\"[{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"},{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"}]\",\"description\":\"111111\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":true,\"is_deleted\":false,\"name\":\"文件分发任务1\",\"language\":\"\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T09:40:06\",\"file_permission\":\"root2\",\"command\":\"\",\"time_out\":1,\"next\":[],\"timestr\":1533211029990,\"parentstr\":1533211023580}],\"timestr\":1533211023580,\"node_level\":0}`,
-            'risk_level': 0,
-            'description': '',
-            'creator': '张三',
-            'created_at': '2018-08-02T19:58:00',
-            'execution_account': '王林',
-            'job_type': 'ordinary',
-            'updated_at': '2018-08-03T09:35:45',
-            'success_rate': 0,
-            'applications': null,
-            'frequency': 2,
-            'system_type': 'linux',
-            'target_ip': '{"host":["10.111.2.40"]}',
-            'is_deleted': false,
-            'deleted_at': null,
-            'id': 5,
-            'name': '文件分发作业',
-            'handleFailed': 'continue',
-            'timestr': 1533363237752
-          }, {
-            'status': true,
-            'job_task_id_list': null,
-            'scheduling': `{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:14\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":5,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"task1\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"task1\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:14\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:32\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":6,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"tasks2\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"tasks2\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:32\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[],\"timestr\":1533179826877,\"parentstr\":1533179820955,\"condition\":{\"type\":\"success\",\"value\":\"\",\"parent\":1533179820955}}],\"timestr\":1533179820955,\"node_level\":0}`,
-            'risk_level': 3,
-            'description': 'task1',
-            'creator': '张三',
-            'created_at': '2018-08-02T11:17:18',
-            'execution_account': 'mds',
-            'job_type': 'ordinary',
-            'updated_at': '2018-08-02T11:17:18',
-            'success_rate': 0,
-            'applications': null,
-            'frequency': 1,
-            'system_type': 'linux',
-            'target_ip': '{"host":["10.111.2.40"]}',
-            'is_deleted': false,
-            'deleted_at': null,
-            'id': 4,
-            'name': 'task1',
-            'handleFailed': 'stop',
-            'timestr': 1533363239671
-          }, {
-            'job_type': 'manual',
-            'name': '123',
-            'description': '456',
-            'notifier': '假数据1',
-            'notify_type': 'message',
-            'timestr': 1533363241856
-          }]
-        }
-      ],
+      dataFlow: [],
       selectedFlow: {},
       form2: { // 右边的即时作业列表
         page: 1,
         per_page: 10
       },
       data: [],
+      total: 0,
       multipleSelection: [],
       uniqueId: +new Date(),
       needSetJob: null // 需要配置的作业信息
@@ -212,9 +137,10 @@ export default {
     }
   },
   created() {
-    Promise.all([getLanguageApi()])
+    Promise.all([getInstantListApi(this.form2)])
       .then(res => {
-
+        this.dataInstant = res[0].items
+        this.total = res[0].total
       })
   },
   methods: {
@@ -241,6 +167,17 @@ export default {
         this.$refs.infiniteLoading.isComplete = true
       })
     },
+    handleData(data) {
+      const result = []
+
+      data.forEach((item) => {
+        const temp = JSON.parse(item.scheduling)
+        item.scheduling = temp
+        result.push(item)
+      })
+
+      return result
+    },
     selectNode(obj) {
       this.selectedFlow = obj
       this.uniqueId = +new Date()
@@ -254,8 +191,11 @@ export default {
         })
       } else {
         // 为什么不直接this.data.push(this.selectedFlow)呢，因为这样里面的监听（set/get）会复用，我要的是一份干净的数据和新的监听
-        const obj = this.deepClone(this.selectedFlow)
-        this.data.push(obj)
+        // const obj = this.deepClone(this.selectedFlow)
+        // this.data.push(obj)
+        createInstantApi({ process_id: this.selectedFlow.id }).then(res => {
+          this.getListData(1)
+        })
       }
     },
     deepClone(obj) {
@@ -306,6 +246,66 @@ export default {
     },
     refresh() {
       this.data = this.data.concat([])
+    },
+    refreshList() {
+      this.getListData(1)
+    },
+    getListData(index) {
+      const params = this.form2
+      if (index) {
+        params.page = index
+      }
+      getInstantListApi(params).then(res => {
+        const data = this.handleData(res.items)
+        this.data = data
+        this.total = res.total
+      })
+    },
+    handlePageChange(val) {
+      this.form2.page = val
+      this.getListData()
+    },
+    getFlowIds() {
+      const ids = []
+      this.multipleSelection.forEach(item => {
+        ids.push(item.id)
+      })
+      return ids
+    },
+    handleMultipleDelete() {
+      this.$confirm('确认要删除这些流程吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = this.getFlowIds()
+        this.deleteTasks({
+          process_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    deleteTasks(data) {
+      deleteInstantApi(data).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
+      })
+    },
+    doFlow() {
+      const data = this.multipleSelection[0]
+      data.scheduling = JSON.stringify(JSON.parse(data.scheduling))
+      doFlowApi({
+        flow_info: JSON.stringify(data)
+      }).then(() => {
+
+      })
     }
   }
 

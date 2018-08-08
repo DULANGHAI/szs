@@ -67,11 +67,13 @@
 
         <!-- 右侧内容 -->
         <div class="right">
-          <div>
+          <div class="flex">
             <div class="title">执行结果</div>
-            <el-select v-model="selectedIp" placeholder="请选择" @change="changeIp">
-              <el-option v-for="item in ipList" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
+            <div class="select-container">
+              <el-select v-model="selectedIp" placeholder="请选择" @change="changeIp" size="small">
+                <el-option v-for="item in ipList" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </div>
           </div>
           <!-- 执行记录 -->
           <div>
@@ -329,5 +331,11 @@ export default {
 .pagination {
   display: flex;
   justify-content: flex-end;
+}
+.flex {
+  display: flex;
+}
+.select-container {
+  width: 200px;
 }
 </style>
