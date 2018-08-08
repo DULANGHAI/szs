@@ -63,6 +63,7 @@ import 'codemirror/mode/python/python' // js的语法高亮，自行替换为你
 import 'codemirror/theme/blackboard.css'
 
 export default {
+  props: ['data1', 'data2'],
   components: {
     codemirror,
     CodeMirror
@@ -80,16 +81,16 @@ export default {
     }
     return {
       form: {
-        name: 'job_1',
-        job_type: 'ordinary',
-        target_ip: [],
-        start_time: '2018-07-28T15:31:50',
-        end_time: '2018-07-30T15:54:18',
-        time: '',
-        status: '',
-        result: ''
+        name: this.data1.name,
+        job_type: this.data1.job_type,
+        target_ip: this.data1.target_ip,
+        start_time: this.data1.start_time,
+        end_time: this.data1.end_time,
+        time: this.data1.time,
+        status: this.data1.status,
+        result: this.data1.result
       },
-      log: '"#!/usr/bin/python\n# -*- coding: UTF-8 -*-\n \nfor i in range(1,5):\n    for j in range(1,5):\n        for k in range(1,5):\n            if( i != k ) and (i != j) and (j != k):\n                print i,j,k"',
+      log: this.data2,
       codeOptions: { // 文件内容配置
         tabSize: 2,
         lineNumbers: true,

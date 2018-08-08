@@ -45,3 +45,31 @@ export function getListApi(params) {
     }
   })
 }
+
+/**
+ * 根据ID获取记录信息
+ * @param {*} params
+ */
+export function getDetailApi(id) {
+  return request({
+    url: '/v1/jobs/job-record/',
+    method: 'get',
+    params: {
+      id: id,
+      page: 1,
+      per_page: 10
+    }
+  })
+}
+
+//
+export function getLogDetailApi(execution_id, target_ip) {
+  return request({
+    url: '/v1/jobs/job-record/log/',
+    method: 'get',
+    params: {
+      execution_id: execution_id,
+      target_ip: target_ip
+    }
+  })
+}

@@ -81,6 +81,7 @@
 import MyChart from './MyChart'
 
 export default {
+  props: ['data'],
   components: {
     MyChart
   },
@@ -95,199 +96,21 @@ export default {
       quit: '应用下线',
       inspection: '日常检查'
     }
+    // debugger
+    // console.log(JSON.parse(this.data.scheduling))
+    // debugger
     return {
       form: {
-        name: 'job_1',
-        job_type: 'ordinary',
-        target_ip: [],
-        start_time: '2018-07-28T15:31:50',
-        end_time: '2018-07-30T15:54:18',
-        time: '',
-        status: '',
-        result: ''
+        name: this.data.name,
+        job_type: this.data.job_type,
+        target_ip: this.data.target_ip,
+        start_time: this.data.start_time,
+        end_time: this.data.end_time,
+        time: this.data.time,
+        status: this.data.status,
+        result: this.data.result
       },
-      scheduling: {
-        'creator': '李四',
-        'target_directory': null,
-        'updated_at': '2018-07-30T09:15:11',
-        'risk_statement': 'Create /demo05.py',
-        'deleted_at': null,
-        'id': 2,
-        'file_owner': '',
-        'risk_level': 1,
-        'script_version': '97af0eb5a7512de7547ab70e8457af29a1d20661',
-        'script': '/demo05.py',
-        'is_enable': true,
-        'project_id': 1,
-        'type': 'script',
-        'status': '无需审批',
-        'file_selection': null,
-        'description': '萨达达',
-        'approver': null,
-        'target_system': 'linux',
-        'is_replace': false,
-        'is_deleted': false,
-        'name': '脚本1',
-        'language': 'python',
-        'script_parameter': '123',
-        'created_at': '2018-07-30T09:15:11',
-        'file_permission': '',
-        'command': '',
-        'time_out': 1,
-        result_status: 'success',
-        'next': [{
-          'creator': '李四',
-          'target_directory': null,
-          'updated_at': '2018-07-30T09:15:11',
-          'risk_statement': 'Create /demo05.py',
-          'deleted_at': null,
-          'id': 3,
-          'file_owner': '',
-          'risk_level': 1,
-          'script_version': '97af0eb5a7512de7547ab70e8457af29a1d20661',
-          'script': '/demo05.py',
-          'is_enable': true,
-          'project_id': 1,
-          'type': 'script',
-          'status': '无需审批',
-          'file_selection': null,
-          'description': '大啊啊',
-          'approver': null,
-          'target_system': 'linux',
-          'is_replace': false,
-          'is_deleted': false,
-          'name': '脚本2',
-          'language': 'python',
-          'script_parameter': '789',
-          'created_at': '2018-07-30T09:15:11',
-          'file_permission': '',
-          'command': '',
-          'time_out': 3,
-          result_status: 'success',
-          'next': [{
-            'type': 'end_success',
-            'description': '',
-            'is_warning': true,
-            'timestr': 1532928657274,
-            'next': [],
-            'parentstr': 1532928650664,
-            'condition': {
-              'type': 'success',
-              'value': '',
-              'parent': 1532928650664
-            }
-          }],
-          'timestr': 1532928650664,
-          'parentstr': 1532928644334,
-          'condition': {
-            'type': 'success',
-            'value': '',
-            'parent': 1532928644334
-          }
-        },
-        {
-          'creator': '李四',
-          'target_directory': null,
-          'updated_at': '2018-07-30T09:15:11',
-          'risk_statement': 'Create /demo05.py',
-          'deleted_at': null,
-          'id': 3,
-          'file_owner': '',
-          'risk_level': 1,
-          'script_version': '97af0eb5a7512de7547ab70e8457af29a1d20661',
-          'script': '/demo05.py',
-          'is_enable': true,
-          'project_id': 1,
-          'type': 'script',
-          'status': '无需审批',
-          'file_selection': null,
-          'description': '大啊啊',
-          'approver': null,
-          'target_system': 'linux',
-          'is_replace': false,
-          'is_deleted': false,
-          'name': '脚本2',
-          'language': 'python',
-          'script_parameter': '789',
-          'created_at': '2018-07-30T09:15:11',
-          'file_permission': '',
-          'command': '',
-          'time_out': 3,
-          result_status: '',
-          'next': [{
-            'type': 'end_success',
-            'description': '',
-            'is_warning': true,
-            'timestr': 1532928657274,
-            'next': [],
-            'parentstr': 1532928650665,
-            'condition': {
-              'type': 'success',
-              'value': '',
-              'parent': 1532928650665
-            }
-          }],
-          'timestr': 1532928650665,
-          'parentstr': 1532928644334,
-          'condition': {
-            'type': 'success',
-            'value': '',
-            'parent': 1532928644334
-          }
-        },
-        {
-          'creator': '李四',
-          'target_directory': null,
-          'updated_at': '2018-07-30T09:15:11',
-          'risk_statement': 'Create /demo05.py',
-          'deleted_at': null,
-          'id': 3,
-          'file_owner': '',
-          'risk_level': 1,
-          'script_version': '97af0eb5a7512de7547ab70e8457af29a1d20661',
-          'script': '/demo05.py',
-          'is_enable': true,
-          'project_id': 1,
-          'type': 'script',
-          'status': '无需审批',
-          'file_selection': null,
-          'description': '大啊啊',
-          'approver': null,
-          'target_system': 'linux',
-          'is_replace': false,
-          'is_deleted': false,
-          'name': '脚本2',
-          'language': 'python',
-          'script_parameter': '789',
-          'created_at': '2018-07-30T09:15:11',
-          'file_permission': '',
-          'command': '',
-          'time_out': 3,
-          result_status: 'success',
-          'next': [{
-            'type': 'end_success',
-            'description': '',
-            'is_warning': true,
-            'timestr': 1532928657274,
-            'next': [],
-            'parentstr': 1532928650666,
-            'condition': {
-              'type': 'success',
-              'value': '',
-              'parent': 1532928650666
-            }
-          }],
-          'timestr': 1532928650666,
-          'parentstr': 1532928644334,
-          'condition': {
-            'type': 'success',
-            'value': '',
-            'parent': 1532928644334
-          }
-        }],
-        'timestr': 1532928644334,
-        'node_level': 0
-      },
+      scheduling: JSON.parse(this.data.scheduling),
       uniqueId: +new Date(),
       scale: 10
     }
