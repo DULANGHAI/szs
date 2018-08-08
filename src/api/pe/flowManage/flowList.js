@@ -57,3 +57,15 @@ export function updateFlowApi(id, data) {
     data: data
   })
 }
+
+/**
+ * 流程列表
+ * @param {Object} params
+ */
+export function getFlowListApi(params) {
+  return request({
+    url: `/v1/processes/`,
+    method: 'get',
+    params: params
+  })
+}

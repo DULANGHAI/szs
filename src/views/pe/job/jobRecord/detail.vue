@@ -10,12 +10,12 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="执行路径" name="first">
           <div class="tabs-contents">
-            <record-path :data="pathData"></record-path>
+            <record-path ref="recordPath"></record-path>
           </div>
         </el-tab-pane>
         <el-tab-pane label="日志" name="second">
           <div class="tabs-contents">
-            <record-log v-if="activeName === 'second'" :data1="pathData" :data2="logData"></record-log>
+            <!-- <record-log ref="recordLog" v-if="activeName === 'second'"></record-log> -->
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -39,19 +39,17 @@ export default {
   },
   data() {
     return {
-      activeName: 'first',
-      pathData: {},
-      logData: {}
+      activeName: 'first'
     }
   },
   watch: {
   },
   async created() {
     const pathData = await this.getPathData()
-    const logData = await this.getLogData(pathData.execution_id, pathData.target_ip)
+    // const logData = await this.getLogData(pathData.execution_id, pathData.target_ip)
 
-    this.pathData = pathData
-    this.logData = logData
+    this.$refs.recordPath.setData(pathData)
+    // this.$refs.recordLog.setData(pathData, logData)
   },
   methods: {
     getPathData() {

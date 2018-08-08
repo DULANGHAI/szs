@@ -476,11 +476,11 @@ export default {
     submitAll() {
       const job_id_list = []
       this.getJobIdList(this.data, job_id_list)
-      const has_manul_job = this.has_manul_job()
+      const has_manual_job = this.has_manual_job()
       const data = {
-        'status': this.form.status,
+        'status': this.form.status ? 1 : 0,
         'name': this.form.name,
-        'has_manul_job': has_manul_job,
+        'has_manual_job': has_manual_job,
         'job_id_list': job_id_list,
         'scheduling': JSON.stringify(this.data),
         'description': this.form.description
@@ -499,7 +499,7 @@ export default {
         }
       })
     },
-    has_manul_job() {
+    has_manual_job() {
       let result = 0
       for (let i = 0; i < this.data.length; i++) {
         if (this.data[i].job_type === 'manual') {
@@ -512,12 +512,12 @@ export default {
     update() {
       const job_id_list = []
       this.getJobIdList(this.data, job_id_list)
-      const has_manul_job = this.has_manul_job()
+      const has_manual_job = this.has_manual_job()
 
       const data = {
-        'status': this.form.status,
+        'status': this.form.status ? 1 : 0,
         'name': this.form.name,
-        'has_manul_job': has_manul_job,
+        'has_manual_job': has_manual_job,
         'job_id_list': job_id_list,
         'scheduling': JSON.stringify(this.data),
         'description': this.form.description

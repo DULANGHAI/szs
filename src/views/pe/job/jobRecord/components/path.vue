@@ -81,7 +81,6 @@
 import MyChart from './MyChart'
 
 export default {
-  props: ['data'],
   components: {
     MyChart
   },
@@ -96,21 +95,18 @@ export default {
       quit: '应用下线',
       inspection: '日常检查'
     }
-    // debugger
-    // console.log(JSON.parse(this.data.scheduling))
-    // debugger
     return {
       form: {
-        name: this.data.name,
-        job_type: this.data.job_type,
-        target_ip: this.data.target_ip,
-        start_time: this.data.start_time,
-        end_time: this.data.end_time,
-        time: this.data.time,
-        status: this.data.status,
-        result: this.data.result
+        name: '',
+        job_type: 'ordinary',
+        target_ip: '',
+        start_time: '',
+        end_time: '',
+        time: '',
+        status: '',
+        result: ''
       },
-      scheduling: JSON.parse(this.data.scheduling),
+      scheduling: {},
       uniqueId: +new Date(),
       scale: 10
     }
@@ -125,6 +121,21 @@ export default {
       if (this.scale > 1) {
         this.scale--
       }
+    },
+    setData(data) {
+      this.form = {
+        name: data.name,
+        job_type: data.job_type,
+        target_ip: data.target_ip,
+        start_time: data.start_time,
+        end_time: data.end_time,
+        time: data.time,
+        status: data.status,
+        result: data.result
+      }
+      this.scheduling = JSON.parse(data.scheduling)
+      this.uniqueId = +new Date()
+      this.scale = 10
     }
   }
 }

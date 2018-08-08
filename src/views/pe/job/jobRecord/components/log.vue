@@ -63,7 +63,6 @@ import 'codemirror/mode/python/python' // js的语法高亮，自行替换为你
 import 'codemirror/theme/blackboard.css'
 
 export default {
-  props: ['data1', 'data2'],
   components: {
     codemirror,
     CodeMirror
@@ -81,14 +80,14 @@ export default {
     }
     return {
       form: {
-        name: this.data1.name,
-        job_type: this.data1.job_type,
-        target_ip: this.data1.target_ip,
-        start_time: this.data1.start_time,
-        end_time: this.data1.end_time,
-        time: this.data1.time,
-        status: this.data1.status,
-        result: this.data1.result
+        name: '',
+        job_type: 'ordinary',
+        target_ip: '',
+        start_time: '',
+        end_time: '',
+        time: '',
+        status: '',
+        result: ''
       },
       log: this.data2,
       codeOptions: { // 文件内容配置
@@ -110,6 +109,21 @@ export default {
   },
   mounted() {
     this.editor.focus()
+  },
+  methods: {
+    setData(data1, data2) {
+      this.form = {
+        name: data1.name,
+        job_type: data1.job_type,
+        target_ip: data1.target_ip,
+        start_time: data1.start_time,
+        end_time: data1.end_time,
+        time: data1.time,
+        status: data1.status,
+        result: data1.result
+      }
+      this.log = data2
+    }
   }
 }
 </script>
