@@ -69,3 +69,27 @@ export function getFlowListApi(params) {
     params: params
   })
 }
+
+/**
+ * 启用/禁用 流程
+ * @param {Object} data
+ */
+export function changeFlowStatusApi(data) {
+  return request({
+    url: '/v1/processes/',
+    method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 删除 流程
+ * @param {Object} data
+ */
+export function deleteFlowApi(data) {
+  return request({
+    url: '/v1/processes/',
+    method: 'delete',
+    data: data
+  })
+}
