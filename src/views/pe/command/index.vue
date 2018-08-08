@@ -69,7 +69,9 @@
         <div class="right">
           <div>
             <div class="title">执行结果</div>
-            
+            <el-select v-model="selectedIp" placeholder="请选择" @change="changeIp">
+              <el-option v-for="item in ipList" :key="item" :label="item" :value="item"></el-option>
+            </el-select>
           </div>
           <!-- 执行记录 -->
           <div>
@@ -151,7 +153,7 @@ export default {
           'command': 'stringstringstringstringstringstringstringstring',
           'end_time': '2018-08-07T11:07:41.188Z',
           'time': 0,
-          'target_ip': `{"host":["172.168.1.101172.168.1.101172.168.1.101172.168.1.101"]}`,
+          'target_ip': `{"host":["172.168.1.101","172.168.1.102"]}`,
           'deleted_at': '2018-08-07T11:07:41.188Z',
           'id': 1,
           'execution_id': 'string'
@@ -159,6 +161,8 @@ export default {
       ],
       selectedJob: {},
       uniqueId: +new Date(),
+      ipList: [],
+      selectedIp: '',
       log: '"#!/usr/bin/python\n# -*- coding: UTF-8 -*-\n \nfor i in range(1,5):\n    for j in range(1,5):\n        for k in range(1,5):\n            if( i != k ) and (i != j) and (j != k):\n                print i,j,k"',
       codeOptions: { // 文件内容配置
         tabSize: 2,
@@ -179,6 +183,9 @@ export default {
           execution_account: val.execution_account,
           command: val.command
         }
+        this.ipList = JSON.parse(val.target_ip).host
+        this.selectedIp = ''
+        this.log = ''
       }
     }
   },
@@ -186,7 +193,13 @@ export default {
     submit() {
       createApi(this.form)
     },
-    resetForm() {},
+    resetForm() {
+      this.form = {
+        target_ip: [],
+        execution_account: '',
+        command: ''
+      }
+    },
     loadMore($state) {
       getListApi(this.form1).then(res => {
         if (res.items.length === 0) {
@@ -214,8 +227,16 @@ export default {
       this.selectedJob = obj
       this.uniqueId = +new Date()
     },
-    getResult() {
-      getResultApi()
+    changeIp(val) {
+      this.getResult(val)
+    },
+    getResult(ip) {
+      getResultApi({
+        target_ip: ip,
+        execution_id: this.selectedJob.execution_id
+      }).then(res => {
+        this.log = res.result
+      })
     }
   }
 }
