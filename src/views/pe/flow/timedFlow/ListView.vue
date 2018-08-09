@@ -53,6 +53,9 @@
             <el-table-column prop="created_at" label="提交时间" width="160px" :formatter="formatterTime"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
               <template slot-scope="scope">
+                <div v-if="scope.row._level === 1">
+                  <el-button type="text" size="small" @click="handleTimedSet(scope.row)">编辑定时流程</el-button>
+                </div>
                 <div v-if="scope.row.job_type === 'manual'">
                   <el-button type="text" size="small" @click="handleManualSet(scope.row)">编辑人工流程</el-button>
                 </div>
@@ -95,7 +98,7 @@ import TaskConfig from '../flowList/components/TaskConfig'
 import JobConfig from '../flowList/components/JobConfig'
 import AddTimed from './components/AddTimed'
 
-import { getFlowListApi, getTimedListApi, createTimedApi, deleteTimedApi, doFlowApi } from '@/api/pe/flowManage/timedFlow'
+import { getFlowListApi, getTimedListApi, deleteTimedApi, doFlowApi } from '@/api/pe/flowManage/timedFlow'
 
 export default {
   components: {
@@ -139,7 +142,8 @@ export default {
   created() {
     Promise.all([getTimedListApi(this.form2)])
       .then(res => {
-        this.data = res[0].items
+        const data = this.handleData(res[0].items)
+        this.data = data
         this.total = res[0].total
       })
   },
@@ -190,9 +194,6 @@ export default {
           type: 'error'
         })
       } else {
-        // createTimedApi({ process_id: this.selectedFlow.id }).then(res => {
-        //   this.getListData(1)
-        // })
         this.addType = 'add'
         this.$refs.addModel.showMoel()
       }
@@ -227,6 +228,12 @@ export default {
       if (row.created_at) {
         return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
       }
+    },
+    // 定时流程配置
+    handleTimedSet(row) {
+      this.addType = 'edit'
+      this.needSetJob = row
+      this.$refs.addModel.showMoel()
     },
     // 人工流程配置
     handleManualSet(row) {

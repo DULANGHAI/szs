@@ -133,7 +133,8 @@ export default {
   created() {
     Promise.all([getInstantListApi(this.form2)])
       .then(res => {
-        this.data = res[0].items
+        const data = this.handleData(res[0].items)
+        this.data = data
         this.total = res[0].total
       })
   },
