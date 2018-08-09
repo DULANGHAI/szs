@@ -16,45 +16,63 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="实例名">
-                <el-input v-model="form.submitter" auto-complete="off" placeholder="请输入"></el-input>
+                <el-autocomplete
+                  v-model="form.instance_name"
+                  :fetch-suggestions="slmSearch"
+                  placeholder="请输入实例名"
+                ></el-autocomplete>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="应用类型">
-                <el-input v-model="form.approver" auto-complete="off" placeholder="请输入"></el-input>
+                <el-autocomplete
+                  v-model="form.type"
+                  :fetch-suggestions="typeSearch"
+                  placeholder="请输入应用类型"
+                ></el-autocomplete>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="应用">
-                <el-input v-model="form.name" auto-complete="off" placeholder="请输入"></el-input>
+                <el-autocomplete
+                  v-model="form.name"
+                  :fetch-suggestions="nameSearch"
+                  placeholder="请输入实例名"
+                ></el-autocomplete>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="版本">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
+                <el-autocomplete
+                  v-model="form.verion"
+                  :fetch-suggestions="versionSearch"
+                  placeholder="请输入版本"
+                ></el-autocomplete>
               </el-form-item>
             </el-col> 
           </el-row>
           <el-row>
             <el-col :span="6">
               <el-form-item label="创建人">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
+                <el-autocomplete
+                  v-model="form.creator"
+                  :fetch-suggestions="creatorSearch"
+                  placeholder="请输入创建人"
+                ></el-autocomplete>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="发布人">
-                <el-select v-model="form.status" placeholder="请选择">
-                  <el-option v-for="item in fileStutas" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
+                <el-autocomplete
+                  v-model="form.publisher"
+                  :fetch-suggestions="fbrSearch"
+                  placeholder="请输入发布人"
+                ></el-autocomplete>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="状态">
-                <el-input v-model="form.name" auto-complete="off" placeholder="请输入"></el-input>
+                <el-input v-model="form.instance_status" auto-complete="off" placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -75,8 +93,8 @@
               <div class="file-nav">
                 <div class="file-nav-left">
                   <el-button size="small" @click="goCreate()">添加应用实例</el-button>
-                  <el-button size="small" >编辑</el-button>
-                  <el-button size="small" >删除</el-button>
+                  <el-button size="small" :disabled="is_sltmount" >编辑</el-button>
+                  <el-button size="small" @click.native="FileDelete(SelectionArray)">删除</el-button>
                 </div>
                 <div class="file-nav-right">
                   <el-button size="small" type="primary" @click.native="getList">查询</el-button>
@@ -92,8 +110,8 @@
           ref="multipleTable"
           :data="listData"
           tooltip-effect="dark"
-          style="width: 100%"
           empty-text="暂无数据"
+          v-loading.body="listLoading"
           @selection-change="handleSelectionChange">
           <el-table-column
             type="selection">
@@ -103,56 +121,62 @@
             label="实例名">
           </el-table-column>
           <el-table-column
-            prop="type"
+            prop="instance_description"
+            width="160"
             label="描述">
           </el-table-column>
           <el-table-column
-            prop="comment"
+            prop="name"
             label="应用">
           </el-table-column>
           <el-table-column
-            prop="submitter"
+            prop="version"
             label="版本">
           </el-table-column>
           <el-table-column
-            prop="created_at"
-            :formatter="formatterTime"
+            prop="creator"
+            width="100"
             label="创建人">
           </el-table-column>
           <el-table-column
+            prop="updated_at"
+            :formatter="formatterTime"
+            width="160"
             label="修改时间">
-            <template slot-scope="scope">
-              <risk-level :level="scope.row.risk_level"></risk-level>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="approver"
+            prop="publisher"
             label="发布人">
           </el-table-column>
           <el-table-column
+            prop="publish_time"
+            :formatter="formatterTime"
+            width="160"
             label="发布时间">
-            <template slot-scope="scope">
-              <div v-html="scope.row.status"></div>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="approver"
+            prop="type"
+            show-overflow-tooltip
             label="应用类型">
           </el-table-column>
           <el-table-column
-            prop="approver"
+            prop="sw_package_repository"
+            width="150"
+            show-overflow-tooltip
             label="软件包库">
           </el-table-column>
           <el-table-column
-            prop="approver"
+            prop="cfg_file_repository"
             label="配置文件库"
-            width="250">
+            show-overflow-tooltip
+            width="150"
+            show-overflow-tooltip>
           </el-table-column>
           <el-table-column
             label="状态"
             fixed="right">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goDetail(scope.row.id)">查看</el-button>
+              <el-button type="text" size="small" @click="goDetail(scope.row.id)">{{ scope.row.instance_status }}查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -175,10 +199,10 @@
 </template>
 
 <script>
-import { getApplicationList } from '@/api/resouce/applications/application'
+import { getApplicationList, getApplicationSearch, deleteApp } from '@/api/resouce/applications/application'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 
 const formData = {
   'datatime': []
@@ -190,26 +214,6 @@ export default {
   },
   data() {
     return {
-      fileTypeList: [{
-        label: '脚本',
-        value: 'scripts'
-      }, {
-        label: '软件包',
-        value: 'applications'
-      }, {
-        label: '配置文件',
-        value: 'configurations'
-      }],
-      fileStutas: [{
-        label: '审批中',
-        value: 'pending'
-      }, {
-        label: '通过',
-        value: 'pass'
-      }, {
-        label: '拒绝',
-        value: 'not_pass'
-      }],
       pickerOptions1: {
         disabledDate(time) {
           return time.getTime() > Date.now()
@@ -235,6 +239,10 @@ export default {
           }
         }]
       },
+      multipleSelection: [],
+      SelectionArray: [],
+      is_dltmount: true,
+      is_sltmount: true,
       listLoading: false,
       form: JSON.parse(JSON.stringify(formData)),
       listData: [],
@@ -261,6 +269,17 @@ export default {
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
+    // 删除文件
+    FileDelete(id) {
+      MessageBox.confirm('此操作将永久删除该命令，是否继续', '删除风险命令', { type: 'error' }).then(() => {
+        deleteApp(id).then(response => {
+          this.getList()
+          Message.success('删除成功')
+        }).catch(error => {
+          Message.error(error)
+        })
+      }).catch(() => { })
+    },
     // 重置
     searchReset() {
       this.form = JSON.parse(JSON.stringify(formData))
@@ -279,64 +298,141 @@ export default {
       const params = {
         'page': this.currentPage,
         'per_page': this.pageSizes || 10,
-        'end_time': this.form.datatime && this.form.datatime[1] || null,
-        'start_time': this.form.datatime && this.form.datatime[0] || null,
-        'submitter': this.form.submitter,
-        'approver': this.form.approver,
+        'instance_name': this.form.instance_name,
         'type': this.form.type,
-        'status': this.form.status,
-        'name': this.form.name
+        'creator': this.form.creator,
+        'name': this.form.name,
+        'version': this.form.version,
+        'publisher': this.form.publisher,
+        'instance_status': this.form.instance_status,
+        'end_time': this.form.datatime && this.form.datatime[1] || null,
+        'start_time': this.form.datatime && this.form.datatime[0] || null
       }
       this.listLoading = true
       getApplicationList(params).then(response => {
-        this.listData = response.items.map(item => {
-          let ftype
-          switch (item.type) {
-            case 'applications':
-              ftype = '软件包'
-              break
-            case 'scripts':
-              ftype = '脚本'
-              break
-            case 'configurations':
-              ftype = '配置文件'
-              break
-          }
-          let fstatus
-          switch (item.status) {
-            case 'initial':
-              fstatus = '<span>审批中</span>'
-              break
-            case 'pending':
-              fstatus = '<span>审批中</span>'
-              break
-            case 'pass':
-              fstatus = '<span style="color:green">通过</span>'
-              break
-            case 'not_pass':
-              fstatus = '<span style="color:red">拒绝</span>'
-              break
-          }
-          return {
-            'scripts': item.scripts,
-            'type': ftype,
-            'comment': item.comment,
-            'created_at': item.created_at,
-            'submitter': item.submitter,
-            'risk_level': item.risk_level,
-            'approver': item.approver || '/',
-            'status': fstatus,
-            'id': item.id
-          }
-        })
+        this.listData = response.items
         this.listLoading = false
         this.totalPage = response.total
       }).catch(error => {
         Message.error(error)
       })
     },
+    // 匹配 =》 实例名称
+    slmSearch(queryString, cb) {
+      const params = {
+        'instance_name': queryString
+      }
+      var list = []
+      getApplicationSearch(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.name
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 匹配 =》 创建人
+    creatorSearch(queryString, cb) {
+      const params = {
+        'creator': queryString
+      }
+      var list = []
+      getApplicationSearch(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.creator
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 匹配 =》 发布人
+    fbrSearch(queryString, cb) {
+      const params = {
+        'publisher': queryString
+      }
+      var list = []
+      getApplicationSearch(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.publisher
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 匹配 =》 应用
+    nameSearch(queryString, cb) {
+      const params = {
+        'name': queryString
+      }
+      var list = []
+      getApplicationSearch(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.name
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 匹配 =》 版本
+    versionSearch(queryString, cb) {
+      const params = {
+        'version': queryString
+      }
+      var list = []
+      getApplicationSearch(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.version
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 匹配 =》 类型
+    typeSearch(queryString, cb) {
+      const params = {
+        'type': queryString
+      }
+      var list = []
+      getApplicationSearch(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.type
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    unique(arr) {
+      const res = new Map()
+      return arr.filter((arr) => !res.has(arr.value) && res.set(arr.value, 1))
+    },
+    // 多选
     handleSelectionChange(val) {
-      console.log(val)
+      this.multipleSelection = val
+      var sary_path = []
+      for (const item in val) {
+        sary_path.push(val[item].id)
+      }
+      this.SelectionArray = sary_path
+      val.length > 0 ? this.is_dltmount = false : this.is_dltmount = true
+      val.length > 0 && val.length < 2 ? this.is_sltmount = false : this.is_sltmount = true
     },
     // 选择展示页数
     handleSizeChange(val) {

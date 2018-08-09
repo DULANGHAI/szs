@@ -29,37 +29,24 @@
         </el-row>
       </template>
       <template>
-        <el-table
-          ref="multipleTable"
-          :data="listData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          empty-text="暂无数据"
-          @selection-change="handleSelectionChange">
+        <tree-table :data.sync="listData" :expandAll="false" :multipleSelection.sync="multipleSelection">
           <el-table-column
-            type="selection">
+            prop="created_at"
+            label="类型">
           </el-table-column>
-          <el-table-column v-if="columns.length===0" width="150">
-            <template slot-scope="scope">
-              <span v-for="space in scope.row._level" class="ms-tree-space" :key="space"></span>
-              <span class="tree-ctrl" v-if="iconShow(0,scope.row)" @click="toggleExpanded(scope.$index)">
-                <i v-if="!scope.row._expanded" class="el-icon-plus"></i>
-                <i v-else class="el-icon-minus"></i>
-              </span>
-              {{scope.$index}}
-            </template>
+          <el-table-column
+            prop="name"
+            label="描述">
           </el-table-column>
-          <el-table-column v-else v-for="(column, index) in columns" :key="column.value" :label="column.text" :width="column.width">
-            <template slot-scope="scope">
-              <span v-if="index === 0" v-for="space in scope.row._level" class="ms-tree-space" :key="space"></span>
-              <span class="tree-ctrl" v-if="iconShow(index,scope.row)" @click="toggleExpanded(scope.$index)">
-                <i v-if="!scope.row._expanded" class="el-icon-plus"></i>
-                <i v-else class="el-icon-minus"></i>
-              </span>
-              {{scope.row[column.value]}}
-            </template>
+          <el-table-column
+            prop="created_at"
+            label="修改时间">
           </el-table-column>
-        </el-table>
+          <el-table-column
+            prop="creator"
+            label="修改人">
+          </el-table-column>
+        </tree-table>
       </template>
       <div class="list-paging">
         <el-pagination
@@ -80,9 +67,11 @@
 
 <script>
 import { getApplicationList } from '@/api/resouce/applications/application'
+import { getRiskList} from '@/api/resouce/versionLibrary/risk'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
+import TreeTable from './treeTable'
 import treeToArray from './eval'
 
 const formData = {
@@ -91,24 +80,12 @@ const formData = {
 export default {
   components: {
     Breadcrumb,
-    RiskLevel
+    RiskLevel,
+    TreeTable
   },
   data() {
     return {
-      data: {
-        type: [Array, Object],
-        required: true
-      },
-      columns: {
-        type: Array,
-        default: () => []
-      },
-      evalFunc: Function,
-      evalArgs: Array,
-      expandAll: {
-        type: Boolean,
-        default: false
-      },
+      multipleSelection: [],
       listLoading: false,
       form: JSON.parse(JSON.stringify(formData)),
       listData: [],
@@ -119,40 +96,51 @@ export default {
       totalPage: 0 // list总数
     }
   },
-  computed: {
-    // 格式化数据源
-    formatData: function() {
-      let tmp
-      if (!Array.isArray(this.data)) {
-        tmp = [this.data]
-      } else {
-        tmp = this.data
-      }
-      const func = this.evalFunc || treeToArray
-      const args = this.evalArgs ? Array.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll]
-      return func.apply(null, args)
-    }
-  },
   created() {
-    console.log(99)
+    this.getList()
   },
   methods: {
-    showRow: function(row) {
-      const show = (row.row.parent ? (row.row.parent._expanded && row.row.parent._show) : true)
-      row.row._show = show
-      return show ? 'animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s;' : 'display:none;'
-    },
-    // 切换下级是否展开
-    toggleExpanded: function(trIndex) {
-      const record = this.formatData[trIndex]
-      record._expanded = !record._expanded
-    },
-    // 图标显示
-    iconShow(index, record) {
-      return (index === 0 && record.children && record.children.length > 0)
-    },
-    handleSelectionChange(val) {
-      console.log(val)
+    getList() {
+      const params = {
+        'page': this.currentPage,
+        'per_page': this.pageSizes || 10
+      }
+      this.listLoading = true
+      getRiskList(params).then(response => {
+        this.listData = [
+          {
+            comment: 'sfdsfdsf',
+            risk_level: 2,
+            name: 'abvvvvv',
+            creator: 'od',
+            created_at: '2018-07-24T10:48:11',
+            updated_at: '2018-07-27T17:27:38',
+            id: 3,
+            children: [{
+              comment: 'sfdsfdsf',
+              risk_level: 2,
+              name: 'abvvvvv',
+              creator: 'od',
+              created_at: '2018-07-24T10:48:11',
+              updated_at: '2018-07-27T17:27:38',
+              id: 3
+            }]
+          },
+          {
+            comment: 'this is test',
+            risk_level: 1,
+            name: 'cat',
+            creator: 'god',
+            created_at: '2018-07-24T10:31:35',
+            updated_at: '2018-07-24T10:31:35',
+            id: 1
+          }
+        ]
+        this.listLoading = false
+        this.totalPage = response.total
+      }).catch(error => {
+        Message.error(error)
+      })
     },
     // 选择展示页数
     handleSizeChange(val) {

@@ -9,29 +9,26 @@
     <div class="container-body-wrap add-app-body">
       <template>
         <!-- 筛选 -->
-        <el-form
-          size="small"
-          label-width="70px"
-          label-position="right">
+        <el-form :model="form" :rules="rules" ref="ruleForm">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="实例名称">
-                <el-input v-model="form.submitter" auto-complete="off" placeholder="请输入"></el-input>
+              <el-form-item label="实例名称" prop="instance_name">
+                <el-input v-model="form.instance_name" auto-complete="off" placeholder="请输入实例名称"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="实例介绍">
-                <el-input v-model="form.submitter" auto-complete="off" placeholder="请输入"></el-input>
+                <el-input v-model="form.instance_description" auto-complete="off" placeholder="请输入实例介绍"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="应用">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                <el-select v-model="appName"  style="width:100%" placeholder="请选择应用" @change="appChange">
+                  <el-option v-for="item in appList" :key="item.key" :label="item.value" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col> 
@@ -39,8 +36,8 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="版本">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                <el-select v-model="form.version"  style="width:100%" placeholder="请选择版本">
+                  <el-option v-for="item in branchOptions" :key="item.key" :label="item.value" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col> 
@@ -48,7 +45,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="应用类型">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
+                <el-select v-model="form.type"  style="width:100%" placeholder="请选择应用类型">
                   <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -57,7 +54,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="开发语言">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
+                <el-select v-model="form.type"  style="width:100%" placeholder="请选择开发语言">
                   <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -66,70 +63,84 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="软件包库">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
+                <el-input v-model="form.sw_package_repository" @focus="$refs.rjb_file.showMoel()" readonly placeholder="请选择软件包库"></el-input>
               </el-form-item>
             </el-col> 
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="配置文件库">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
+                <el-input v-model="form.cfg_file_repository" @focus="$refs.pzwj_file.showMoel()" readonly placeholder="请选择配置文件库"></el-input>
               </el-form-item>
             </el-col> 
           </el-row>
           <el-row>
             <el-col :span="6">
               <el-form-item label="变量">
-                <el-button type="text" size="small" >添加</el-button>
+                <el-button size="small" @click="addParameters"><i class="el-icon-plus" />添加</el-button>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row v-for="(item, index) in form.parametersArray">
             <el-col :span="6">
               <el-form-item label="字段">
-                <el-input v-model="form.submitter" auto-complete="off" placeholder="请输入"></el-input>
+                <el-input v-model="item.name" auto-complete="off" placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="值">
-                <el-input v-model="form.submitter" auto-complete="off" placeholder="请输入"></el-input>
+                <el-input v-model="item.value" auto-complete="off" placeholder="请输入"></el-input>
               </el-form-item>
-            </el-col> 
+            </el-col>
+            <el-col :span="2">
+              <el-button @click.prevent="removeParameters(item)" style="margin-left:20px">删除</el-button>
+            </el-col>
           </el-row>
           <el-row>
             <el-col :span="2">&nbsp;</el-col>
             <el-col :span="10">
-              <el-button size="small" type="primary" >确定</el-button>
-              <el-button size="small" >取消</el-button>
-              <el-button size="small" >重置</el-button>
+              <el-button type="primary" @click="doSubmit">确定</el-button>
+              <el-button @click.prevent="cancelGoList">取消</el-button>
+              <el-button @click.prevent="formReset">重置</el-button>
             </el-col>
           </el-row>
         </el-form>
       </template>
     </div>
+    <!-- 文件选择model -->
+    <file-model ref="rjb_file" :fileOk="rjb_fileOk"></file-model>
+    <file-model ref="pzwj_file" :fileOk="pzwj_fileOk"></file-model>
   </div>
 </template>
 
 <script>
-import { getReviewList } from '@/api/resouce/versionLibrary/review'
+import { getRepositoryYuyan, getBranchList } from '@/api/script'
+import { addApplication } from '@/api/resouce/applications/application'
 import Breadcrumb from '@/components/Breadcrumb'
+import FileModel from './fileModel'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
 
 const formData = {
-  'datatime': []
+  'instance_name': '',
+  'instance_description': '',
+  'name': '',
+  'type': '',
+  'version': '',
+  'parametersArray': [],
+  'sw_package_repository': '',
+  'cfg_file_repository': ''
 }
 export default {
   components: {
     Breadcrumb,
-    RiskLevel
+    RiskLevel,
+    FileModel
   },
   data() {
     return {
+      appList: [], // 应用
+      branchOptions: [], // 版本
       fileTypeList: [{
         label: '脚本',
         value: 'scripts'
@@ -140,57 +151,126 @@ export default {
         label: '配置文件',
         value: 'configurations'
       }],
-      fileStutas: [{
-        label: '审批中',
-        value: 'pending'
-      }, {
-        label: '通过',
-        value: 'pass'
-      }, {
-        label: '拒绝',
-        value: 'not_pass'
-      }],
-      pickerOptions1: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
+      rjb_file: {
+        name: '',
+        target_path: ''
       },
+      pzwj_file: {
+        name: '',
+        target_path: ''
+      },
+      isEdit: false,
+      current: null,
       listLoading: false,
-      form: JSON.parse(JSON.stringify(formData))
+      appName: '',
+      form: JSON.parse(JSON.stringify(formData)),
+      rules: {
+        instance_name: [
+          { required: true, message: '实例名不能为空', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
-    console.log(99)
+    this.getAppList()
+  },
+  watch: {
+    'appName'(val, oldVal) {
+      this.form.name = val.value
+    }
   },
   methods: {
-    // 跳转到详情页
-    goDetail(val) {
+    // 取消回到列表页
+    cancelGoList() {
       this.$router.push({
-        name: 'reviewDetail',
-        params: {
-          id: val
+        name: 'applist'
+      })
+    },
+    // 应用名称
+    getAppList() {
+      var params = {
+        group_id: 7
+      }
+      getRepositoryYuyan(params).then(response => {
+        this.appList = response.map((item, index) => {
+          const ali = {
+            key: item.id,
+            value: item.name
+          }
+          return ali
+        })
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 选择应用，关联出版本
+    appChange(app) {
+      this.version = ''
+      getBranchList(app.key).then(response => {
+        this.branchOptions = response.map((item, index) => {
+          const ali = {
+            key: item.project_id,
+            value: item.name
+          }
+          return ali
+        })
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    // 提交应用表单
+    doSubmit() {
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          var successCallBack = () => {
+            Message.success(!this.isEdit ? '添加成功！' : '更新成功！')
+            // this.cancelGoList()
+          }
+          const formParms = {
+            'instance_name': this.form.instance_name,
+            'instance_description': this.form.instance_description,
+            'name': this.appName,
+            'version': this.form.version,
+            'language': this.form.language,
+            'type': this.form.type,
+            'sw_package_repository': this.form.sw_package_repository,
+            'cfg_file_repository': this.form.cfg_file_repository,
+            'parameters': this.form.parametersArray
+          }
+          addApplication(formParms).then(response => {
+            successCallBack()
+          }).catch(error => {
+            Message.error(error)
+          })
         }
       })
+    },
+    // 添加变量
+    addParameters() {
+      this.form.parametersArray.push({
+        'name': '',
+        'value': ''
+      })
+    },
+    // 删除变量
+    removeParameters(item) {
+      var index = this.form.parametersArray.indexOf(item)
+      if (index !== -1) {
+        this.form.parametersArray.splice(index, 1)
+      }
+    },
+    // 重置表单
+    formReset() {
+      this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
+      this.appName = ''
+      this.form = JSON.parse(JSON.stringify(formData))
+    },
+    rjb_fileOk(data) {
+      this.form.sw_package_repository = data.path
+      console.log(data.path)
+    },
+    pzwj_fileOk(data) {
+      this.form.cfg_file_repository = data.path
     },
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')

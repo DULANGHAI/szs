@@ -196,6 +196,9 @@ dl, dd, p {
   }
 }
 .review-body {
+  .el-autocomplete{
+    display: block !important;
+  }
   .el-range-separator{
     width: 25px;
   }
