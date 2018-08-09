@@ -29,7 +29,7 @@ export function getCreatorApi() {
  */
 export function getLanguageApi() {
   return request({
-    url: '/v1/repositories/system/language',
+    url: '/v1/repositories/system',
     method: 'get'
   })
 }

@@ -31,7 +31,27 @@ export default {
       custom: '自定义'
     }
     return {
-      show: false
+      show: false,
+      form: {
+        name: '',
+        description: '',
+        target_ip: [],
+        timed_type: 'cycle',
+        timed_config: 'check',
+        timed_date: '',
+        timed_expression: '',
+        frequency: '',
+        status: 0
+      }
+    }
+  },
+  computed: {
+    title() {
+      if (this.type === 'edit') {
+        return '定时流程配置'
+      } else {
+        return '添加定时流程'
+      }
     }
   },
   methods: {
@@ -47,7 +67,9 @@ export default {
     handleClose() {
       console.log('close callback ')
     },
-    cancel() {},
+    cancel() {
+      this.show = false
+    },
     submit() {}
   }
 }
