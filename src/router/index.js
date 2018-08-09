@@ -220,6 +220,33 @@ export const constantRouterMap = [
           }
         ]
       },
+      // 4.文件管理
+      {
+        path: 'fileManage',
+        component: Layout,
+        name: '文件管理',
+        meta: { title: '文件管理', icon: 'form' },
+        children: [
+          {
+            path: 'fileDispense',
+            name: '文件分发',
+            component: () => import('@/views/pe/fileManage/fileDispense/index'),
+            meta: { title: '文件分发' }
+          },
+          {
+            path: 'fileDownload',
+            name: '文件下载',
+            component: () => import('@/views/pe/fileManage/fileDownload/index'),
+            meta: { title: '文件下载' }
+          },
+          {
+            path: 'multipleFileDownload',
+            name: '批量文件下载',
+            component: () => import('@/views/pe/fileManage/multipleFileDownload/index'),
+            meta: { title: '批量文件下载' }
+          }
+        ]
+      },
       // 5.即时命令
       {
         path: 'command',
@@ -232,6 +259,21 @@ export const constantRouterMap = [
             name: '即时命令',
             component: () => import('@/views/pe/command/index'),
             meta: { title: '即时命令' }
+          }
+        ]
+      },
+      // 6.日常检查
+      {
+        path: 'daily',
+        component: Layout,
+        name: '日常检查',
+        meta: { title: '日常检查', icon: 'form' },
+        children: [
+          {
+            path: 'index',
+            name: '检查列表',
+            component: () => import('@/views/pe/daily/index'),
+            meta: { title: '检查列表' }
           }
         ]
       },

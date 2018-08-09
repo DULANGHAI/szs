@@ -299,7 +299,11 @@ export default {
       doFlowApi({
         flow_info: JSON.stringify(data)
       }).then(() => {
-
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
       })
     }
   }
