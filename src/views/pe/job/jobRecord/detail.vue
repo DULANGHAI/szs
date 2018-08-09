@@ -15,7 +15,7 @@
         </el-tab-pane>
         <el-tab-pane label="日志" name="second">
           <div class="tabs-contents">
-            <!-- <record-log ref="recordLog" v-if="activeName === 'second'"></record-log> -->
+            <record-log ref="recordLog"></record-log>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -46,10 +46,10 @@ export default {
   },
   async created() {
     const pathData = await this.getPathData()
-    // const logData = await this.getLogData(pathData.execution_id, pathData.target_ip)
+    const logData = await this.getLogData(pathData.execution_id, pathData.target_ip)
 
     this.$refs.recordPath.setData(pathData)
-    // this.$refs.recordLog.setData(pathData, logData)
+    this.$refs.recordLog.setData(pathData, logData)
   },
   methods: {
     getPathData() {
