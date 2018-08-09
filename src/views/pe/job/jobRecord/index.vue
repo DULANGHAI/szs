@@ -92,6 +92,7 @@
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
+          <el-table-column prop="execution_id" label="执行ID" width="160px"></el-table-column>
           <el-table-column prop="start_time" label="执行时间" width="160px" :formatter="formatterTime1"></el-table-column>
           <el-table-column prop="creator" label="执行人"></el-table-column>
           <el-table-column prop="execution_type" label="执行方式" :formatter="formatterExecutionType"></el-table-column>
@@ -103,7 +104,7 @@
           <el-table-column prop="end_time" label="结束时间" width="160px" :formatter="formatterTime2"></el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
           <el-table-column prop="result" label="结果"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="200">
+          <el-table-column fixed="right" label="操作" width="80">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
             </template>
@@ -128,6 +129,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { getLanguageApi, getCreatorApi, getListApi } from '@/api/pe/jobManage/jobRecord'
 
 export default {
+  props: ['id'],
   components: {
     Breadcrumb,
     RiskLevel,
@@ -196,6 +198,9 @@ export default {
     }
   },
   created() {
+    if (this.id !== ':id') {
+      this.form.execution_id = this.id
+    }
     this.init()
   },
   methods: {

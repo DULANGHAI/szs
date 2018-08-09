@@ -80,16 +80,16 @@ export default {
     }
     return {
       form: {
-        name: 'job_1',
+        name: '',
         job_type: 'ordinary',
-        target_ip: [],
-        start_time: '2018-07-28T15:31:50',
-        end_time: '2018-07-30T15:54:18',
+        target_ip: '',
+        start_time: '',
+        end_time: '',
         time: '',
         status: '',
         result: ''
       },
-      log: '"#!/usr/bin/python\n# -*- coding: UTF-8 -*-\n \nfor i in range(1,5):\n    for j in range(1,5):\n        for k in range(1,5):\n            if( i != k ) and (i != j) and (j != k):\n                print i,j,k"',
+      log: this.data2,
       codeOptions: { // 文件内容配置
         tabSize: 2,
         lineNumbers: true,
@@ -109,6 +109,21 @@ export default {
   },
   mounted() {
     this.editor.focus()
+  },
+  methods: {
+    setData(data1, data2) {
+      this.form = {
+        name: data1.name,
+        job_type: data1.job_type,
+        target_ip: data1.target_ip,
+        start_time: data1.start_time,
+        end_time: data1.end_time,
+        time: data1.time,
+        status: data1.status,
+        result: data1.result
+      }
+      this.log = data2
+    }
   }
 }
 </script>

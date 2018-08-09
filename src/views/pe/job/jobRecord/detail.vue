@@ -10,12 +10,12 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="执行路径" name="first">
           <div class="tabs-contents">
-            <record-path></record-path>
+            <record-path ref="recordPath"></record-path>
           </div>
         </el-tab-pane>
         <el-tab-pane label="日志" name="second">
           <div class="tabs-contents">
-            <record-log v-if="activeName === 'second'"></record-log>
+            <record-log ref="recordLog"></record-log>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -27,6 +27,8 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RecordPath from './components/path'
 import RecordLog from './components/log'
+
+import { getDetailApi, getLogDetailApi } from '@/api/pe/jobManage/jobRecord'
 
 export default {
   props: ['id'],
@@ -42,9 +44,24 @@ export default {
   },
   watch: {
   },
-  created() {
+  async created() {
+    const pathData = await this.getPathData()
+    const logData = await this.getLogData(pathData.execution_id, pathData.target_ip)
+
+    this.$refs.recordPath.setData(pathData)
+    this.$refs.recordLog.setData(pathData, logData)
   },
   methods: {
+    getPathData() {
+      return getDetailApi(this.id).then(res => {
+        return res.items[0]
+      })
+    },
+    getLogData(execution_id, target_ip) {
+      return getLogDetailApi(execution_id, target_ip).then(res => {
+        return res.execution_log
+      })
+    }
   }
 }
 </script>

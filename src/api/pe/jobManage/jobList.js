@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getLanguageApi() {
   return request({
-    url: '/v1/repository/system/language',
+    url: '/v1/repositories/system',
     method: 'get'
   })
 }

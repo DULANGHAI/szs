@@ -17,8 +17,13 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="拥有作业">
-              <el-select value-key="id" v-model="form.job_id" placeholder="请选择">
-                <el-option v-for="item in job_arr" :key="item.id" :label="item.name" :value="item">
+              <el-select value-key="id" v-model="form.job_id" placeholder="请输入关键词"
+                filterable
+                remote
+                :remote-method="remoteMethod"
+                popper-class="script-select"
+                :loading="loading">
+                <el-option v-for="item in job_arr" :key="item.id" :label="item.name" :value="item.id">
                   <script-option :data="item"></script-option>
                 </el-option>
               </el-select>
@@ -58,9 +63,9 @@
       <div class="toolbar">
         <el-button size="small" type="primary" icon="el-icon-plus" plain @click="goAdd">添加</el-button>
         <div>
-          <el-button size="small" plain :disabled="multipleStart" >启用</el-button>
-          <el-button size="small" plain :disabled="multipleStop" >停用</el-button>
-          <el-button size="small" type="danger" plain :disabled="multipleDelete" >删除</el-button>
+          <el-button size="small" plain :disabled="multipleStart" @click="handleMultipleStart">启用</el-button>
+          <el-button size="small" plain :disabled="multipleStop" @click="handleMultipleStop">停用</el-button>
+          <el-button size="small" type="danger" plain :disabled="multipleDelete" @click="handleMultipleDelete">删除</el-button>
         </div>
       </div>
 
@@ -74,7 +79,7 @@
           style="width: 100%"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="" label="名称" width="130px"></el-table-column>
+          <el-table-column prop="name" label="名称" width="130px"></el-table-column>
           <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="created_at" label="创建时间" width="160px"></el-table-column>
           <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
@@ -88,10 +93,10 @@
           <el-table-column prop="success_rate" label="成功率"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small">编辑</el-button>
-              <el-button type="text" size="small">查看</el-button>
-              <el-button type="text" size="small">{{scope.row.status ? '停用' : '启用'}}</el-button>
-              <el-button type="text" size="small" class="danger">删除</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.status === 1">编辑</el-button>
+              <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
+              <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.status ? '停用' : '启用'}}</el-button>
+              <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)" :disabled="scope.row.status === 1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -112,6 +117,8 @@ import RiskLevel from '@/components/RiskLevel'
 
 import ScriptOption from '@/components/ScriptOption'
 
+import { getJobListApi, getFlowListApi, changeFlowStatusApi, deleteFlowApi } from '@/api/pe/flowManage/flowList'
+
 export default {
   components: {
     Breadcrumb,
@@ -124,9 +131,18 @@ export default {
         name: '',
         job_id: '',
         creator: '',
+        start_time: '',
+        end_time: '',
         page: 1,
         per_page: 10
       },
+      // 作业远程搜索参数
+      jobForm: {
+        name: '',
+        page: 1,
+        per_page: 20
+      },
+      loading: false,
       job_arr: [],
       creator_arr: [],
       daterange: '',
@@ -172,8 +188,28 @@ export default {
       }
     }
   },
+  created() {
+    Promise.all([getFlowListApi(this.form)]).then(res => {
+      this.data = res[0].items
+      this.total = res[0].total
+    })
+  },
   methods: {
-    search() {},
+    remoteMethod(query) {
+      this.loading = true
+      this.jobForm.name = query
+      this.jobForm.target_system = this.systemType
+      getJobListApi(this.jobForm).then(res => {
+        this.loading = false
+        this.job_arr = res.items
+      }).catch(() => {
+        this.loading = false
+        this.job_arr = []
+      })
+    },
+    search() {
+      this.getListData(1)
+    },
     refresh() {},
     goAdd() {
       this.$router.push({
@@ -198,6 +234,162 @@ export default {
     },
     handlePageChange(val) {
       this.getListData(val)
+    },
+    getListData(index) {
+      const params = this.form
+      if (index) {
+        params.page = index
+      }
+      getFlowListApi(params).then(res => {
+        this.data = res.items
+        this.total = res.total
+      })
+    },
+    goEdit(id) {
+      this.$router.push({
+        path: `/pe/flowManage/flowEdit/${id}`
+      })
+    },
+    goView(id) {
+      this.$router.push({
+        path: `/pe/flowManage/flowView/${id}/1`
+      })
+    },
+    // 567
+    getFlowIds() {
+      const ids = []
+      this.multipleSelection.forEach(item => {
+        ids.push(item.id)
+      })
+      return ids
+    },
+    changeTaskStatus(data) {
+      changeFlowStatusApi(data).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
+      })
+    },
+    deleteTasks(data) {
+      deleteFlowApi(data).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
+      })
+    },
+    handleMultipleStart() {
+      this.$confirm('确认要启用这些流程吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success'
+      }).then(() => {
+        const ids = this.getFlowIds()
+        this.changeTaskStatus({
+          process_ids: ids,
+          status: 1
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消启用'
+        })
+      })
+    },
+    handleMultipleStop() {
+      this.$confirm('确认要停用这些流程吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = this.getFlowIds()
+        this.changeTaskStatus({
+          process_ids: ids,
+          status: 0
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消停用'
+        })
+      })
+    },
+    handleMultipleDelete() {
+      this.$confirm('确认要删除这些流程吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = this.getFlowIds()
+        this.deleteTasks({
+          process_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleSingleStatus(row) {
+      if (row.status) { // 处在启用状态，要停用
+        this.$confirm('确认要停用这条流程吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const ids = []
+          ids.push(row.id)
+          this.changeTaskStatus({
+            process_ids: ids,
+            status: 0
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消停用'
+          })
+        })
+      } else {
+        this.$confirm('确认要启用这条流程吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'success'
+        }).then(() => {
+          const ids = []
+          ids.push(row.id)
+          this.changeTaskStatus({
+            process_ids: ids,
+            status: 1
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消启用'
+          })
+        })
+      }
+    },
+    handleSingleDelete(id) {
+      this.$confirm('确认要删除这条流程吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        const ids = []
+        ids.push(id)
+        this.deleteTasks({
+          process_ids: ids
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }

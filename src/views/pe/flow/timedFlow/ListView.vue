@@ -1,5 +1,5 @@
 <template>
-  <div class="container-body">
+  <div class="container">
     <div class="container-content">
       <!-- 左侧筛选列表 -->
       <div class="left">
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <!-- 列表 --> 
+        <!-- 列表 -->
         <div class="table">
           <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
             <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
@@ -53,6 +53,9 @@
             <el-table-column prop="created_at" label="提交时间" width="160px" :formatter="formatterTime"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
               <template slot-scope="scope">
+                <div v-if="scope.row._level === 1">
+                  <el-button type="text" size="small" @click="handleTimedSet(scope.row)">编辑定时流程</el-button>
+                </div>
                 <div v-if="scope.row.job_type === 'manual'">
                   <el-button type="text" size="small" @click="handleManualSet(scope.row)">编辑人工流程</el-button>
                 </div>
@@ -80,18 +83,22 @@
     <job-config ref="jobConfig" :data.sync="needSetJob" :refresh="refresh"></job-config>
     <!-- 任务配置 -->
     <task-config ref="taskConfig" :data.sync="needSetJob" :refresh="refresh"></task-config>
+    <!-- 添加/编辑 定时流程model -->
+    <add-timed ref="addModel" :type="addType" :data="needSetJob" :refresh="refreshList"></add-timed>
+
   </div>
 </template>
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
-import FlowItem from './components/FlowItem'
-import TreeTable from './components/TreeTable'
+import FlowItem from '../instantFlow/components/FlowItem'
+import TreeTable from '../instantFlow/components/TreeTable'
 import AddManual from '../flowList/components/AddManual'
 import TaskConfig from '../flowList/components/TaskConfig'
 import JobConfig from '../flowList/components/JobConfig'
+import AddTimed from './components/AddTimed'
 
-import { getFlowListApi, getInstantListApi, createInstantApi, deleteInstantApi, doFlowApi } from '@/api/pe/flowManage/instantFlow'
+import { getFlowListApi, getTimedListApi, deleteTimedApi, doFlowApi } from '@/api/pe/flowManage/timedFlow'
 
 export default {
   components: {
@@ -100,7 +107,8 @@ export default {
     TreeTable,
     AddManual,
     TaskConfig,
-    JobConfig
+    JobConfig,
+    AddTimed
   },
   data() {
     return {
@@ -111,7 +119,7 @@ export default {
       },
       dataFlow: [],
       selectedFlow: {},
-      form2: { // 右边的即时作业列表
+      form2: { // 右边的定时作业列表
         page: 1,
         per_page: 10
       },
@@ -119,7 +127,8 @@ export default {
       total: 0,
       multipleSelection: [],
       uniqueId: +new Date(),
-      needSetJob: null // 需要配置的作业信息
+      needSetJob: null, // 需要配置的作业信息
+      addType: 'add'
     }
   },
   watch: {
@@ -131,7 +140,7 @@ export default {
     }
   },
   created() {
-    Promise.all([getInstantListApi(this.form2)])
+    Promise.all([getTimedListApi(this.form2)])
       .then(res => {
         const data = this.handleData(res[0].items)
         this.data = data
@@ -185,12 +194,8 @@ export default {
           type: 'error'
         })
       } else {
-        // 为什么不直接this.data.push(this.selectedFlow)呢，因为这样里面的监听（set/get）会复用，我要的是一份干净的数据和新的监听
-        // const obj = this.deepClone(this.selectedFlow)
-        // this.data.push(obj)
-        createInstantApi({ process_id: this.selectedFlow.id }).then(res => {
-          this.getListData(1)
-        })
+        this.addType = 'add'
+        this.$refs.addModel.showMoel()
       }
     },
     deepClone(obj) {
@@ -224,6 +229,12 @@ export default {
         return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
       }
     },
+    // 定时流程配置
+    handleTimedSet(row) {
+      this.addType = 'edit'
+      this.needSetJob = row
+      this.$refs.addModel.showMoel()
+    },
     // 人工流程配置
     handleManualSet(row) {
       this.needSetJob = row
@@ -250,7 +261,7 @@ export default {
       if (index) {
         params.page = index
       }
-      getInstantListApi(params).then(res => {
+      getTimedListApi(params).then(res => {
         const data = this.handleData(res.items)
         this.data = data
         this.total = res.total
@@ -285,7 +296,7 @@ export default {
       })
     },
     deleteTasks(data) {
-      deleteInstantApi(data).then(res => {
+      deleteTimedApi(data).then(res => {
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -299,23 +310,15 @@ export default {
       doFlowApi({
         flow_info: JSON.stringify(data)
       }).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-        this.getListData()
+
       })
     }
   }
-
 }
 </script>
 
 <style lang="scss" scoped>
-.container-body {
-  // margin: 24px;
-  border-radius: 4px;
-  background-color: #fff;
+.container {
   & /deep/ .el-select {
     width: 100%;
   }

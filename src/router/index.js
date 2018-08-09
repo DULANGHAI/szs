@@ -154,10 +154,11 @@ export const constantRouterMap = [
             meta: { title: '即时作业' }
           },
           {
-            path: 'jobRecord',
+            path: 'jobRecord/:id',
             name: '作业记录',
             component: () => import('@/views/pe/job/jobRecord/index'),
-            meta: { title: '作业记录' }
+            meta: { title: '作业记录' },
+            props: true
           },
           {
             path: 'recordDetail/:id',
@@ -216,6 +217,78 @@ export const constantRouterMap = [
             name: '定时流程',
             component: () => import('@/views/pe/flow/timedFlow/index'),
             meta: { title: '定时流程' }
+          }
+        ]
+      },
+      // 4.文件管理
+      {
+        path: 'fileManage',
+        component: Layout,
+        name: '文件管理',
+        meta: { title: '文件管理', icon: 'form' },
+        children: [
+          {
+            path: 'fileDispense',
+            name: '文件分发',
+            component: () => import('@/views/pe/fileManage/fileDispense/index'),
+            meta: { title: '文件分发' }
+          },
+          {
+            path: 'fileDownload',
+            name: '文件下载',
+            component: () => import('@/views/pe/fileManage/fileDownload/index'),
+            meta: { title: '文件下载' }
+          },
+          {
+            path: 'multipleFileDownload',
+            name: '批量文件下载',
+            component: () => import('@/views/pe/fileManage/multipleFileDownload/index'),
+            meta: { title: '批量文件下载' }
+          }
+        ]
+      },
+      // 5.即时命令
+      {
+        path: 'command',
+        component: Layout,
+        name: '即时命令',
+        meta: { title: '即时命令', icon: 'form' },
+        children: [
+          {
+            path: 'index',
+            name: '即时命令',
+            component: () => import('@/views/pe/command/index'),
+            meta: { title: '即时命令' }
+          }
+        ]
+      },
+      // 6.日常检查
+      {
+        path: 'daily',
+        component: Layout,
+        name: '日常检查',
+        meta: { title: '日常检查', icon: 'form' },
+        children: [
+          {
+            path: 'index',
+            name: '检查列表',
+            component: () => import('@/views/pe/daily/index'),
+            meta: { title: '检查列表' }
+          }
+        ]
+      },
+      // 7.运维审批
+      {
+        path: 'peApprove',
+        component: Layout,
+        name: '运维审批',
+        meta: { title: '运维审批', icon: 'form' },
+        children: [
+          {
+            path: 'index',
+            name: '审批列表',
+            component: () => import('@/views/pe/peApprove/index'),
+            meta: { title: '审批列表' }
           }
         ]
       }

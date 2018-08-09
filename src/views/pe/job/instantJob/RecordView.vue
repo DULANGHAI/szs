@@ -66,8 +66,14 @@
         :data="data"
         tooltip-effect="dark"
         style="width: 100%">
-        <el-table-column prop="execution_id" label="执行ID"></el-table-column>
-        <el-table-column prop="created_at" label="执行时间" :formatter="formatterTime1"></el-table-column>
+        <el-table-column label="执行ID" width="160px">
+          <template slot-scope="scope">
+            <div class="link">
+              <router-link :to="'/pe/jobManage/jobRecord/:'+scope.row.execution_id">{{scope.row.execution_id}}</router-link>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="created_at" label="执行时间" width="160px" :formatter="formatterTime1"></el-table-column>
         <el-table-column prop="creator" label="执行人"></el-table-column>
         <el-table-column prop="name" label="作业名"></el-table-column>
         <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
@@ -77,13 +83,27 @@
         <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
         <el-table-column prop="status" label="状态"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
+        <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="small">执行</el-button>
-            <el-button type="text" size="small">停止</el-button>
+            <div v-if="scope.row.status === '执行中'">
+              <el-button type="text" size="small" disabled="">执行</el-button>
+              <el-button type="text" size="small" @click="stopJob(scope.row.execution_id)">停止</el-button>
+            </div>
+            <div v-else-if="scope.row.status === '执行结束'">
+              <el-button type="text" size="small" @click="startJob(scope.row.execution_id)">执行</el-button>
+              <el-button type="text" size="small" disabled="">停止</el-button>
+            </div>
+            <div v-else-if="scope.row.status === '等待'">
+              <el-button type="text" size="small" @click="deleteJob(scope.row.execution_id)">删除</el-button>
+            </div> 
           </template>
         </el-table-column>
       </el-table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination" v-if="total">
+      <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
     </div>
 
   </div>
@@ -93,7 +113,7 @@
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-import { getLanguageApi, getRecordListApi, getCreatorApi } from '@/api/pe/jobManage/instantJob'
+import { getLanguageApi, getRecordListApi, getCreatorApi, startJobApi, stopJobApi, deleteJobApi } from '@/api/pe/jobManage/instantJob'
 
 export default {
   components: {
@@ -191,6 +211,9 @@ export default {
         this.total = res.total
       })
     },
+    handlePageChange(val) {
+      this.getListData(val)
+    },
     search() {
       this.getListData(1)
     },
@@ -203,12 +226,40 @@ export default {
         creator: '',
         start_time: '',
         end_time: '',
+        execution_type: 'instant',
         page: 1,
         per_page: 10
       }
       this.daterange = ''
       this.multipleSelection = []
       this.init()
+    },
+    startJob(id) {
+      startJobApi({ execution_id: id }).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.refresh()
+      })
+    },
+    stopJob(id) {
+      stopJobApi({ execution_id: id }).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.refresh()
+      })
+    },
+    deleteJob(id) {
+      deleteJobApi({ execution_id: id }).then(res => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.refresh()
+      })
     }
   }
 }
@@ -239,5 +290,8 @@ export default {
 .pagination {
   display: flex;
   justify-content: flex-end;
+}
+.link {
+  color: #409EFF;
 }
 </style>

@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getLanguageApi() {
   return request({
-    url: '/v1/repository/system/language',
+    url: '/v1/repositories/system',
     method: 'get'
   })
 }
@@ -54,6 +54,42 @@ export function updateFlowApi(id, data) {
   return request({
     url: `/v1/processes/${id}`,
     method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 流程列表
+ * @param {Object} params
+ */
+export function getFlowListApi(params) {
+  return request({
+    url: `/v1/processes/`,
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 启用/禁用 流程
+ * @param {Object} data
+ */
+export function changeFlowStatusApi(data) {
+  return request({
+    url: '/v1/processes/',
+    method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 删除 流程
+ * @param {Object} data
+ */
+export function deleteFlowApi(data) {
+  return request({
+    url: '/v1/processes/',
+    method: 'delete',
     data: data
   })
 }

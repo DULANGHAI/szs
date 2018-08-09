@@ -29,7 +29,7 @@ export function getCreatorApi() {
  */
 export function getLanguageApi() {
   return request({
-    url: '/v1/repository/system/language',
+    url: '/v1/repositories/system',
     method: 'get'
   })
 }
@@ -61,7 +61,7 @@ export function deleteTaskApi(data) {
  */
 export function getAllScriptApi(params) {
   return request({
-    url: '/v1/repository/script',
+    url: '/v1/repositories/script',
     method: 'get',
     params: params
   })
@@ -72,7 +72,7 @@ export function getAllScriptApi(params) {
  */
 export function getScriptVersionApi(id) {
   return request({
-    url: `/v1/repository/script/${id}`,
+    url: `/v1/repositories/script/${id}`,
     method: 'get'
   })
 }
@@ -140,7 +140,7 @@ export function getFileListApi(params) {
  */
 export function getBranchApi(id) {
   return request({
-    url: `/v1/repository/project/${id}/branches`,
+    url: `/v1/repositories/project/${id}/branches`,
     method: 'get'
   })
 }

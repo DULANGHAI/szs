@@ -30,9 +30,11 @@ export default {
   },
   computed: {
     getClass() {
-      if (this.data.result_status === 'success') {
+      if (this.data.task_reult === 'runner_on_ok') {
         return 'execution-status-success'
-      } else if (this.data.result_status === 'failed') {
+      } else if (this.data.task_reult === 'runner_on_skipped') {
+        return ''
+      } else {
         return 'execution-status-failed'
       }
     },
@@ -46,7 +48,7 @@ export default {
     getSuccessBro() {
       if (this.data.next && this.data.next.length > 1) {
         return this.data.next.map((item, index) => {
-          if (item.result_status === 'success') {
+          if (item.task_reult === 'success') {
             return 1
           }
           return 0
