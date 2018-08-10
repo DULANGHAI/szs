@@ -84,7 +84,7 @@
     <!-- 任务配置 -->
     <task-config ref="taskConfig" :data.sync="needSetJob" :refresh="refresh"></task-config>
     <!-- 添加/编辑 定时流程model -->
-    <add-timed ref="addModel" :type="addType" :data="needSetJob" :refresh="refreshList"></add-timed>
+    <add-timed ref="addModel" :type="addType" :data="selectedFlow" :refresh="refreshList"></add-timed>
 
   </div>
 </template>
@@ -306,12 +306,36 @@ export default {
     },
     doFlow() {
       const data = this.multipleSelection[0]
-      data.scheduling = JSON.stringify(JSON.parse(data.scheduling))
-      doFlowApi({
-        flow_info: JSON.stringify(data)
-      }).then(() => {
+      // 处理数据，把里面的_expended _level _show parent 属性删除,得到一份新的数据拷贝
+      const newData = this.deleteAttr(data.scheduling)
+      data.scheduling = JSON.stringify(newData)
 
+      doFlowApi({
+        process_info: JSON.stringify(data)
+      }).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.getListData()
       })
+    },
+    deleteAttr(obj) {
+      const objClone = Array.isArray(obj) ? [] : {}
+      if (obj && typeof obj === 'object') {
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key) && key !== '_expended' && key !== '_level' && key !== '_show' && key !== 'parent') {
+            // 判断ojb子元素是否为对象，如果是，递归复制
+            if (obj[key] && typeof obj[key] === 'object') {
+              objClone[key] = this.deleteAttr(obj[key])
+            } else {
+              // 如果不是，简单复制
+              objClone[key] = obj[key]
+            }
+          }
+        }
+      }
+      return objClone
     }
   }
 }

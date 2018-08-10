@@ -54,8 +54,8 @@ export function deleteTimedApi(data) {
  */
 export function doFlowApi(data) {
   return request({
-    url: ``,
-    method: 'delete',
+    url: `/v1/timed-processes/execution`,
+    method: 'post',
     data: data
   })
 }

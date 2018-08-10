@@ -65,8 +65,8 @@ export function deleteInstantApi(data) {
  */
 export function doFlowApi(data) {
   return request({
-    url: ``,
-    method: 'delete',
+    url: `/v1/instant-processes/execution`,
+    method: 'post',
     data: data
   })
 }
