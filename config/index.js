@@ -35,6 +35,10 @@ module.exports = {
         target: 'http://10.111.2.41:5000',
         changeOrigin: true
       },
+      '/v1/buckets/': {
+        target: 'http://10.111.2.41:5000',
+        changeOrigin: true
+      },
       '/v1': {
         // target: 'http://10.111.2.41:5000',
         // target: 'http://10.111.2.41:5000',

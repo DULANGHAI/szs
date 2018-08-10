@@ -166,7 +166,7 @@ export default {
       }
       if (this.type === 'add') {
         const data = {
-          id: this.data.id,
+          process_id: this.data.id,
           name: this.form.name,
           description: this.form.description,
           timed_type: this.form.timed_type,

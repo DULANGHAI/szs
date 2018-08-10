@@ -19,12 +19,11 @@
 
           <!-- 按钮组 -->
           <div class="btn-container">
-            <el-button size="mini">重命名</el-button>
-            <el-button size="mini">新建目录</el-button>
-            <el-button size="mini">上传</el-button>
-            <el-button size="mini">下载</el-button>
-            <el-button size="mini">删除</el-button>
-            <el-button size="mini">分发</el-button>
+            <el-button size="mini" @click="createFolder" :disabled="!project_id">新建目录</el-button>
+            <el-button size="mini" @click="upload" :disabled="!project_id">上传</el-button>
+            <el-button size="mini" :disabled="!project_id">下载</el-button>
+            <el-button size="mini" :disabled="!project_id">删除</el-button>
+            <el-button size="mini" :disabled="!project_id">分发</el-button>
           </div>
         </div>
 
@@ -34,42 +33,65 @@
             :data="data"
             border
             style="width: 100%"
-            @row-click="selectItem"
-            @row-dblclick="enterNext"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="" label="文件名">
               <template slot-scope="scope">
                 <svg-icon v-if="scope.row.type === 'tree'" icon-class="folder-icon"/>
                 <svg-icon v-else icon-class="file-icon"/>
-                <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                <span class="file-name" @click="enterNext(scope.row)">{{ scope.row.name }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="update_user" label="备注"></el-table-column>
+            <el-table-column prop="comment" label="备注"></el-table-column>
             <el-table-column prop="updated_at" label="上传时间"></el-table-column>
           </el-table>
         </div>
 
       </div>
     </div>
+
+    <!-- 添加目录model -->
+    <create-folder ref="createFolder" :id="project_id" :path="relative_path" :refresh="refresh"></create-folder>
+    <!-- 上传文件 -->
+    <upload-file ref="uploadFile" :id="project_id"></upload-file>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
+import CreateFolder from './components/CreateFolder'
+import UploadFile from './components/UploadFile'
+
 import { getFileListApi } from '@/api/pe/fileManage/fileDispense'
 
 export default {
   components: {
-    Breadcrumb
+    Breadcrumb,
+    CreateFolder,
+    UploadFile
   },
   data() {
     return {
-      path: 'LDDS',
-      pathItems: ['LDDS'],
+      group: 'LDDS',
+      path: 'LDDS/file_buckets',
+      pathItems: ['LDDS', 'file_buckets'],
       data: [],
-      selected: {},
-      multipleSelection: []
+      multipleSelection: [],
+      project_id: null
+    }
+  },
+  computed: {
+    relative_path() {
+      const arr = this.path.split('LDDS/file_buckets/home')
+      if (arr.length === 2) {
+        if (arr[1] === '') {
+          return '/'
+        } else {
+          return arr[1]
+        }
+      } else {
+        return ''
+      }
     }
   },
   created() {
@@ -88,6 +110,8 @@ export default {
         return
       } else if (index === this.pathItems.length - 1) {
         return
+      } else if (index < 2) {
+        return
       }
       const arr = this.pathItems.slice(0, index + 1)
       const path = arr.join('/')
@@ -96,11 +120,43 @@ export default {
       }).then(res => {
         this.pathItems = path.split('/')
         this.data = res
-        this.selected = {}
+        if (res.length) {
+          this.project_id = res[0].project_id
+        }
+      })
+    },
+    enterNext(row) {
+      if (row.type !== 'tree') {
+        return
+      }
+      const params = {
+        path: row.absolute_path
+      }
+      getFileListApi(params).then(res => {
+        this.pathItems = params.path.split('/')
+        this.path = params.path
+        this.data = res
+        if (res.length) {
+          this.project_id = res[0].project_id
+        }
       })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    refresh() {
+      this.init()
+    },
+    /**
+     * 按钮操作
+     */
+    // 创建
+    createFolder() {
+      this.$refs.createFolder.showModel()
+    },
+    // 上传
+    upload() {
+      this.$refs.uploadFile.showModel()
     }
   }
 }
@@ -149,5 +205,9 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+.file-name {
+  color: #1890FF;
+  cursor: pointer;
 }
 </style>

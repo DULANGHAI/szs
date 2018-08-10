@@ -38,7 +38,7 @@
             </div>
           </div>
           <div class="flex">
-            <div class="op-item" @click="handleMultipleDelete">
+            <div class="op-item" @click="handleMultipleDelete" :class="{disable: multipleSelection.length === 0}">
               <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">删除</div>
             </div>
