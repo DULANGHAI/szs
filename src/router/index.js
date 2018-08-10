@@ -307,7 +307,7 @@ export const constantRouterMap = [
         path: 'resouces',
         component: Layout,
         name: 'Resouces',
-        meta: { title: '资源管理', icon: 'banben' },
+        meta: { title: '资源管理', icon: 'resouces' },
         children: [
           {
             path: 'host',
@@ -322,7 +322,7 @@ export const constantRouterMap = [
         path: 'applications',
         component: Layout,
         name: 'Applications',
-        meta: { title: '应用管理', icon: 'banben' },
+        meta: { title: '应用管理', icon: 'applications' },
         children: [
           {
             path: 'applist',
