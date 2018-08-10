@@ -295,9 +295,12 @@ export default {
     },
     doFlow() {
       const data = this.multipleSelection[0]
-      data.scheduling = JSON.stringify(JSON.parse(data.scheduling))
+      // 处理数据，把里面的_expended _level _show parent 属性删除,得到一份新的数据拷贝
+      const newData = this.deleteAttr(data.scheduling)
+      data.scheduling = JSON.stringify(newData)
+
       doFlowApi({
-        flow_info: JSON.stringify(data)
+        process_info: JSON.stringify(data)
       }).then(() => {
         this.$message({
           message: '操作成功',
@@ -305,6 +308,23 @@ export default {
         })
         this.getListData()
       })
+    },
+    deleteAttr(obj) {
+      const objClone = Array.isArray(obj) ? [] : {}
+      if (obj && typeof obj === 'object') {
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key) && key !== '_expended' && key !== '_level' && key !== '_show' && key !== 'parent') {
+            // 判断ojb子元素是否为对象，如果是，递归复制
+            if (obj[key] && typeof obj[key] === 'object') {
+              objClone[key] = this.deleteAttr(obj[key])
+            } else {
+              // 如果不是，简单复制
+              objClone[key] = obj[key]
+            }
+          }
+        }
+      }
+      return objClone
     }
   }
 

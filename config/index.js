@@ -19,9 +19,26 @@ module.exports = {
         target: 'http://10.111.2.41:5100/',
         changeOrigin: true
       },
+      '/v1/processes/': {
+        target: 'http://10.111.2.41:5000',
+        changeOrigin: true
+      },
+      '/v1/instant-processes/': {
+        target: 'http://10.111.2.41:5000',
+        changeOrigin: true
+      },
+      '/v1/timed-processes/': {
+        target: 'http://10.111.2.41:5000',
+        changeOrigin: true
+      },
+      '/v1/repositories': {
+        target: 'http://10.111.2.41:5000',
+        changeOrigin: true
+      },
       '/v1': {
         // target: 'http://10.111.2.41:5000',
-        target: 'http://10.111.2.41:5000',
+        // target: 'http://10.111.2.41:5000',
+        target: 'http://172.16.139.74:5000',
         changeOrigin: true
       }
     },

@@ -88,13 +88,6 @@ export default {
       console.log('open callback ')
     },
     handleClose() {
-      console.log('close callback ')
-    },
-    showMoel() {
-      this.show = true
-    },
-    cancel() {
-      this.show = false
       this.pathItems = ['LDDS']
       this.form = {
         path: 'LDDS',
@@ -103,6 +96,13 @@ export default {
       this.branchOption = []
       this.data = []
       this.selected = {}
+      console.log('close callback ')
+    },
+    showMoel() {
+      this.show = true
+    },
+    cancel() {
+      this.show = false
     },
     ok() {
       this.fileOk(this.selected)
