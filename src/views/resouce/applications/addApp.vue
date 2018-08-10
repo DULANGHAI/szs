@@ -19,14 +19,14 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="实例介绍">
+              <el-form-item label="实例介绍" prop="instance_description">
                 <el-input v-model="form.instance_description" auto-complete="off" placeholder="请输入实例介绍"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="应用">
+              <el-form-item label="应用" prop="name">
                 <el-select v-model="appName"  style="width:100%" placeholder="请选择应用" @change="appChange">
                   <el-option v-for="item in appList" :key="item.key" :label="item.value" :value="item"></el-option>
                 </el-select>
@@ -35,7 +35,7 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="版本">
+              <el-form-item label="版本" prop="version">
                 <el-select v-model="form.version"  style="width:100%" placeholder="请选择版本">
                   <el-option v-for="item in branchOptions" :key="item.key" :label="item.value" :value="item.value"></el-option>
                 </el-select>
@@ -44,7 +44,7 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="应用类型">
+              <el-form-item label="应用类型" prop="type">
                 <el-select v-model="form.type"  style="width:100%" placeholder="请选择应用类型">
                   <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
@@ -53,8 +53,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="开发语言">
-                <el-select v-model="form.type"  style="width:100%" placeholder="请选择开发语言">
+              <el-form-item label="开发语言" prop="language">
+                <el-select v-model="form.language"  style="width:100%" placeholder="请选择开发语言">
                   <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -62,14 +62,14 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="软件包库">
+              <el-form-item label="软件包库" prop="sw_package_repository">
                 <el-input v-model="form.sw_package_repository" @focus="$refs.rjb_file.showMoel()" readonly placeholder="请选择软件包库"></el-input>
               </el-form-item>
             </el-col> 
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="配置文件库">
+              <el-form-item label="配置文件库" prop="cfg_file_repository">
                 <el-input v-model="form.cfg_file_repository" @focus="$refs.pzwj_file.showMoel()" readonly placeholder="请选择配置文件库"></el-input>
               </el-form-item>
             </el-col> 
@@ -115,7 +115,7 @@
 
 <script>
 import { getRepositoryYuyan, getBranchList } from '@/api/script'
-import { addApplication } from '@/api/resouce/applications/application'
+import { addApplication, getApplicationDetail, putApplication } from '@/api/resouce/applications/application'
 import Breadcrumb from '@/components/Breadcrumb'
 import FileModel from './fileModel'
 import RiskLevel from '@/components/RiskLevel'
@@ -126,6 +126,7 @@ const formData = {
   'instance_description': '',
   'name': '',
   'type': '',
+  'language': '',
   'version': '',
   'parametersArray': [],
   'sw_package_repository': '',
@@ -167,12 +168,36 @@ export default {
       rules: {
         instance_name: [
           { required: true, message: '实例名不能为空', trigger: 'blur' }
+        ],
+        instance_description: [
+          { required: true, message: '实例介绍不能为空', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '应用名不能为空', trigger: 'blur' }
+        ],
+        version: [
+          { required: true, message: '版本不能为空', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '应用类型不能为空', trigger: 'blur' }
+        ],
+        language: [
+          { required: true, message: '开发语言不能为空', trigger: 'blur' }
+        ],
+        sw_package_repository: [
+          { required: true, message: '软件包库不能为空', trigger: 'blur' }
+        ],
+        cfg_file_repository: [
+          { required: true, message: '配置文件不能为空', trigger: 'blur' }
         ]
       }
     }
   },
   created() {
     this.getAppList()
+    if (this.$route.params.id && this.$route.params.id !== undefined) {
+      this.getAppDetail()
+    }
   },
   watch: {
     'appName'(val, oldVal) {
@@ -203,9 +228,26 @@ export default {
         Message.error(error)
       })
     },
+    // 应用详情
+    getAppDetail() {
+      this.isEdit = true
+      getApplicationDetail(this.$route.params.id).then(response => {
+        this.form = response
+        this.appName = {
+          value: response.name
+        }
+        this.form = {
+          ...this.form,
+          name: response.name
+        }
+        this.form.parametersArray = response.parameters
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
     // 选择应用，关联出版本
     appChange(app) {
-      this.version = ''
+      this.form.version = ''
       getBranchList(app.key).then(response => {
         this.branchOptions = response.map((item, index) => {
           const ali = {
@@ -224,24 +266,44 @@ export default {
         if (valid) {
           var successCallBack = () => {
             Message.success(!this.isEdit ? '添加成功！' : '更新成功！')
-            // this.cancelGoList()
+            this.cancelGoList()
           }
-          const formParms = {
-            'instance_name': this.form.instance_name,
-            'instance_description': this.form.instance_description,
-            'name': this.appName,
-            'version': this.form.version,
-            'language': this.form.language,
-            'type': this.form.type,
-            'sw_package_repository': this.form.sw_package_repository,
-            'cfg_file_repository': this.form.cfg_file_repository,
-            'parameters': this.form.parametersArray
+
+          if (!this.isEdit) {
+            const formParms = {
+              'instance_name': this.form.instance_name,
+              'instance_description': this.form.instance_description,
+              'name': this.appName.value,
+              'version': this.form.version,
+              'language': this.form.language,
+              'type': this.form.type,
+              'sw_package_repository': this.form.sw_package_repository,
+              'cfg_file_repository': this.form.cfg_file_repository,
+              'parameters': this.form.parametersArray
+            }
+            addApplication(formParms).then(response => {
+              successCallBack()
+            }).catch(error => {
+              Message.error(error)
+            })
+          } else {
+            const formParms = {
+              'instance_name': this.form.instance_name,
+              'instance_description': this.form.instance_description,
+              'name': this.appName.value,
+              'version': this.form.version,
+              'language': this.form.language,
+              'type': this.form.type,
+              'sw_package_repository': this.form.sw_package_repository,
+              'cfg_file_repository': this.form.cfg_file_repository,
+              'parameters': this.form.parametersArray
+            }
+            putApplication(this.$route.params.id, formParms).then(response => {
+              successCallBack()
+            }).catch(error => {
+              Message.error(error)
+            })
           }
-          addApplication(formParms).then(response => {
-            successCallBack()
-          }).catch(error => {
-            Message.error(error)
-          })
         }
       })
     },

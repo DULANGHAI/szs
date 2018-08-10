@@ -93,7 +93,7 @@
               <div class="file-nav">
                 <div class="file-nav-left">
                   <el-button size="small" @click="goCreate()">添加应用实例</el-button>
-                  <el-button size="small" :disabled="is_sltmount" >编辑</el-button>
+                  <el-button size="small" @click.native="FileEdit(SelectionArray)" :disabled="is_sltmount" >编辑</el-button>
                   <el-button size="small" @click.native="FileDelete(SelectionArray)">删除</el-button>
                 </div>
                 <div class="file-nav-right">
@@ -117,7 +117,7 @@
             type="selection">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="instance_name"
             label="实例名">
           </el-table-column>
           <el-table-column
@@ -176,7 +176,10 @@
             label="状态"
             fixed="right">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goDetail(scope.row.id)">{{ scope.row.instance_status }}查看</el-button>
+              <span v-if="scope.row.instance_status === 0">新建</span>
+              <span v-else-if="scope.row.instance_status === 1" style="color:#FAAD14">已修改</span>
+              <span v-else-if="scope.row.instance_status === 2" style="color:#52C41A">已发布</span>
+              <span v-else-if="scope.row.instance_status === 3" style="color:#F5222D">已下线</span>
             </template>
           </el-table-column>
         </el-table>
@@ -280,6 +283,15 @@ export default {
         })
       }).catch(() => { })
     },
+    // 编辑文件
+    FileEdit(id) {
+      this.$router.push({
+        name: 'addApp',
+        params: {
+          id: id[0]
+        }
+      })
+    },
     // 重置
     searchReset() {
       this.form = JSON.parse(JSON.stringify(formData))
@@ -288,10 +300,7 @@ export default {
     // 添加，编辑 应用
     goCreate() {
       this.$router.push({
-        name: 'addApp',
-        params: {
-          id: '123'
-        }
+        name: 'addApp'
       })
     },
     getList() {

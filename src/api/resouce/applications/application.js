@@ -9,11 +9,28 @@ export function getApplicationList(params) {
   })
 }
 
+// 获取应用详情
+export function getApplicationDetail(id) {
+  return request({
+    url: '/v1/applications/' + id,
+    method: 'get'
+  })
+}
+
 // 添加应用
 export function addApplication(params) {
   return request({
     url: '/v1/applications/',
     method: 'post',
+    data: params
+  })
+}
+
+// 编辑应用
+export function putApplication(id, params) {
+  return request({
+    url: '/v1/applications/' + id,
+    method: 'put',
     data: params
   })
 }
@@ -33,7 +50,7 @@ export function deleteApp(ids) {
     url: '/v1/repositories/risk',
     method: 'delete',
     data: {
-      ids: ids
+      app_ids: ids
     }
   })
 }

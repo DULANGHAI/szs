@@ -128,7 +128,7 @@ export function upadateTaskApi(id, data) {
  */
 export function getFileListApi(params) {
   return request({
-    url: '/v1/bucket/',
+    url: '/v1/buckets/',
     method: 'get',
     params: params
   })
