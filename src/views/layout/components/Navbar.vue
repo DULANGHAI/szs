@@ -10,7 +10,7 @@
         <svg-icon icon-class="wenti" />
       </span>
       <span class="tooltip-icon">
-        <el-badge :value="12" class="item">
+        <el-badge :value="12" :max="99" class="item">
           <svg-icon icon-class="notice" />
         </el-badge>
       </span>
