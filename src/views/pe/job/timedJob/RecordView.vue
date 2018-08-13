@@ -69,7 +69,7 @@
         <el-table-column label="执行ID" width="160px">
           <template slot-scope="scope">
             <div class="link">
-              <router-link :to="'/pe/jobManage/jobRecord/:'+scope.row.execution_id">{{scope.row.execution_id}}</router-link>
+              <router-link :to="'/pe/jobManage/jobRecord/'+scope.row.execution_id">{{scope.row.execution_id}}</router-link>
             </div>
           </template>
         </el-table-column>

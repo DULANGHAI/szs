@@ -7,7 +7,7 @@
       {{$route.name}}
     </div>
     <div class="container-body">
-      
+
       <!-- 筛选 -->
       <el-form
         size="small"
@@ -27,14 +27,42 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="执行人">
-              <el-input v-model="form.creator" placeholder="请输入"></el-input>
+            <el-form-item label="目标IP">
+              <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="search">查询</el-button>
             <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item label="结果">
+              <el-select v-model="form.result">
+                <el-option v-for="item in result_arr" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="执行ID">
+              <el-input v-model="form.execution_id" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="执行时间">
+              <el-date-picker
+                size="small"
+                v-model="daterange"
+                type="daterange"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          
         </el-row>
       </el-form>
       
@@ -45,22 +73,15 @@
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
-          <el-table-column label="执行ID" width="160px">
-            <template slot-scope="scope">
-              <div class="link">
-                <router-link :to="'/pe/daily/detail/'+scope.row.execution_id">{{scope.row.execution_id}}</router-link>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="created_at" label="执行时间" width="160px" :formatter="formatterTime1"></el-table-column>
-          <el-table-column prop="creator" label="执行人"></el-table-column>
           <el-table-column prop="name" label="作业名"></el-table-column>
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
-          <el-table-column prop="target_ip" label="目标IP" width="160px" :formatter="formatterIp" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="time" label="执行耗时"></el-table-column>
-          <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
-          <el-table-column prop="status" label="状态"></el-table-column>
+          <el-table-column prop="target_ip" label="目标IP" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="result" label="结果"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="100">
+            <template slot-scope="scope">
+              <el-button type="text" size="small">查看</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
@@ -79,9 +100,10 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 import { getLanguageApi } from '@/api/pe/jobManage/timedJob'
-import { getExecutionListApi } from '@/api/pe/daily/index'
+import { getJobListApi } from '@/api/pe/daily/index'
 
 export default {
+  props: ['id'],
   components: {
     Breadcrumb,
     Treeselect
@@ -121,21 +143,37 @@ export default {
       form: {
         name: '',
         system_type: '',
-        creator: '',
+        target_ip: [],
+        result: '',
+        execution_id: '',
+        start_time: '',
+        end_time: '',
         page: 1,
         per_page: 10
       },
       data: [],
       total: 0,
-      systemAndLang: {}
+      systemAndLang: {},
+      result_arr: [],
+      check_item_arr: [],
+      daterange: ''
+    }
+  },
+  watch: {
+    daterange(val) {
+      this.form.start_time = val[0]
+      this.form.end_time = val[1]
     }
   },
   created() {
+    if (this.id !== ':id') {
+      this.form.execution_id = this.id
+    }
     this.init()
   },
   methods: {
     init() {
-      Promise.all([getLanguageApi(), getExecutionListApi(this.form)]).then(res => {
+      Promise.all([getLanguageApi(), getJobListApi(this.form)]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
@@ -150,16 +188,24 @@ export default {
     formatterTime2(row) {
       return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
     },
-    formatterIp(row) {
-      const data = JSON.parse(row.target_ip).host
-      return data.toString()
-    },
     getListData(index) {
-      const params = this.form
+      const params = {
+        name: this.form.name,
+        system_type: this.form.system_type,
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
+        result: this.form.result,
+        execution_id: this.form.execution_id,
+        start_time: this.form.start_time,
+        end_time: this.form.end_time,
+        page: this.form.page,
+        per_page: this.form.per_page
+      }
       if (index) {
         params.page = index
       }
-      getExecutionListApi(params).then(res => {
+      getJobListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
       })
@@ -174,10 +220,16 @@ export default {
       this.form = {
         name: '',
         system_type: '',
-        creator: '',
+        job_type: '',
+        target_ip: [],
+        result: '',
+        execution_id: '',
+        start_time: '',
+        end_time: '',
         page: 1,
         per_page: 10
       }
+      this.daterange = ''
       this.multipleSelection = []
       this.init()
     }
@@ -185,7 +237,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" scoped>
 .container-body {
   margin: 24px;
   padding: 29px 32px;
