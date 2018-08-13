@@ -12,14 +12,12 @@
         <el-row>
           <el-col :span="24">
             <div class="file-nav">
-              <div class="file-nav-left">
-                
-              </div>
+              <div class="file-nav-left"></div>
               <div class="file-nav-right">
                 <el-button size="small" >导入主机账号</el-button>
                 <el-button size="small" >导入CSV</el-button>
                 <el-button size="small" >同步CMBD</el-button>
-                <el-button size="small" >添加主机组</el-button>
+                <el-button size="small" @click.native="$refs.app.doCreate(false)">添加主机组</el-button>
                 <el-button size="small" >编辑</el-button>
                 <el-button size="small" >查看</el-button>
                 <el-button size="small" >删除</el-button>
@@ -48,31 +46,19 @@
           </el-table-column>
         </tree-table>
       </template>
-      <div class="list-paging">
-        <el-pagination
-          v-if="this.totalPage > 0"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="this.pageSizesArray"
-          :page-size="this.pageSize"
-          layout="prev, pager, next, sizes, jumper"
-          :total="this.totalPage">
-        </el-pagination>
-      </div>
     </div>
+    <add-host ref="app" v-on:getList="getList"></add-host>
   </div>
 </template>
 
 <script>
-import { getApplicationList } from '@/api/resouce/applications/application'
 import { getRiskList} from '@/api/resouce/versionLibrary/risk'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
 import TreeTable from './treeTable'
 import treeToArray from './eval'
+import AddHost from './addHostZu' // 新建风险命令
 
 const formData = {
   'datatime': []
@@ -81,7 +67,8 @@ export default {
   components: {
     Breadcrumb,
     RiskLevel,
-    TreeTable
+    TreeTable,
+    AddHost
   },
   data() {
     return {

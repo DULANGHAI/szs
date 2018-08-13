@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 50</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="12" cy="12" r="12"></circle>
+    </defs>
+    <g id="小雪" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="70-消息" transform="translate(-914.000000, -58.000000)">
+            <g id="Group-52" transform="translate(256.000000, 0.000000)">
+                <g id="Group-28-Copy-4" transform="translate(658.000000, 20.000000)">
+                    <g id="Group-50" transform="translate(0.000000, 38.000000)">
+                        <g id="Group">
+                            <mask id="mask-2" fill="white">
+                                <use xlink:href="#path-1"></use>
+                            </mask>
+                            <use id="Oval" fill="#F6F7FB" xlink:href="#path-1"></use>
+                        </g>
+                        <g id="User" transform="translate(3.000000, 3.000000)">
+                            <polygon id="Fill-1" points="0 17.5167514 17.4729643 17.5167514 17.4729643 0 0 0"></polygon>
+                            <path d="M8.73651857,3.30960857 C10.0013914,3.30960857 11.0283129,4.33653 11.0283129,5.60147571 C11.0283129,6.86634857 10.0013914,7.89334286 8.73651857,7.89334286 C7.47157286,7.89334286 6.44465143,6.86634857 6.44465143,5.60147571 C6.44465143,4.33653 7.47157286,3.30960857 8.73651857,3.30960857 Z" id="Stroke-2" stroke="#475669" stroke-width="0.728571429" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M5.30749714,12.78774 C5.30749714,10.8952029 6.84398143,9.35871857 8.73651857,9.35871857 C10.6290557,9.35871857 12.16554,10.8952029 12.16554,12.78774 C12.16554,14.6802771 5.30749714,14.6802771 5.30749714,12.78774 Z" id="Stroke-3" stroke="#475669" stroke-width="0.728571429" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

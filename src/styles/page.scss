@@ -226,6 +226,25 @@ dl, dd, p {
     width: 100px !important;
   }
 }
+.add-host-dig{
+  .el-form-item__content{
+    overflow: hidden;
+  }
+  .el-form-item__label{
+    text-align: right;
+    width: 60px;
+  }
+  .el-dialog__body{
+    padding: 10px 20px;
+  }
+  .el-form-item{
+    margin-bottom: 10px;
+  }
+  .label-border{
+    border-bottom: 1px solid #E8E8E8;
+    padding-bottom: 10px;
+  }
+}
 
 .tabs-contents{
   background: #fff;
