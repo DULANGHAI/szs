@@ -121,14 +121,18 @@ export default {
     },
     // 创建一个下载
     download() {
+      const target_ip = []
+      const path = []
+      target_ip.push(this.form.target_ip)
+      path.push(this.form.path)
+
       const data = {
-        target_ip: JSON.stringify({
-          host: this.form.target_ip
-        }),
-        path: this.form.path,
+        target_ip: target_ip,
+        path: path,
         system_type: 'linux'
       }
       postDownloadApi(data).then(() => {
+        this.$message.success('成功')
         this.getListData(1)
       })
     },

@@ -144,16 +144,27 @@ export default {
     },
     // 创建一个下载
     download() {
+      const temp = this.getIpAndPath()
+
       const data = {
-        target_ip: JSON.stringify({
-          host: this.form.target_ip
-        }),
-        path: this.form.path,
+        target_ip: temp.target_ip,
+        path: temp.path,
         system_type: 'linux'
       }
       postDownloadApi(data).then(() => {
         this.$message.success('成功，请到批量下载中查看')
       })
+    },
+    getIpAndPath() {
+      const result = {
+        target_ip: [],
+        path: []
+      }
+      this.multipleSelection.forEach((item) => {
+        result.target_ip.push(item.target_ip)
+        result.path.push(item.path)
+      })
+      return result
     }
   }
 }
