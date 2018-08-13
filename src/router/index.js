@@ -296,6 +296,21 @@ export const constantRouterMap = [
     meta: { title: '资源管理' },
     module: true,
     children: [
+      // 0. DashBoard
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: Layout,
+        meta: { title: 'Dashboard', icon: 'dashboard' },
+        children: [
+          {
+            path: 'host',
+            name: 'host',
+            component: () => import('@/views/resouce/resouces/index'),
+            meta: { title: '首页' }
+          }
+        ]
+      },
       // 1.资源管理
       {
         path: 'resouces',

@@ -34,6 +34,14 @@
       </el-submenu>
 
   </div>
+  <div v-else>
+    <router-link :to="resolvePath(item.path)">
+      <el-menu-item :index="resolvePath(item.path)" :class="{'submenu-title-noDropdown':!isNest}">
+        <svg-icon :icon-class="item.meta.icon"></svg-icon>
+        <span v-if="item.meta&&item.meta.title" slot="title">{{item.meta.title}}</span>
+      </el-menu-item>
+    </router-link>
+  </div>
 </template>
 
 <script>
