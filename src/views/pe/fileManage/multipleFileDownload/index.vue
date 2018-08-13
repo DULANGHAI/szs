@@ -16,14 +16,14 @@
             </div>
           </el-form-item>
           <el-form-item label="路径">
-            <el-input>
+            <el-input v-model="form.path">
               <i class="el-input__icon" slot="prefix">～</i>
             </el-input>
           </el-form-item>
         </el-form>
         <div>
           <el-button type="primary" size="small" @click="download">下载</el-button>
-          <el-button size="small">重置</el-button>
+          <el-button size="small" @click="reset">重置</el-button>
         </div>
       </div>
       
@@ -31,23 +31,28 @@
       <!-- 表格 -->
       <div class="table">
         <el-table
+          v-loading="loading"
           :data="data"
-          border
+          tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="" label="执行时间"></el-table-column>
-          <el-table-column prop="" label="目标IP"></el-table-column>
-          <el-table-column prop="" label="创建人"></el-table-column>
-          <el-table-column prop="" label="状态"></el-table-column>
+          <el-table-column prop="start_time" label="执行时间"></el-table-column>
+          <el-table-column prop="target_ip" label="目标IP"></el-table-column>
+          <el-table-column prop="creator" label="创建人"></el-table-column>
+          <el-table-column prop="status" label="状态"></el-table-column>
           <el-table-column prop="" label="下载成功IP"></el-table-column>
           <el-table-column prop="" label="下载失败IP"></el-table-column>
           <el-table-column fixed="right" label="操作" width="70">
             <template slot-scope="scope">
-              <el-button type="text" size="small">下载</el-button>
+              <el-button type="text" size="small" @click="realDownload(scope.row.execution_id)">下载</el-button>
             </template>
           </el-table-column>
         </el-table>
+        <!-- 分页 -->
+        <div class="pagination" v-if="total">
+          <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -58,6 +63,8 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
+import { postDownloadApi, downloadListApi } from '@/api/pe/fileManage/multipleFileDownload'
+
 export default {
   components: {
     Breadcrumb,
@@ -65,8 +72,11 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
-        target_ip: []
+        target_ip: [],
+        path: '',
+        system_type: 'linux'
       },
       options: [
         {
@@ -92,17 +102,68 @@ export default {
           label: '10.111.2.40'
         }
       ],
+      form2: {
+        page: 1,
+        per_page: 10,
+        system_type: 'linux'
+      },
       data: [],
+      total: 0,
       multipleSelection: []
     }
+  },
+  created() {
+    this.getListData()
   },
   methods: {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    // 下载
+    // 创建一个下载
     download() {
-
+      const data = {
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
+        path: this.form.path,
+        system_type: 'linux'
+      }
+      postDownloadApi(data).then(() => {
+        this.getListData(1)
+      })
+    },
+    // 重置
+    reset() {
+      this.form = {
+        target_ip: [],
+        path: '',
+        system_type: 'linux'
+      }
+      this.getListData(1)
+    },
+    // 下载历史记录
+    getListData(index) {
+      this.loading = true
+      const params = this.form2
+      if (index) {
+        params.page = index
+      }
+      downloadListApi(params).then(res => {
+        this.loading = false
+        this.data = res.items
+        this.total = res.total
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    // 翻页
+    handlePageChange(val) {
+      this.form2.page = val
+      this.getListData()
+    },
+    // 真正的下载
+    realDownload(id) {
+      window.open(`/v1/buckets/mul-download/${id}`)
     }
   }
 }
@@ -132,5 +193,9 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

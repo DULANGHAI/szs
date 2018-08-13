@@ -21,7 +21,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">查询</el-button>
+            <el-button type="primary" @click="getListData">查询</el-button>
           </el-form-item>
         </el-form>
         <div>
@@ -33,8 +33,9 @@
       <!-- 表格 -->
       <div class="table">
         <el-table
+          v-loading="loading"
           :data="data"
-          border
+          tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
@@ -61,6 +62,8 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
+import { getListApi, postDownloadApi } from '@/api/pe/fileManage/fileDownload'
+
 export default {
   components: {
     Breadcrumb,
@@ -68,8 +71,10 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
-        target_ip: null
+        target_ip: null,
+        path: ''
       },
       options: [
         {
@@ -114,13 +119,41 @@ export default {
       return false
     }
   },
+  created() {
+    this.getListData()
+  },
   methods: {
+    // 下载历史记录
+    getListData() {
+      this.loading = true
+      const params = {
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
+        path: this.form.path
+      }
+      getListApi(params).then(res => {
+        this.loading = false
+        this.data = res
+      }).catch(() => {
+        this.loading = false
+      })
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    // 下载
+    // 创建一个下载
     download() {
-      window.open('/v1/repositories/project/' + this.project_id + '/files/download?id=' + this.multipleSelection[0].file_id)
+      const data = {
+        target_ip: JSON.stringify({
+          host: this.form.target_ip
+        }),
+        path: this.form.path,
+        system_type: 'linux'
+      }
+      postDownloadApi(data).then(() => {
+        this.$message.success('成功，请到批量下载中查看')
+      })
     }
   }
 }

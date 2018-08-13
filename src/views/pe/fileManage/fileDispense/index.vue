@@ -30,8 +30,9 @@
         <!-- 表格 -->
         <div class="table">
           <el-table
+            v-loading="loading"
             :data="data"
-            border
+            tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
@@ -72,6 +73,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       group: 'LDDS',
       path: 'LDDS/file_buckets',
       pathItems: ['LDDS', 'file_buckets'],
@@ -127,14 +129,18 @@ export default {
       }
       const arr = this.pathItems.slice(0, index + 1)
       const path = arr.join('/')
+      this.loading = true
       getFileListApi({
         path: path
       }).then(res => {
+        this.loading = false
         this.pathItems = path.split('/')
         this.data = res
         if (res.length) {
           this.project_id = res[0].project_id
         }
+      }).catch(() => {
+        this.loading = false
       })
     },
     enterNext(row) {
@@ -144,13 +150,17 @@ export default {
       const params = {
         path: row.absolute_path
       }
+      this.loading = true
       getFileListApi(params).then(res => {
+        this.loading = false
         this.pathItems = params.path.split('/')
         this.path = params.path
         this.data = res
         if (res.length) {
           this.project_id = res[0].project_id
         }
+      }).catch(() => {
+        this.loading = false
       })
     },
     handleSelectionChange(val) {

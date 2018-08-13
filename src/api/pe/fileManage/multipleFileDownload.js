@@ -1,13 +1,5 @@
 import request from '@/utils/request'
 
-export function getListApi(params) {
-  return request({
-    url: '/v1/buckets/hosts',
-    method: 'get',
-    params: params
-  })
-}
-
 /**
  * 触发一个下载任务
  * @param {*} id
@@ -20,3 +12,14 @@ export function postDownloadApi(data) {
   })
 }
 
+/**
+ * 获取下载历史列表
+ * @param {*} id
+ */
+export function downloadListApi(params) {
+  return request({
+    url: `/v1/buckets/mul-download`,
+    method: 'get',
+    params: params
+  })
+}
