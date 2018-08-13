@@ -31,9 +31,12 @@
 </template>
 
 <script>
+import { uploadFileApi } from '@/api/pe/fileManage/fileDispense'
+
 export default {
   props: {
     id: [Number, String],
+    path: String,
     refresh: Function
   },
   data() {
@@ -55,9 +58,37 @@ export default {
     showModel() {
       this.dialogVisible = true
     },
-    doSubmit() {},
+    doSubmit() {
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          var fileArray = this.fileList
+          var files = []
+          for (var i in fileArray) {
+            files.push({
+              'server_path': fileArray[i].response.server_path,
+              'name': fileArray[i].response.name
+            })
+          }
+
+          const params = {
+            'files': files,
+            'path': this.path,
+            'comment': this.form.comment,
+            'risk_level': 0,
+            'branch': 'master',
+            'repository_type': 'file_buckets'
+          }
+
+          uploadFileApi(this.id, params).then(() => {
+            this.$message.success('添加成功！')
+            this.dialogVisible = false
+            this.refresh()
+          })
+        }
+      })
+    },
     uploadAction() {
-      return '/v1/repository/project/' + this.id + '/files/upload'
+      return '/v1/repositories/project/' + this.id + '/files/upload'
     },
     // 移除上传文件列表
     handleRemove(file, fileList) {

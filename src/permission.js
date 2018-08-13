@@ -15,6 +15,15 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) {
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
+          // 进入下一个页面前判断所属功能模块
+          if (to.path.indexOf('/pe') === 0) {
+            store.commit('SET_MODULE_NAME', 'pe')
+          } else if (to.path.indexOf('/resouce') === 0) {
+            store.commit('SET_MODULE_NAME', 'resouce')
+          } else if (to.path.indexOf('/system') === 0) {
+            store.commit('SET_MODULE_NAME', 'system')
+          }
+
           next()
         }).catch((err) => {
           store.dispatch('FedLogOut').then(() => {
@@ -23,6 +32,15 @@ router.beforeEach((to, from, next) => {
           })
         })
       } else {
+        // 进入下一个页面前判断所属功能模块
+        if (to.path.indexOf('/pe') === 0) {
+          store.commit('SET_MODULE_NAME', 'pe')
+        } else if (to.path.indexOf('/resouce') === 0) {
+          store.commit('SET_MODULE_NAME', 'resouce')
+        } else if (to.path.indexOf('/system') === 0) {
+          store.commit('SET_MODULE_NAME', 'system')
+        }
+
         next()
       }
     }

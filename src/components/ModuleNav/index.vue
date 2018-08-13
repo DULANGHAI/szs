@@ -9,8 +9,8 @@
       </el-option>
     </el-select>
     <div class="module-nav">
-      <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/pe')}">运维作业</div>
-      <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/resource')}">资源管理</div>
+      <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/pe')}" @click="goPe">运维作业</div>
+      <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/resouce')}" @click="goResouce">资源管理</div>
       <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/system')}">系统管理</div>
     </div>
   </div>
@@ -19,12 +19,20 @@
 <script>
 import { getRepository } from '@/api/script'
 import { Message } from 'element-ui'
+
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
       businessName: '',
       ywzList: []
     }
+  },
+  computed: {
+    ...mapGetters([
+      'moduleName'
+    ])
   },
   created() {
     this.getBusiness()
@@ -41,6 +49,22 @@ export default {
         this.ywzList = response
       }).catch(error => {
         Message.error(error)
+      })
+    },
+    goPe() {
+      if (this.moduleName === 'pe') {
+        return
+      }
+      this.$router.push({
+        path: '/pe/taskManage/taskList'
+      })
+    },
+    goResouce() {
+      if (this.moduleName === 'resouce') {
+        return
+      }
+      this.$router.push({
+        path: '/resouce/resouces/host'
       })
     }
   }

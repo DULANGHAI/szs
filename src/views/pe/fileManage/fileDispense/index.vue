@@ -21,8 +21,8 @@
           <div class="btn-container">
             <el-button size="mini" @click="createFolder" :disabled="!project_id">新建目录</el-button>
             <el-button size="mini" @click="upload" :disabled="!project_id">上传</el-button>
-            <el-button size="mini" :disabled="!project_id">下载</el-button>
-            <el-button size="mini" :disabled="!project_id">删除</el-button>
+            <el-button size="mini" @click="download" :disabled="downloadDisabled">下载</el-button>
+            <el-button size="mini" @click="deleteFiles" :disabled="!project_id">删除</el-button>
             <el-button size="mini" :disabled="!project_id">分发</el-button>
           </div>
         </div>
@@ -53,7 +53,7 @@
     <!-- 添加目录model -->
     <create-folder ref="createFolder" :id="project_id" :path="relative_path" :refresh="refresh"></create-folder>
     <!-- 上传文件 -->
-    <upload-file ref="uploadFile" :id="project_id"></upload-file>
+    <upload-file ref="uploadFile" :id="project_id" :path="relative_path" :refresh="refresh"></upload-file>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import CreateFolder from './components/CreateFolder'
 import UploadFile from './components/UploadFile'
 
-import { getFileListApi } from '@/api/pe/fileManage/fileDispense'
+import { getFileListApi, deleteFilesApi } from '@/api/pe/fileManage/fileDispense'
 
 export default {
   components: {
@@ -92,6 +92,18 @@ export default {
       } else {
         return ''
       }
+    },
+    downloadDisabled() {
+      if (!this.project_id) {
+        return true
+      }
+      if (this.multipleSelection.length !== 1) {
+        return true
+      }
+      if (this.multipleSelection.length === 1 && this.multipleSelection[0].type === 'tree') {
+        return true
+      }
+      return false
     }
   },
   created() {
@@ -157,7 +169,36 @@ export default {
     // 上传
     upload() {
       this.$refs.uploadFile.showModel()
+    },
+    // 下载
+    download() {
+      window.open('/v1/repositories/project/' + this.project_id + '/files/download?id=' + this.multipleSelection[0].file_id)
+    },
+    // 删除文件
+    deleteFiles() {
+      this.$confirm('您确定要删除吗？', '提示')
+        .then(() => {
+          const ids = this.getFileId()
+          deleteFilesApi(this.project_id, { ids })
+            .then(() => {
+              this.$message.success('删除成功！')
+              this.refresh()
+            })
+        }, () => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+    },
+    getFileId() {
+      const result = []
+      this.multipleSelection.forEach((item) => {
+        result.push(item.file_id)
+      })
+      return result
     }
+    // 文件分发
   }
 }
 </script>

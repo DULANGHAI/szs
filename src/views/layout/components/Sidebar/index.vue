@@ -26,10 +26,13 @@ export default {
   components: { SidebarItem },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'moduleName'
     ]),
     routes() {
-      return this.$router.options.routes
+      return this.$router.options.routes.filter((item) => {
+        return item.path === ('/' + this.moduleName)
+      })
     },
     isCollapse() {
       return !this.sidebar.opened

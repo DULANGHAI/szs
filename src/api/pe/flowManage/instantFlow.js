@@ -70,3 +70,39 @@ export function doFlowApi(data) {
     data: data
   })
 }
+
+/**
+ * 执行记录的列表
+ * @param {*} params
+ */
+export function getRecordListApi(params) {
+  return request({
+    url: '/v1/instant-processes/execution-records',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 执行定时流程-记录中
+ * @param {Object} data
+ */
+export function startFlowApi(data) {
+  return request({
+    url: '',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 停止定时流程-记录中
+ * @param {Object} data
+ */
+export function stopFlowApi(data) {
+  return request({
+    url: '',
+    method: 'post',
+    data: data
+  })
+}
