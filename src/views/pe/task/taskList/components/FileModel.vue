@@ -109,7 +109,7 @@ export default {
       this.cancel()
     },
     rowStyle({ row }) {
-      if (row.full_path === this.selected.full_path) {
+      if (row.file_id === this.selected.file_id) {
         return {
           backgroundColor: '#f5f7fa'
         }

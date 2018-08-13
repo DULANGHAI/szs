@@ -61,3 +61,27 @@ export function deleteFilesApi(id, data) {
     data: data
   })
 }
+
+/**
+ * 创建文件分发
+ * @param {*} data
+ */
+export function createDistributionApi(data) {
+  return request({
+    url: '/v1/buckets/distribution',
+    method: 'post',
+    data: data
+  })
+}
+
+/**
+ * 获取文件分发记录
+ * @param {*} params
+ */
+export function getDistributionListApi(params) {
+  return request({
+    url: '/v1/buckets/distribution',
+    method: 'get',
+    params: params
+  })
+}

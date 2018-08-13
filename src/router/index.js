@@ -219,7 +219,7 @@ export const constantRouterMap = [
         path: 'fileManage',
         component: Layout,
         name: '文件管理',
-        meta: { title: '文件管理', icon: 'form' },
+        meta: { title: '文件管理', icon: 'folder-icon' },
         children: [
           {
             path: 'fileDispense',
