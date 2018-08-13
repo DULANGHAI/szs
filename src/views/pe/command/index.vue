@@ -11,22 +11,22 @@
       <div class="block-item">
         <div class="block-title">目标及命令</div>
         <div class="block-content">
-          <el-form ref="form" label-width="60px" size="small" label-position="left">
+          <el-form :model="form" ref="form" :rules="rules"  label-width="70px" size="small" label-position="left">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="任务名">
+                <el-form-item label="目标IP" prop="target_ip">
                   <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="账号">
+                <el-form-item label="账号" prop="execution_account">
                   <el-input v-model="form.execution_account" placeholder="请输入"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="命令">
+                <el-form-item label="命令" prop="command">
                   <el-input type="textarea" v-model="form.command" :rows="4" placeholder="请输入命令"></el-input>
                 </el-form-item>
               </el-col>
@@ -141,6 +141,17 @@ export default {
         execution_account: '',
         command: ''
       },
+      rules: {
+        target_ip: [
+          { required: true, message: '目标IP不能为空', trigger: 'blur' }
+        ],
+        execution_account: [
+          { required: true, message: '账号不能为空', trigger: 'blur' }
+        ],
+        command: [
+          { required: true, message: '命令不能为空', trigger: 'blur' }
+        ]
+      },
       form1: { // 左侧的作业筛选列表
         name: '',
         page: 1,
@@ -193,7 +204,13 @@ export default {
   },
   methods: {
     submit() {
-      createApi(this.form)
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          createApi(this.form).then(res => {
+            this.$message.success('成功')
+          })
+        }
+      })
     },
     resetForm() {
       this.form = {

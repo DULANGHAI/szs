@@ -74,12 +74,13 @@
           tooltip-effect="dark"
           style="width: 100%">
           <el-table-column prop="name" label="作业名"></el-table-column>
+          <el-table-column prop="description" label="描述"></el-table-column>
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
           <el-table-column prop="target_ip" label="目标IP" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="result" label="结果"></el-table-column>
           <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
-              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small" @click="view(scope.row.execution_id, scope.row.target_ip)">查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -91,6 +92,10 @@
       </div>
 
     </div>
+
+    <!-- 执行log -->
+    <log-view ref="logView"></log-view>
+
   </div>
 </template>
 
@@ -98,15 +103,18 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import LogView from './components/LogView'
 
 import { getLanguageApi } from '@/api/pe/jobManage/timedJob'
 import { getJobListApi } from '@/api/pe/daily/index'
+import { getLogDetailApi } from '@/api/pe/jobManage/jobRecord'
 
 export default {
   props: ['id'],
   components: {
     Breadcrumb,
-    Treeselect
+    Treeselect,
+    LogView
   },
   data() {
     this.job_type_map = {
@@ -232,6 +240,13 @@ export default {
       this.daterange = ''
       this.multipleSelection = []
       this.init()
+    },
+    view(execution_id, target_ip) {
+      this.$refs.logView.showModel()
+
+      getLogDetailApi(execution_id, target_ip).then(res => {
+        this.$refs.logView.setData(res.execution_log)
+      })
     }
   }
 }

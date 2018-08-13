@@ -89,7 +89,7 @@ export default {
         status: '',
         result: ''
       },
-      log: this.data2,
+      log: '',
       codeOptions: { // 文件内容配置
         tabSize: 2,
         lineNumbers: true,
