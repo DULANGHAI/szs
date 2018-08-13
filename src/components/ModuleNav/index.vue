@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-select v-model="businessName" size="mini" placeholder="请选择" style="float:left">
+    <el-select v-model="businessName" @change="businessChange" size="mini" placeholder="请选择" style="float:left">
       <el-option
         v-for="item in ywzList"
         :key="item.id"
         :label="item.name"
-        :value="item.id">
+        :value="item.name">
       </el-option>
     </el-select>
     <div class="module-nav">
@@ -47,9 +47,14 @@ export default {
     getBusiness() {
       getRepository().then(response => {
         this.ywzList = response
+        this.businessName = response[0].name
+        this.$store.state.user.repository = this.businessName
       }).catch(error => {
         Message.error(error)
       })
+    },
+    businessChange(val) {
+      this.$store.state.user.repository = val
     },
     goPe() {
       if (this.moduleName === 'pe') {

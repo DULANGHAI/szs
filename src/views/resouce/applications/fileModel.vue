@@ -51,7 +51,8 @@ import { getFileListApi, getBranchApi } from '@/api/pe/taskManage/taskList'
 
 export default {
   props: {
-    fileOk: Function
+    fileOk: Function,
+    filePath: String
   },
   data() {
     return {
@@ -76,6 +77,8 @@ export default {
   },
   created() {
     this.init()
+    this.form.path = this.$props.filePath
+    this.pathItems = (this.$props.filePath).split('/')
   },
   methods: {
     init() {

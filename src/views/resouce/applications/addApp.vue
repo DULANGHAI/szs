@@ -108,8 +108,8 @@
       </template>
     </div>
     <!-- 文件选择model -->
-    <file-model ref="rjb_file" :fileOk="rjb_fileOk"></file-model>
-    <file-model ref="pzwj_file" :fileOk="pzwj_fileOk"></file-model>
+    <file-model ref="rjb_file" :fileOk="rjb_fileOk" :filePath="rjbPath"></file-model>
+    <file-model ref="pzwj_file" :fileOk="pzwj_fileOk" :filePath="pzwjPath"></file-model>
   </div>
 </template>
 
@@ -160,6 +160,8 @@ export default {
         name: '',
         target_path: ''
       },
+      rjbPath: '', // 软件包路径 初始
+      pzwjPath: '', // 软件包路径 初始
       isEdit: false,
       current: null,
       listLoading: false,
@@ -194,10 +196,8 @@ export default {
     }
   },
   created() {
-    this.getAppList()
-    if (this.$route.params.id && this.$route.params.id !== undefined) {
-      this.getAppDetail()
-    }
+    this.rjbPath = this.$store.state.user.repository + '/scripts'
+    this.pzwjPath = this.$store.state.user.repository + '/configurations'
   },
   watch: {
     'appName'(val, oldVal) {
