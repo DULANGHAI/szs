@@ -79,7 +79,7 @@ export default {
       },
       rules: {
         target_ip: [
-          { required: true, message: '目标目录不能为空', trigger: 'blur' }
+          { required: true, message: '主机不能为空', trigger: 'blur' }
         ],
         target_dest: [
           { required: true, message: '目标目录不能为空', trigger: 'blur' }

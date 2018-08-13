@@ -44,4 +44,9 @@ export default {
 .active-blue {
   color: #46a1ff;
 }
+
+// treeselect
+.el-form-item.is-error .vue-treeselect__control {
+  border-color: #f56c6c;
+}
 </style>

@@ -265,9 +265,16 @@ export const constantRouterMap = [
         children: [
           {
             path: 'index',
-            name: '检查列表',
+            name: '检查结果',
             component: () => import('@/views/pe/daily/index'),
-            meta: { title: '检查列表' }
+            meta: { title: '检查结果' }
+          },
+          {
+            path: 'detail/:id',
+            name: '检查详情',
+            component: () => import('@/views/pe/daily/detail'),
+            meta: { title: '检查详情' },
+            props: true
           }
         ]
       },
