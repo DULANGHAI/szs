@@ -59,6 +59,7 @@ import CreateFolder from './components/CreateFolder'
 import UploadFile from './components/UploadFile'
 import CreateDistribution from './components/CreateDistribution'
 
+import { mapGetters } from 'vuex'
 import { getFileListApi, deleteFilesApi } from '@/api/pe/fileManage/fileDispense'
 
 export default {
@@ -70,7 +71,6 @@ export default {
   data() {
     return {
       loading: false,
-      group: 'LDDS',
       path: 'LDDS/file_buckets',
       pathItems: ['LDDS', 'file_buckets'],
       data: [],
@@ -79,8 +79,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'repository'
+    ]),
     relative_path() {
-      const arr = this.path.split('LDDS/file_buckets/home')
+      const arr = this.path.split(this.repository + '/file_buckets/home')
       if (arr.length === 2) {
         if (arr[1] === '') {
           return '/'
@@ -104,11 +107,21 @@ export default {
       return false
     }
   },
+  watch: {
+    repository(val, oldVal) {
+      if (val !== oldVal) {
+        this.init()
+      }
+    }
+  },
   created() {
     this.init()
   },
   methods: {
     init() {
+      this.path = this.repository + '/file_buckets'
+      this.pathItems = [this.repository, 'file_buckets']
+
       getFileListApi({
         path: this.path
       }).then(res => {
