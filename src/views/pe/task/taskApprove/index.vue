@@ -122,7 +122,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
-          <el-table-column label="操作" width="200">
+          <el-table-column label="操作" fixed="right" width="70">
             <template slot-scope="scope">
               <el-button type="text" @click="goView(scope.row)">查看</el-button>
             </template>
