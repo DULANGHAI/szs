@@ -313,7 +313,7 @@ export const constantRouterMap = [
           {
             path: 'host',
             name: 'host',
-            component: () => import('@/views/resouce/resouces/index'),
+            component: () => import('@/views/resouce/dashboard/index'),
             meta: { title: '首页' }
           }
         ]
