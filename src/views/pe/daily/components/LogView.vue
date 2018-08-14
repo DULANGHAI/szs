@@ -5,9 +5,12 @@
     :visible="dialogVisible"
     width="500px"
     @close="handleClose">
-    <div v-if="log">
-      <codemirror v-model="log" ref="codemirror" :options="codeOptions"></codemirror>
+    <div class="log-container">
+      <div v-if="log">
+        <codemirror v-model="log" ref="codemirror" :options="codeOptions"></codemirror>
+      </div>
     </div>
+    
 
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="doSubmit()">确 定</el-button>
@@ -54,6 +57,7 @@ export default {
     },
     handleClose() {
       this.log = ''
+      this.dialogVisible = false
     },
     doSubmit() {
       this.dialogVisible = false
@@ -64,3 +68,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.log-container {
+  height: 300px;
+  overflow-y: auto;
+}
+</style>
