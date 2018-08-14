@@ -52,12 +52,11 @@
 </template>
 
 <script>
-import { getRiskList} from '@/api/resouce/versionLibrary/risk'
+import { getHostList } from '@/api/resouce/resouces/host'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
 import TreeTable from './treeTable'
-import treeToArray from './eval'
 import AddHost from './addHostZu' // 新建风险命令
 
 const formData = {
@@ -88,46 +87,52 @@ export default {
   },
   methods: {
     getList() {
-      const params = {
-        'page': this.currentPage,
-        'per_page': this.pageSizes || 10
-      }
+      // const params = {
+      //   'page': this.currentPage,
+      //   'per_page': this.pageSizes || 10
+      // }
       this.listLoading = true
-      getRiskList(params).then(response => {
-        this.listData = [
-          {
-            comment: 'sfdsfdsf',
-            risk_level: 2,
-            name: 'abvvvvv',
-            creator: 'od',
-            created_at: '2018-07-24T10:48:11',
-            updated_at: '2018-07-27T17:27:38',
-            id: 3,
-            children: [{
-              comment: 'sfdsfdsf',
-              risk_level: 2,
-              name: 'abvvvvv',
-              creator: 'od',
-              created_at: '2018-07-24T10:48:11',
-              updated_at: '2018-07-27T17:27:38',
-              id: 3
-            }]
-          },
-          {
-            comment: 'this is test',
-            risk_level: 1,
-            name: 'cat',
-            creator: 'god',
-            created_at: '2018-07-24T10:31:35',
-            updated_at: '2018-07-24T10:31:35',
-            id: 1
-          }
-        ]
+      getHostList().then(response => {
         this.listLoading = false
-        this.totalPage = response.total
+        this.listData = response
       }).catch(error => {
         Message.error(error)
       })
+      // getRiskList(params).then(response => {
+      //   this.listData = [
+      //     {
+      //       comment: 'sfdsfdsf',
+      //       risk_level: 2,
+      //       name: 'abvvvvv',
+      //       creator: 'od',
+      //       created_at: '2018-07-24T10:48:11',
+      //       updated_at: '2018-07-27T17:27:38',
+      //       id: 3,
+      //       children: [{
+      //         comment: 'sfdsfdsf',
+      //         risk_level: 2,
+      //         name: 'abvvvvv',
+      //         creator: 'od',
+      //         created_at: '2018-07-24T10:48:11',
+      //         updated_at: '2018-07-27T17:27:38',
+      //         id: 3
+      //       }]
+      //     },
+      //     {
+      //       comment: 'this is test',
+      //       risk_level: 1,
+      //       name: 'cat',
+      //       creator: 'god',
+      //       created_at: '2018-07-24T10:31:35',
+      //       updated_at: '2018-07-24T10:31:35',
+      //       id: 1
+      //     }
+      //   ]
+      //   this.listLoading = false
+      //   this.totalPage = response.total
+      // }).catch(error => {
+      //   Message.error(error)
+      // })
     },
     // 选择展示页数
     handleSizeChange(val) {
