@@ -42,6 +42,7 @@
       <div class="table">
         <el-table
           ref="table"
+          v-loading="loading"
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
@@ -118,6 +119,7 @@ export default {
           label: '10.111.2.40'
         }
       ],
+      loading: false,
       form: {
         name: '',
         system_type: '',
@@ -135,10 +137,14 @@ export default {
   },
   methods: {
     init() {
+      this.loading = true
       Promise.all([getLanguageApi(), getExecutionListApi(this.form)]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     formatterJobType(row) {
@@ -155,6 +161,7 @@ export default {
       return data.toString()
     },
     getListData(index) {
+      this.loading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -162,6 +169,9 @@ export default {
       getExecutionListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     handlePageChange(val) {

@@ -64,6 +64,7 @@
         <div class="table">
           <el-table
             ref="table"
+            v-loading="loading"
             :data="dataInstant"
             tooltip-effect="dark"
             @selection-change="handleSelectionChange">
@@ -117,6 +118,7 @@ export default {
       inspection: '日常检查'
     }
     return {
+      loading: false,
       form1: { // 左侧的作业筛选列表
         name: '',
         system_type: '',
@@ -150,11 +152,15 @@ export default {
     }
   },
   created() {
+    this.loading = true
     Promise.all([getLanguageApi(), getInstantListApi(this.form2)])
       .then(res => {
         this.system_type_arr = this.handleSystemData(res[0])
         this.dataInstant = res[1].items
         this.total = res[1].total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
   },
   mounted() {
@@ -181,6 +187,7 @@ export default {
       }
     },
     getListData(index) {
+      this.loading = true
       const params = this.form2
       if (index) {
         params.page = index
@@ -188,6 +195,9 @@ export default {
       getInstantListApi(params).then(res => {
         this.dataInstant = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     loadMore($state) {

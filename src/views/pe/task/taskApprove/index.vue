@@ -88,6 +88,7 @@
       <div class="table">
         <el-table
           ref="table"
+          v-loading="loading"
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
@@ -161,6 +162,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
         name: '',
         type: '',
@@ -187,16 +189,21 @@ export default {
     }
   },
   created() {
+    this.loading = true
     Promise.all([getListApi(this.form), getCreatorApi(), getApproverApi()])
       .then(res => {
         this.data = res[0].items
         this.total = res[0].total
         this.creaters = res[1].creator
         this.approvers = res[2].approver
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
   },
   methods: {
     getListData(index) {
+      this.loading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -204,6 +211,9 @@ export default {
       getListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     handlePageChange(val) {

@@ -46,7 +46,7 @@
         </div>
 
         <!-- 列表 -->
-        <div class="table">
+        <div class="table" v-loading="loading">
           <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
             <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
             <el-table-column prop="job_type" label="类型" :formatter="formatterType"></el-table-column>
@@ -119,6 +119,7 @@ export default {
       },
       dataFlow: [],
       selectedFlow: {},
+      loading: false,
       form2: { // 右边的定时作业列表
         page: 1,
         per_page: 10
@@ -140,11 +141,15 @@ export default {
     }
   },
   created() {
+    this.loading = true
     Promise.all([getTimedListApi(this.form2)])
       .then(res => {
         const data = this.handleData(res[0].items)
         this.data = data
         this.total = res[0].total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
   },
   methods: {
@@ -257,6 +262,7 @@ export default {
       this.getListData(1)
     },
     getListData(index) {
+      this.loading = true
       const params = this.form2
       if (index) {
         params.page = index
@@ -265,6 +271,9 @@ export default {
         const data = this.handleData(res.items)
         this.data = data
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     handlePageChange(val) {

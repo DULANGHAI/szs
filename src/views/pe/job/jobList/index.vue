@@ -75,6 +75,7 @@
       <div class="table">
         <el-table
           ref="table"
+          v-loading="loading"
           :data="data"
           :row-style="rowStyle"
           tooltip-effect="dark"
@@ -133,6 +134,7 @@ export default {
       inspection: '日常检查'
     }
     return {
+      loading: false,
       form: {
         name: '',
         system_type: '',
@@ -189,10 +191,14 @@ export default {
     }
   },
   created() {
+    this.loading = true
     Promise.all([getLanguageApi(), getJobListApi(this.form)]).then(res => {
       this.systemAndLang = res[0]
       this.data = res[1].items
       this.total = res[1].total
+      this.loading = false
+    }).catch(() => {
+      this.loading = false
     })
   },
   methods: {
@@ -222,6 +228,7 @@ export default {
       this.getListData(val)
     },
     getListData(index) {
+      this.loading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -229,6 +236,9 @@ export default {
       getJobListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     search() {
