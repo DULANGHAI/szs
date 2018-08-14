@@ -19,7 +19,7 @@
 <script>
 import { getRepository } from '@/api/script'
 import { Message } from 'element-ui'
-
+import Cookies from 'js-cookie'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -36,6 +36,7 @@ export default {
   },
   created() {
     this.getBusiness()
+    console.log(999999, this.$store.state.user.repository)
   },
   methods: {
     isActive(path) {
@@ -47,7 +48,9 @@ export default {
     getBusiness() {
       getRepository().then(response => {
         this.ywzList = response
-        this.businessName = response[0].name
+        const bsName = Cookies.get('BussinessGroup') || response[0].name
+        this.businessName = bsName
+        Cookies.set('BussinessGroup', bsName)
         this.$store.state.user.repository = this.businessName
       }).catch(error => {
         Message.error(error)
@@ -55,6 +58,7 @@ export default {
     },
     businessChange(val) {
       this.$store.state.user.repository = val
+      Cookies.set('BussinessGroup', val)
     },
     goPe() {
       if (this.moduleName === 'pe') {
