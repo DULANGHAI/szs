@@ -209,9 +209,6 @@ export default {
         this.total = res[1].total
         this.creaters = res[2].creator
       })
-      .catch(() => {
-        this.$message.error('接口错误')
-      })
   },
   methods: {
     /**
