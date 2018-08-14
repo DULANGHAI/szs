@@ -88,6 +88,7 @@
       <div class="table">
         <el-table
           ref="table"
+          v-loading="loading"
           :data="data"
           :row-style="rowStyle"
           tooltip-effect="dark"
@@ -146,6 +147,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
         name: '',
         type: '',
@@ -202,15 +204,16 @@ export default {
     }
   },
   created() {
+    this.loading = true
     Promise.all([getLanguageApi(), getListApi(this.form), getCreatorApi()])
       .then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
         this.creaters = res[2].creator
-      })
-      .catch(() => {
-        this.$message.error('接口错误')
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
   },
   methods: {
@@ -240,6 +243,7 @@ export default {
      * 接口
      */
     getListData(index) {
+      this.loading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -247,6 +251,9 @@ export default {
       getListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     getLanguage() {

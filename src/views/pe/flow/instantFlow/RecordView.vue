@@ -24,7 +24,7 @@
     </div>
 
     <!-- 表格 -->
-    <div class="table">
+    <div class="table" v-loading="loading">
       <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
         <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column prop="name" label="项目名"></el-table-column>
@@ -71,6 +71,7 @@ export default {
     }
     return {
       daterange: '',
+      loading: false,
       form: {
         start_time: '',
         end_time: '',
@@ -93,12 +94,17 @@ export default {
   },
   methods: {
     init() {
+      this.loading = true
       getRecordListApi(this.form).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     getListData(index) {
+      this.loading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -106,6 +112,9 @@ export default {
       getRecordListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     handleData(data) {

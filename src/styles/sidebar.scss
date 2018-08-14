@@ -44,6 +44,11 @@
       height: 100%;
       width: 100% !important;
     }
+    .submenu-title-noDropdown {
+      &:hover {
+        background-color: $menuHover !important;
+      }
+    }
   }
   .hideSidebar {
     .sidebar-container {

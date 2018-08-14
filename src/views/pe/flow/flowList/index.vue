@@ -73,6 +73,7 @@
       <div class="table">
         <el-table
           ref="table"
+          v-loading="tableLoading"
           :data="data"
           :row-style="rowStyle"
           tooltip-effect="dark"
@@ -142,6 +143,7 @@ export default {
         page: 1,
         per_page: 20
       },
+      tableLoading: false,
       loading: false,
       job_arr: [],
       creator_arr: [],
@@ -189,9 +191,13 @@ export default {
     }
   },
   created() {
+    this.tableLoading = true
     Promise.all([getFlowListApi(this.form)]).then(res => {
       this.data = res[0].items
       this.total = res[0].total
+      this.tableLoading = false
+    }).catch(() => {
+      this.tableLoading = false
     })
   },
   methods: {
@@ -236,6 +242,7 @@ export default {
       this.getListData(val)
     },
     getListData(index) {
+      this.tableLoading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -243,6 +250,9 @@ export default {
       getFlowListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.tableLoading = false
+      }).catch(() => {
+        this.tableLoading = false
       })
     },
     goEdit(id) {

@@ -3,7 +3,8 @@
     title="上传文件"
     :visible="dialogVisible"
     width="35%"
-    class="pb-dialog">
+    class="pb-dialog"
+    @close="handleClose">
     <el-form :model="form" :rules="rules" ref="ruleForm">
       <div>上传文件(单个文件大小不超过500mb)</div>
       <el-upload
@@ -55,6 +56,15 @@ export default {
     }
   },
   methods: {
+    handleClose() {
+      this.dialogVisible = false
+      this.fileList = []
+      this.form = {
+        comment: ''
+      }
+      this.beforeUpload = true
+      this.$refs.ruleForm.resetFields()
+    },
     showModel() {
       this.dialogVisible = true
     },

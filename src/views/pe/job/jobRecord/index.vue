@@ -89,6 +89,7 @@
       <div class="table">
         <el-table
           ref="table"
+          v-loading="loading"
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
@@ -171,6 +172,7 @@ export default {
           label: '10.111.2.40'
         }
       ],
+      loading: false,
       daterange: '',
       form: {
         execution_id: '',
@@ -221,15 +223,20 @@ export default {
       return row.target_ip
     },
     init() {
+      this.loading = true
       Promise.all([getLanguageApi(), getListApi(this.form), getCreatorApi()])
         .then(res => {
           this.systemAndLang = res[0]
           this.data = res[1].items
           this.total = res[1].total
           this.creator_arr = res[2].creator
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
         })
     },
     getListData(index) {
+      this.loading = true
       const params = this.form
       if (index) {
         params.page = index
@@ -237,6 +244,9 @@ export default {
       getListApi(params).then(res => {
         this.data = res.items
         this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     },
     search() {

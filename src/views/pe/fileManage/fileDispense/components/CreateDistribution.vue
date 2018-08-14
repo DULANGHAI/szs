@@ -105,6 +105,7 @@ export default {
         mode: '',
         replace: false
       }
+      this.$refs.ruleForm.resetFields()
     },
     doSubmit() {
       this.$refs.ruleForm.validate((valid) => {

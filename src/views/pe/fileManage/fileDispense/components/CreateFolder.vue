@@ -45,6 +45,7 @@ export default {
     },
     handleClose() {
       this.form.name = ''
+      this.$refs.ruleForm.resetFields()
     },
     doSubmit() {
       this.$refs.ruleForm.validate((valid) => {

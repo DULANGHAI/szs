@@ -29,7 +29,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/pe/taskManage/taskList'
+    redirect: '/pe/dashboard/index'
   },
   // 运维作业部分
   {
@@ -39,12 +39,28 @@ export const constantRouterMap = [
     meta: { title: '运维作业' },
     module: true,
     children: [
+      // 0. DashBoard
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: Layout,
+        meta: { title: 'Dashboard', icon: 'dashboard' },
+        noNest: true,
+        children: [
+          {
+            path: 'index',
+            name: 'pe-dashboard',
+            component: () => import('@/views/pe/dashboard/index'),
+            meta: { title: 'Dashboard', icon: 'dashboard' }
+          }
+        ]
+      },
       // 1.任务管理
       {
         path: 'taskManage',
         component: Layout,
         name: '任务管理',
-        meta: { title: '任务管理', icon: 'form' },
+        meta: { title: '任务管理', icon: 'task-sidebar' },
         children: [
           {
             path: 'taskList',
@@ -104,7 +120,7 @@ export const constantRouterMap = [
         path: 'jobManage',
         component: Layout,
         name: '作业管理',
-        meta: { title: '作业管理', icon: 'form' },
+        meta: { title: '作业管理', icon: 'job-sidebar' },
         children: [
           {
             path: 'jobList',
@@ -169,7 +185,7 @@ export const constantRouterMap = [
         path: 'flowManage',
         component: Layout,
         name: '流程管理',
-        meta: { title: '流程管理', icon: 'form' },
+        meta: { title: '流程管理', icon: 'flow-sidebar' },
         children: [
           {
             path: 'flowList',
@@ -219,7 +235,7 @@ export const constantRouterMap = [
         path: 'fileManage',
         component: Layout,
         name: '文件管理',
-        meta: { title: '文件管理', icon: 'folder-icon' },
+        meta: { title: '文件管理', icon: 'folder-sidebar' },
         children: [
           {
             path: 'fileDispense',
@@ -247,12 +263,13 @@ export const constantRouterMap = [
         component: Layout,
         name: '即时命令',
         meta: { title: '即时命令', icon: 'form' },
+        noNest: true,
         children: [
           {
             path: 'index',
             name: '即时命令',
             component: () => import('@/views/pe/command/index'),
-            meta: { title: '即时命令' }
+            meta: { title: '即时命令', icon: 'command' }
           }
         ]
       },
@@ -261,7 +278,7 @@ export const constantRouterMap = [
         path: 'daily',
         component: Layout,
         name: '日常检查',
-        meta: { title: '日常检查', icon: 'form' },
+        meta: { title: '日常检查', icon: 'daily' },
         children: [
           {
             path: 'index',
@@ -284,12 +301,13 @@ export const constantRouterMap = [
         component: Layout,
         name: '运维审批',
         meta: { title: '运维审批', icon: 'form' },
+        noNest: true,
         children: [
           {
             path: 'index',
             name: '审批列表',
             component: () => import('@/views/pe/peApprove/index'),
-            meta: { title: '审批列表' }
+            meta: { title: '运维审批', icon: 'peApprove' }
           }
         ]
       }
