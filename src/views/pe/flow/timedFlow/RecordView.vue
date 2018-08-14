@@ -154,6 +154,15 @@ export default {
     formatterTime2(row) {
       return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
     },
+    formatterType(row) {
+      if (row._level === 1) {
+        return '流程'
+      } else if (row.job_type === 'manual') {
+        return '人工流程'
+      } else {
+        return '作业'
+      }
+    },
     startFlow(id) {
       startFlowApi({ execution_id: id }).then(res => {
         this.$message({

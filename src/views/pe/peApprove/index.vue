@@ -90,9 +90,9 @@
           <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goDetail(scope)">详情</el-button>
-              <el-button type="text" size="small" @click="pass(scope)" :disabled="scope.row.status !== '1'">通过</el-button>
-              <el-button type="text" size="small" @click="nopass(scope)" :disabled="scope.row.status !== '1'">拒绝</el-button>
+              <!-- <el-button type="text" size="small" @click="goDetail(scope.row)">详情</el-button> -->
+              <el-button type="text" size="small" @click="pass(scope.row)" :disabled="scope.row.status !== '1'">通过</el-button>
+              <el-button type="text" size="small" @click="nopass(scope.row)" :disabled="scope.row.status !== '1'">拒绝</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -184,13 +184,23 @@ export default {
       }
       this.search()
     },
-    goDetail(scope) {},
-    pass(scope) {
-      this.$refs.approveModel.setData(scope.row.id, '2')
+    // goDetail(row) {
+    //   if (row.operation_type === '1') {
+    //     // godetail
+    //   } else if (row.operation_type === '2') {
+    //     // godetail
+    //   } else if (row.operation_type === '3') {
+    //     // godetail
+    //   } else if (row.operation_type === '4') {
+    //     // godetail
+    //   }
+    // },
+    pass(row) {
+      this.$refs.approveModel.setData(row.id, '2')
       this.$refs.approveModel.showModel()
     },
-    nopass(scope) {
-      this.$refs.approveModel.setData(scope.row.id, '3')
+    nopass(row) {
+      this.$refs.approveModel.setData(row.id, '3')
       this.$refs.approveModel.showModel()
     },
     getListData(index) {
