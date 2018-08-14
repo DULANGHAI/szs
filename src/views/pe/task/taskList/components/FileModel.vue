@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { getFileListApi, getBranchApi } from '@/api/pe/taskManage/taskList'
 
 export default {
@@ -67,6 +68,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'repository'
+    ]),
     okDisable() {
       if (this.selected.project_id) {
         return false
@@ -79,24 +83,24 @@ export default {
   },
   methods: {
     init() {
+      this.pathItems = [this.repository]
+      this.form.path = this.repository
       getFileListApi(this.form).then(res => {
         this.data = res
       })
     },
     handleOpen() {
       this.init()
-      console.log('open callback ')
     },
     handleClose() {
-      this.pathItems = ['LDDS']
+      this.pathItems = [this.repository]
       this.form = {
-        path: 'LDDS',
+        path: this.repository,
         branch: ''
       }
       this.branchOption = []
       this.data = []
       this.selected = {}
-      console.log('close callback ')
     },
     showMoel() {
       this.show = true
