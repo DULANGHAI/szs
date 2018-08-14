@@ -3,7 +3,8 @@
     title="上传文件"
     :visible="dialogVisible"
     width="35%"
-    class="pb-dialog">
+    class="pb-dialog"
+    @close="handleClose">
     <el-form :model="form" :rules="rules" ref="ruleForm" label-width="80px">
       <el-form-item label="选择主机" prop="target_ip">
         <div>

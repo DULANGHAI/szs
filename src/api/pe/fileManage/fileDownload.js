@@ -4,7 +4,10 @@ export function getListApi(params) {
   return request({
     url: '/v1/buckets/hosts',
     method: 'get',
-    params: params
+    params: {
+      ip: params.target_ip,
+      path: params.path
+    }
   })
 }
 
