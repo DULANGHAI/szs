@@ -61,7 +61,7 @@ export default {
         return
       }
       this.$router.push({
-        path: '/pe/taskManage/taskList'
+        path: '/pe/dashboard/index'
       })
     },
     goResouce() {

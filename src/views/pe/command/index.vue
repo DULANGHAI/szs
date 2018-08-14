@@ -218,6 +218,7 @@ export default {
         execution_account: '',
         command: ''
       }
+      this.$refs.form.resetFields()
     },
     loadMore($state) {
       getListApi(this.form1).then(res => {

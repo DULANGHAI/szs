@@ -182,11 +182,11 @@ export default {
     },
     goDetail(scope) {},
     pass(scope) {
-      this.$refs.approveModel.setData(scope.row.task_id, '2')
+      this.$refs.approveModel.setData(scope.row.id, '2')
       this.$refs.approveModel.showModel()
     },
     nopass(scope) {
-      this.$refs.approveModel.setData(scope.row.task_id, '3')
+      this.$refs.approveModel.setData(scope.row.id, '3')
       this.$refs.approveModel.showModel()
     },
     getListData(index) {

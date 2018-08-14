@@ -74,6 +74,7 @@ export default {
       this.form = {
         description: ''
       }
+      this.$refs.ruleForm.resetFields()
     },
     showModel() {
       this.dialogVisible = true

@@ -29,7 +29,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/pe/taskManage/taskList'
+    redirect: '/pe/dashboard/index'
   },
   // 运维作业部分
   {
@@ -39,6 +39,22 @@ export const constantRouterMap = [
     meta: { title: '运维作业' },
     module: true,
     children: [
+      // 0. DashBoard
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: Layout,
+        meta: { title: 'Dashboard', icon: 'dashboard' },
+        noNest: true,
+        children: [
+          {
+            path: 'index',
+            name: 'pe-dashboard',
+            component: () => import('@/views/pe/dashboard/index'),
+            meta: { title: 'Dashboard', icon: 'dashboard' }
+          }
+        ]
+      },
       // 1.任务管理
       {
         path: 'taskManage',

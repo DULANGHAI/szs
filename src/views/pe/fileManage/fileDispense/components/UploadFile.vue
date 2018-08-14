@@ -63,6 +63,7 @@ export default {
         comment: ''
       }
       this.beforeUpload = true
+      this.$refs.ruleForm.resetFields()
     },
     showModel() {
       this.dialogVisible = true
