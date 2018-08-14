@@ -69,7 +69,7 @@ export default {
         return
       }
       this.$router.push({
-        path: '/resouce/resouces/host'
+        path: '/resouce/dashboard/index'
       })
     }
   }

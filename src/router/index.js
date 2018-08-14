@@ -309,12 +309,13 @@ export const constantRouterMap = [
         name: 'dashboard',
         component: Layout,
         meta: { title: 'Dashboard', icon: 'dashboard' },
+        noNest: true,
         children: [
           {
-            path: 'host',
-            name: 'host',
+            path: 'index',
+            name: 'dashboard',
             component: () => import('@/views/resouce/dashboard/index'),
-            meta: { title: '首页' }
+            meta: { title: 'Dashboard', icon: 'dashboard' }
           }
         ]
       },

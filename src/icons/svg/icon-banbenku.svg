@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="14px" viewBox="0 0 16 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.00131506849 0.0156931507 15.995726 0.0156931507 15.995726 13.8301589 0.00131506849 13.8301589"></polygon>
+    </defs>
+    <g id="小雪" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="00-资源管理-dashboard" transform="translate(-709.000000, -284.000000)">
+            <g id="Group" transform="translate(709.000000, 284.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M0,13.8301589 L13.0874082,13.8301589 L13.0874082,2.92398904 L0,2.92398904 L0,13.8301589 Z M3.63535342,6.55936438 L9.45196712,6.55936438 L9.45196712,5.10524932 L3.63535342,5.10524932 L3.63535342,6.55936438 Z M3.63535342,8.74060274 L9.45196712,8.74060274 L9.45196712,7.28648767 L3.63535342,7.28648767 L3.63535342,8.74060274 Z M3.63535342,10.921863 L5.08955616,10.921863 L5.08955616,9.46766027 L3.63535342,9.46766027 L3.63535342,10.921863 Z M1.45420274,0.0156931507 L1.45420274,1.46989589 L14.541611,1.46989589 L14.541611,12.3760438 L15.995726,12.3760438 L15.995726,0.0156931507 L1.45420274,0.0156931507 Z" id="Fill-1" fill="#FFFFFF" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>
