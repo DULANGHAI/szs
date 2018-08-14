@@ -314,9 +314,9 @@ export const constantRouterMap = [
         noNest: true,
         children: [
           {
-            path: 'host',
-            name: 'host',
-            component: () => import('@/views/resouce/resouces/index'),
+            path: 'index',
+            name: 'dashboard',
+            component: () => import('@/views/resouce/dashboard/index'),
             meta: { title: 'Dashboard', icon: 'dashboard' }
           }
         ]
