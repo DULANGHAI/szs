@@ -38,16 +38,16 @@
         <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="执行人">
-              <el-select v-model="form.operator">
-                <el-option v-for="(item, index) in operator_arr" :key="index" :label="item.name" :value="item.id"></el-option>
+              <el-select v-model="form.operator" value-key="id">
+                <el-option v-for="(item, index) in user_arr" :key="index" :label="item.realname" :value="item.username"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
 
           <el-col :span="6">
             <el-form-item label="审批人">
-              <el-select v-model="form.approver">
-                <el-option v-for="(item, index) in approver_arr" :key="index" :label="item.name" :value="item.id"></el-option>
+              <el-select v-model="form.approver" value-key="id">
+                <el-option v-for="(item, index) in user_arr" :key="index" :label="item.realname" :value="item.username"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -109,7 +109,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ApproveModel from './components/ApproveModel'
 
-import { getListApi } from '@/api/pe/peApprove'
+import { getListApi, getUserListApi } from '@/api/pe/peApprove'
 
 export default {
   components: {
@@ -142,8 +142,7 @@ export default {
         page: 1,
         per_page: 10
       },
-      operator_arr: [],
-      approver_arr: [],
+      user_arr: [],
       daterange: '',
       data: [],
       total: 0
@@ -156,10 +155,15 @@ export default {
     }
   },
   created() {
-    Promise.all([getListApi(this.form)])
+    this.loading = true
+    Promise.all([getListApi(this.form), getUserListApi()])
       .then(res => {
         this.data = res[0].items
         this.total = res[0].total
+        this.user_arr = res[1].items
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
   },
   methods: {
