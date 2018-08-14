@@ -31,6 +31,10 @@ router.beforeEach((to, from, next) => {
             next({ path: '/' })
           })
         })
+
+        store.dispatch('GetBussiness').then(res => { // 拉取业务组
+          next()
+        })
       } else {
         // 进入下一个页面前判断所属功能模块
         if (to.path.indexOf('/pe') === 0) {

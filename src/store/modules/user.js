@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getRepository } from '@/api/script'
+import { getToken, setToken, removeToken, getBussinessGroup, setBussinessGroup } from '@/utils/auth'
 
 const user = {
   state: {
@@ -7,7 +8,8 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    repository: ''
+    repository: getBussinessGroup(),
+    bussinessList: []
   },
 
   mutations: {
@@ -22,6 +24,12 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_REPOSITORY: (state, repository) => {
+      state.repository = repository
+    },
+    SET_BUSSINESS: (state, bussiness) => {
+      state.bussinessList = bussiness
     }
   },
 
@@ -53,6 +61,21 @@ const user = {
           }
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 获取业务组
+    GetBussiness({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        getRepository().then(response => {
+          const data = response
+          setBussinessGroup(data[0].name)
+          commit('SET_REPOSITORY', data[0].name)
+          commit('SET_BUSSINESS', data)
           resolve(response)
         }).catch(error => {
           reject(error)
