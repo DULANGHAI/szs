@@ -33,3 +33,18 @@ export function approveApi(id, data) {
     data: data
   })
 }
+
+/**
+ * 获取执行人/审批人,用的同一份数据 1000个
+ * @param {Object} data
+ */
+export function getUserListApi() {
+  return request({
+    url: '/v1/users/',
+    method: 'get',
+    params: {
+      page: 1,
+      per_page: 1000
+    }
+  })
+}
