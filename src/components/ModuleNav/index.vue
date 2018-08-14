@@ -51,13 +51,13 @@ export default {
         const bsName = Cookies.get('BussinessGroup') || response[0].name
         this.businessName = bsName
         Cookies.set('BussinessGroup', bsName)
-        this.$store.state.user.repository = this.businessName
+        // this.$store.state.user.repository = this.businessName
       }).catch(error => {
         Message.error(error)
       })
     },
     businessChange(val) {
-      this.$store.state.user.repository = val
+      // this.$store.state.user.repository = val
       Cookies.set('BussinessGroup', val)
     },
     goPe() {

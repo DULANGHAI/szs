@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'Admin-Token'
-const BussinessGroup = ''
+const BussinessGroup = 'BussinessGroup'
 
 export function getToken() {
   return Cookies.get(TokenKey)

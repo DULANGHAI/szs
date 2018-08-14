@@ -76,6 +76,7 @@ const user = {
           setBussinessGroup(data[0].name)
           commit('SET_REPOSITORY', data[0].name)
           commit('SET_BUSSINESS', data)
+          console.log(778, getBussinessGroup())
           resolve(response)
         }).catch(error => {
           reject(error)
