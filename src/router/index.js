@@ -243,52 +243,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
-  // 3.系统管理
-    // 用户管理
-    // 角色管理
-    //   角色
-    //   权限
-    // 审计和通知
-    //   审计
-    //   通知
-    // 系统配置
-    
-  {
-    path: '/SystemManage',
-    component: Layout,
-    redirect: '/SystemManage/user',
-    name: 'SystemManage',
-    meta: { title: '系统管理', icon: 'example'},
-    children: [
-      // 1.用户管理
-      {
-        path: 'usermanage',
-        name: 'usermanage',
-        component: () => import('@/views/sysmanage/usermanage/index'),
-        meta: { title: '用户管理' }
-      },
-      {
-        path: 'rolermanage',
-        name: 'rolermanage',
-        component: () => import('@/views/sysmanage/rolermanage/index'),
-        meta: { title: '角色管理' },
-      },
-      {
-        path: 'audit',
-        name: 'audit',
-        component: () => import('@/views/sysmanage/audit/index'),
-        meta: { title: '系统审计' }
-      },
-      {
-        path: 'sysconfig',
-        name: 'sysconfig',
-        component: () => import('@/views/sysmanage/sysconfig/index'),
-        meta: { title: '系统配置' }
-      },
-    ]
-  },
-
   {
     path: '/repository/examine/detail',
     name: 'examineDetail',
