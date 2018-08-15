@@ -62,7 +62,7 @@ export default {
             applications: this.data.applications,
             status: this.data.status,
             scheduling: this.data.scheduling,
-            job_task_id_list: this.data.job_task_id_list
+            task_id_list: this.data.task_id_list.split(',')
           }
           createJobApi(data).then(res => {
             this.$message({

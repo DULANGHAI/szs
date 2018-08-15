@@ -23,7 +23,7 @@
       <el-row v-if="!view">
         <el-col :offset="70">
           <el-form-item>
-            <el-button type="primary" @click="addItems">新增</el-button>
+            <el-button size="small" type="primary" icon="el-icon-plus" plain @click="addItems">新增</el-button>
           </el-form-item>
         </el-col>
       </el-row>

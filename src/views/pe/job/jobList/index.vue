@@ -122,13 +122,15 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
+import CopyModel from './components/CopyModel'
 
 import { getLanguageApi, getJobListApi, changeJobStatusApi, deleteJobApi } from '@/api/pe/jobManage/jobList'
 
 export default {
   components: {
     Breadcrumb,
-    RiskLevel
+    RiskLevel,
+    CopyModel
   },
   data() {
     this.job_type_map = {

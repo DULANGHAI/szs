@@ -83,7 +83,7 @@
         <el-table-column prop="created_at" label="创建时间" :formatter="formatterTime1"></el-table-column>
         <el-table-column prop="timed_type" label="定时类型"></el-table-column>
         <el-table-column prop="system_type" label="系统"></el-table-column>
-        <el-table-column prop="target_ip" label="目标IP" width="160px" :formatter="formatterIp" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="target_ip" label="目标IP" width="160px" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column label="风险等级" width="88px">
           <template slot-scope="scope">
@@ -123,6 +123,7 @@ import AddTimed from './components/AddTimed'
 import TaskConfig from './components/TaskConfig'
 
 import { getLanguageApi, getJobListApi, getCreatorApi, deleteJobApi } from '@/api/pe/jobManage/timedJob'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   components: {
@@ -139,30 +140,7 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       loading: false,
       form: {
         name: '',
@@ -228,11 +206,12 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getLanguageApi(), getJobListApi(this.form), getCreatorApi()]).then(res => {
+      Promise.all([getLanguageApi(), getJobListApi(this.form), getCreatorApi(), getIpApi()]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
         this.creator_arr = res[2].creator
+        this.options = res[3]
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -249,10 +228,6 @@ export default {
         return this.$dayjs(row.last_time).format('YYYY-MM-DD HH:mm:ss')
       }
       return '/'
-    },
-    formatterIp(row) {
-      const data = JSON.parse(row.target_ip).host
-      return data.toString()
     },
     formatterStatus(row) {
       return row.status === 1 ? '启用' : '禁用'

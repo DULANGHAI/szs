@@ -190,7 +190,7 @@ export default {
       this.form.job_id = val.id
       this.form.execution_account = val.execution_account
       this.form.description = val.description
-      this.form.target_ip = JSON.parse(val.target_ip).host
+      this.form.target_ip = val.target_ip.split(',')
     }
   },
   created() {
@@ -226,7 +226,7 @@ export default {
         name: this.data.name,
         execution_account: this.data.execution_account,
         description: this.data.description,
-        target_ip: JSON.parse(this.data.target_ip).host,
+        target_ip: this.data.target_ip.split(','),
         timed_type: this.data.timed_type,
         timed_config: this.data.timed_config,
         timed_date: this.data.timed_date,
@@ -323,9 +323,7 @@ export default {
           'timed_date': this.form.timed_date,
           'name': this.form.name,
           'frequency': this.form.frequency,
-          'target_ip': JSON.stringify({
-            host: this.form.target_ip
-          }),
+          'target_ip': this.form.target_ip,
           'timed_config': this.form.timed_config,
           'timed_type': this.form.timed_type,
           'description': this.form.description
@@ -347,9 +345,7 @@ export default {
           'timed_date': this.form.timed_date,
           'scheduling': this.data.scheduling,
           'frequency': this.form.frequency,
-          'target_ip': JSON.stringify({
-            host: this.form.target_ip
-          }),
+          'target_ip': this.form.target_ip,
           'timed_config': this.form.timed_config,
           'timed_type': this.form.timed_type
         }

@@ -383,8 +383,8 @@ export default {
      * 提交操作
      */
     submitAll() {
-      const job_task_id_list = []
-      this.getTaskIdList(this.scheduling, job_task_id_list)
+      const task_id_list = []
+      this.getTaskIdList(this.scheduling, task_id_list)
       const data = {
         name: this.form.name,
         description: this.form.description,
@@ -396,7 +396,7 @@ export default {
         applications: this.form.applications,
         status: this.form.status,
         scheduling: JSON.stringify(this.scheduling),
-        job_task_id_list: job_task_id_list
+        task_id_list: task_id_list
       }
       createJobApi(data).then(res => {
         this.$router.push({
@@ -423,8 +423,8 @@ export default {
       })
     },
     update() {
-      const job_task_id_list = []
-      this.getTaskIdList(this.scheduling, job_task_id_list)
+      const task_id_list = []
+      this.getTaskIdList(this.scheduling, task_id_list)
       const data = {
         id: this.form.id,
         name: this.form.name,
@@ -437,7 +437,7 @@ export default {
         applications: this.form.applications,
         status: this.form.status,
         scheduling: JSON.stringify(this.scheduling),
-        job_task_id_list: job_task_id_list,
+        task_id_list: task_id_list,
         creator: this.form.creator,
         success_rate: this.form.success_rate
       }
