@@ -17,7 +17,7 @@
                 <el-button size="small" >导入主机账号</el-button>
                 <el-button size="small" >导入CSV</el-button>
                 <el-button size="small" >同步CMBD</el-button>
-                <el-button size="small" @click.native="$refs.app.doCreate(false)">添加主机组</el-button>
+                <el-button size="small" @click.native="$refs.app.doCreate(false, [], multipleSelection)">添加主机组</el-button>
                 <el-button size="small" >编辑</el-button>
                 <el-button size="small" >查看</el-button>
                 <el-button size="small" >删除</el-button>

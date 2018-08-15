@@ -14,15 +14,15 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="描述" prop="comment">
-            <el-input type="textarea" size="small" v-model="form.comment" placeholder="请输入描述"></el-input>
+          <el-form-item label="描述" prop="description">
+            <el-input type="textarea" size="small" v-model="form.description" placeholder="请输入描述"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="主机" prop="risk_level">
-            <el-select size="small" multiple v-model="form.risk_level" placeholder="请选择版本">
+          <el-form-item label="主机" prop="host_ips">
+            <el-select size="small" multiple v-model="form.host_ips" placeholder="请选择版本">
               <el-option
                 v-for="item in hostList"
                 :key="item.id"
@@ -36,41 +36,19 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="账号" class="label-border">
-            <el-button size="small"><i class="el-icon-plus" />添加</el-button>
+            <el-button size="small" @click="addParameters"><i class="el-icon-plus" />添加</el-button>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row v-for="(item, index) in form.params">
         <el-col :span="10">
-          <el-form-item label="用户名">
-            <el-input v-model="form.name" size="small" auto-complete="off" placeholder="请输入组名"></el-input>
+          <el-form-item label="字段">
+            <el-input v-model="item.name" size="small" auto-complete="off" placeholder="请输入字段"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="密码">
-            <el-input v-model="form.name" size="small" auto-complete="off" placeholder="请输入组名"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="2">
-          <el-button size="small" type="text" @click.prevent="removeParameters(item)" style="margin-left:20px">删除</el-button>
-        </el-col>
-      </el-row> 
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="账号" class="label-border">
-            <el-button size="small"><i class="el-icon-plus" />添加</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="10">
-          <el-form-item label="用户名">
-            <el-input v-model="form.name" size="small" auto-complete="off" placeholder="请输入组名"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="密码">
-            <el-input v-model="form.name" size="small" auto-complete="off" placeholder="请输入组名"></el-input>
+          <el-form-item label="变量">
+            <el-input v-model="item.value" size="small" auto-complete="off" placeholder="请输入变量"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="2">
@@ -86,29 +64,34 @@
 </template>
 
 <script>
-  import { addRisk, putRisk } from '@/api/resouce/versionLibrary/risk'
-  import { getAppHostList } from '@/api/resouce/resouces/host'
+  import { putRisk } from '@/api/resouce/versionLibrary/risk'
+  import { getAppHostList, getAddGroups } from '@/api/resouce/resouces/host'
   import { Message } from 'element-ui'
 
   const formData = {
     'name': '',
-    'risk_level': '',
-    'comment': ''
+    'description': '',
+    'host_ips': [],
+    'comment': '',
+    'params': []
   }
   export default {
+    props: ['pid'],
     data() {
       return {
         dialogVisible: false,
         form: JSON.parse(JSON.stringify(formData)),
         isEdit: false,
         hostList: [],
+        userarry: [],
         isEditId: '',
+        marry: [],
         rules: {
           name: [
-            { required: true, message: '命令不能为空', trigger: 'blur' }
+            { required: true, message: '组名不能为空', trigger: 'blur' }
           ],
-          risk_level: [
-            { required: true, message: '风险不能为空', trigger: 'blur' }
+          description: [
+            { required: true, message: '描述不能为空', trigger: 'blur' }
           ],
           comment: [
             { required: true, message: '备注不能为空', trigger: 'blur' }
@@ -120,7 +103,7 @@
       this.getHostArray()
     },
     methods: {
-      doCreate(flag, item) {
+      doCreate(flag, item, marry) {
         this.dialogVisible = true
         this.form = Object.assign({}, formData)
         this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
@@ -128,6 +111,21 @@
         if (flag) {
           this.form = item
           this.isEditId = item.id
+        }
+        this.marry = marry
+      },
+      // 添加变量
+      addParameters() {
+        this.form.params.push({
+          'name': '',
+          'value': ''
+        })
+      },
+      // 删除变量
+      removeParameters(item) {
+        var index = this.form.params.indexOf(item)
+        if (index !== -1) {
+          this.form.params.splice(index, 1)
         }
       },
       getHostArray() {
@@ -148,10 +146,13 @@
             if (!this.isEdit) {
               const params = {
                 'name': this.form.name,
-                'risk_level': this.form.risk_level,
-                'comment': this.form.comment
+                'description': this.form.description,
+                'host_ips': this.form.host_ips,
+                'params': this.form.params,
+                'pid': this.marry[0].pid,
+                'business': this.marry[0].business
               }
-              addRisk(params).then(response => {
+              getAddGroups(params).then(response => {
                 successCallBack()
               }).catch(error => {
                 Message.error(error)

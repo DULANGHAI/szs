@@ -8,6 +8,7 @@
           <i v-if="!scope.row._expanded" class="el-icon-plus"></i>
           <i v-else class="el-icon-minus"></i>
         </span>
+        <svg-icon :icon-class="scope.row.type" />
         {{scope.row.name}}
       </template>
     </el-table-column>
