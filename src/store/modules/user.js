@@ -71,6 +71,8 @@ const user = {
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
+          commit('SET_USERID', getToken())
+          commit('SET_NAME', getUserName())
           // commit('SET_NAME', data.name)
           // commit('SET_AVATAR', data.avatar)
           resolve(response)

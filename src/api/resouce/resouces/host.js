@@ -15,3 +15,13 @@ export function getAppHostList(business) {
     method: 'get'
   })
 }
+
+// 添加主机组
+export function getAddGroups(params) {
+  return request({
+    url: '/v1/groups/',
+    method: 'post',
+    data: params
+  })
+}
+
