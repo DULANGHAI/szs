@@ -17,6 +17,22 @@ export function getApplicationDetail(id) {
   })
 }
 
+// 获取应用类型
+export function getAppTypeList() {
+  return request({
+    url: '/v1/applications/types',
+    method: 'get'
+  })
+}
+
+// 获取应用语言
+export function getAppLanguageList() {
+  return request({
+    url: '/v1/applications/languages',
+    method: 'get'
+  })
+}
+
 // 添加应用
 export function addApplication(params) {
   return request({

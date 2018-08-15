@@ -46,7 +46,7 @@
             <el-col :span="12">
               <el-form-item label="应用类型" prop="type">
                 <el-select v-model="form.type"  style="width:100%" placeholder="请选择应用类型">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                  <el-option v-for="item in fileTypeList" :key="item.id" :label="item.label" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
             </el-col> 
@@ -55,7 +55,7 @@
             <el-col :span="12">
               <el-form-item label="开发语言" prop="language">
                 <el-select v-model="form.language"  style="width:100%" placeholder="请选择开发语言">
-                  <el-option v-for="item in fileTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                  <el-option v-for="item in fileLanguageList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col> 
@@ -115,7 +115,7 @@
 
 <script>
 import { getRepositoryYuyan, getBranchList } from '@/api/script'
-import { addApplication, getApplicationDetail, putApplication } from '@/api/resouce/applications/application'
+import { addApplication, getApplicationDetail, putApplication, getAppTypeList, getAppLanguageList } from '@/api/resouce/applications/application'
 import Breadcrumb from '@/components/Breadcrumb'
 import FileModel from './fileModel'
 import RiskLevel from '@/components/RiskLevel'
@@ -142,16 +142,8 @@ export default {
     return {
       appList: [], // 应用
       branchOptions: [], // 版本
-      fileTypeList: [{
-        label: '脚本',
-        value: 'scripts'
-      }, {
-        label: '软件包',
-        value: 'applications'
-      }, {
-        label: '配置文件',
-        value: 'configurations'
-      }],
+      fileTypeList: [],
+      fileLanguageList: [],
       rjb_file: {
         name: '',
         target_path: ''
@@ -198,6 +190,18 @@ export default {
   created() {
     this.rjbPath = this.$store.state.user.repository + '/scripts'
     this.pzwjPath = this.$store.state.user.repository + '/configurations'
+
+    getAppTypeList().then(response => {
+      this.fileTypeList = response.app_types
+    }).catch(error => {
+      Message.error(error)
+    })
+
+    getAppLanguageList().then(response => {
+      this.fileLanguageList = response.app_languages
+    }).catch(error => {
+      Message.error(error)
+    })
   },
   watch: {
     'appName'(val, oldVal) {

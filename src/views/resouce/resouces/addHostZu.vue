@@ -22,12 +22,12 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="主机" prop="risk_level">
-            <el-select size="small" v-model="form.risk_level" placeholder="请选择版本">
+            <el-select size="small" multiple v-model="form.risk_level" placeholder="请选择版本">
               <el-option
-                v-for="item in levelOptions"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in hostList"
+                :key="item.id"
+                :label="item.identity_ip"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -87,6 +87,7 @@
 
 <script>
   import { addRisk, putRisk } from '@/api/resouce/versionLibrary/risk'
+  import { getAppHostList } from '@/api/resouce/resouces/host'
   import { Message } from 'element-ui'
 
   const formData = {
@@ -100,16 +101,7 @@
         dialogVisible: false,
         form: JSON.parse(JSON.stringify(formData)),
         isEdit: false,
-        levelOptions: [{
-          label: '低危',
-          value: 1
-        }, {
-          label: '中危',
-          value: 2
-        }, {
-          label: '高危',
-          value: 3
-        }],
+        hostList: [],
         isEditId: '',
         rules: {
           name: [
@@ -124,6 +116,9 @@
         }
       }
     },
+    created() {
+      this.getHostArray()
+    },
     methods: {
       doCreate(flag, item) {
         this.dialogVisible = true
@@ -134,6 +129,13 @@
           this.form = item
           this.isEditId = item.id
         }
+      },
+      getHostArray() {
+        getAppHostList('LDDS').then(response => {
+          this.hostList = response
+        }).catch(error => {
+          Message.error(error)
+        })
       },
       doSubmit() {
         this.$refs.ruleForm.validate((valid) => {
