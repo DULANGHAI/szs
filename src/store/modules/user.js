@@ -1,15 +1,17 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getRepository } from '@/api/script'
-import { getToken, setToken, removeToken, getBussinessGroup, setBussinessGroup } from '@/utils/auth'
+import { getToken, setToken, getUserName, setUserName, removeUserName, getUserInit, setUserInit, removeToken, removeUserInit, getBussinessGroup, setBussinessGroup } from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
-    name: '',
+    name: getUserName(),
     avatar: '',
     roles: [],
     repository: getBussinessGroup(),
-    bussinessList: []
+    bussinessList: [],
+    userid: '',
+    userinit: getUserInit()
   },
 
   mutations: {
@@ -30,6 +32,12 @@ const user = {
     },
     SET_BUSSINESS: (state, bussiness) => {
       state.bussinessList = bussiness
+    },
+    SET_USERID: (state, id) => {
+      state.userid = id
+    },
+    SET_USERINIT: (state, init) => {
+      state.userinit = init
     }
   },
 
@@ -39,9 +47,13 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
+          const data = response
+          setToken(data.id)
+          setUserInit(data.init_login)
+          setUserName(data.username)
+          commit('SET_USERID', data.id)
+          commit('SET_NAME', data.username)
+          commit('SET_USERINIT', data.init_login)
           resolve()
         }).catch(error => {
           reject(error)
@@ -59,8 +71,8 @@ const user = {
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
+          // commit('SET_NAME', data.name)
+          // commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -76,7 +88,6 @@ const user = {
           setBussinessGroup(data[0].name)
           commit('SET_REPOSITORY', data[0].name)
           commit('SET_BUSSINESS', data)
-          console.log(778, getBussinessGroup())
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -90,7 +101,11 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          commit('SET_USERID', '')
+          commit('SET_USERINIT', '')
           removeToken()
+          removeUserInit()
+          removeUserName()
           resolve()
         }).catch(error => {
           reject(error)
@@ -102,7 +117,11 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        commit('SET_USERID', '')
+        commit('SET_USERINIT', '')
         removeToken()
+        removeUserInit()
+        removeUserName()
         resolve()
       })
     }

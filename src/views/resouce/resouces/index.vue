@@ -29,19 +29,23 @@
       <template>
         <tree-table :data.sync="listData" :expandAll="false" :multipleSelection.sync="multipleSelection">
           <el-table-column
-            prop="created_at"
             label="类型">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type === 'business'">业务</span>
+              <span v-else-if="scope.row.type === 'group'">主机组</span>
+              <span v-else>主机</span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="description"
             label="描述">
           </el-table-column>
           <el-table-column
-            prop="created_at"
+            prop="updated_at"
             label="修改时间">
           </el-table-column>
           <el-table-column
-            prop="creator"
+            prop="modified_by"
             label="修改人">
           </el-table-column>
         </tree-table>

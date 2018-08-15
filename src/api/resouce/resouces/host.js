@@ -7,3 +7,11 @@ export function getHostList() {
     method: 'get'
   })
 }
+
+// 获取主机列表
+export function getAppHostList(business) {
+  return request({
+    url: '/v1/hosts/ips/' + business,
+    method: 'get'
+  })
+}

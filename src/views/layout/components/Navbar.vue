@@ -18,7 +18,7 @@
         <el-dropdown trigger="click">
           <div>
             <svg-icon icon-class="icon-avatar" :style="{ transform: 'scale(1.5)' }"/>
-            <span class="tooltip-name">张三</span>
+            <span class="tooltip-name">{{ name }}</span>
           </div>
           <el-dropdown-menu class="user-dropdown" slot="dropdown">
             <router-link class="inlineBlock" to="/">
@@ -51,7 +51,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'name'
     ])
   },
   methods: {
