@@ -6,7 +6,7 @@
     <div class="container-title">
       {{$route.name}}
     </div>
-    <div class="container-body">
+    <div class="container-body" v-loading="loading">
       <!-- 目标及命令 -->
       <div class="block-item">
         <div class="block-title">目标及命令</div>
@@ -100,6 +100,7 @@ import 'codemirror/mode/python/python' // js的语法高亮，自行替换为你
 import 'codemirror/theme/blackboard.css'
 
 import { createApi, getListApi, getResultApi } from '@/api/pe/command/index'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   components: {
@@ -112,30 +113,8 @@ export default {
   },
   data() {
     return {
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      loading: false,
+      options: [],
       form: {
         target_ip: [],
         execution_account: '',
@@ -201,6 +180,16 @@ export default {
         this.log = ''
       }
     }
+  },
+  created() {
+    this.loading = true
+    Promise.all([getIpApi()])
+      .then(res => {
+        this.options = res[0]
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
   },
   methods: {
     submit() {

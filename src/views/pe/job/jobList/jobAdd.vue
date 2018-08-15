@@ -162,6 +162,7 @@ import ScriptShow from './components/ScriptShow'
 import FileShow from './components/FileShow'
 
 import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi } from '@/api/pe/jobManage/jobList'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   props: ['id', 'view'],
@@ -186,30 +187,7 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       form: {
         name: '',
         description: '',
@@ -267,20 +245,22 @@ export default {
   },
   created() {
     if (this.id) {
-      Promise.all([getLanguageApi(), getJobDataApi(this.id)])
+      Promise.all([getLanguageApi(), getJobDataApi(this.id), getIpApi()])
         .then(res => {
           this.systemAndLang = res[0]
           this.form = res[1]
           this.form.target_ip = JSON.parse(res[1].target_ip).host
           this.scheduling = JSON.parse(res[1].scheduling)
+          this.options = res[2]
         }).catch(err => {
           console.log(err)
         })
     } else {
       // todo
-      Promise.all([getLanguageApi()])
+      Promise.all([getLanguageApi(), getIpApi()])
         .then(res => {
           this.systemAndLang = res[0]
+          this.options = res[1]
         })
     }
   },
