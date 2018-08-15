@@ -63,6 +63,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 import { getListApi, postDownloadApi } from '@/api/pe/fileManage/fileDownload'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   components: {
@@ -76,30 +77,7 @@ export default {
         target_ip: null,
         path: ''
       },
-      options: [
-        {
-          id: '10.111.2.41',
-          label: '10.111.2.41',
-          children: [
-            {
-              id: '10.111.2.42',
-              label: '10.111.2.43'
-            },
-            {
-              id: '10.111.2.43',
-              label: '10.111.2.43'
-            }
-          ]
-        },
-        {
-          id: '10.111.2.44',
-          label: '10.111.2.44'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       data: [],
       multipleSelection: [],
       project_id: null
@@ -120,22 +98,22 @@ export default {
     }
   },
   created() {
-    this.getListData()
+    this.loading = true
+    Promise.all([getIpApi(), getListApi(this.form)])
+      .then(res => {
+        this.options = res[0]
+        this.data = res[1]
+      }).finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     // 下载历史记录
     getListData() {
       this.loading = true
-      const params = {
-        target_ip: JSON.stringify({
-          host: this.form.target_ip
-        }),
-        path: this.form.path
-      }
-      getListApi(params).then(res => {
-        this.loading = false
+      getListApi(this.form).then(res => {
         this.data = res
-      }).catch(() => {
+      }).finally(() => {
         this.loading = false
       })
     },

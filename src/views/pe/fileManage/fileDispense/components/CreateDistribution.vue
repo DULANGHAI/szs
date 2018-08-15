@@ -1,6 +1,7 @@
 <template>
   <el-dialog
-    title="上传文件"
+    v-loading="loading"
+    title="文件分发"
     :visible="dialogVisible"
     width="35%"
     class="pb-dialog"
@@ -38,6 +39,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 import { createDistributionApi } from '@/api/pe/fileManage/fileDispense'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   props: ['id', 'data'],
@@ -47,30 +49,8 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      options: [
-        {
-          id: '10.111.2.41',
-          label: '10.111.2.41',
-          children: [
-            {
-              id: '10.111.2.42',
-              label: '10.111.2.43'
-            },
-            {
-              id: '10.111.2.43',
-              label: '10.111.2.43'
-            }
-          ]
-        },
-        {
-          id: '10.111.2.44',
-          label: '10.111.2.44'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      loading: false,
+      options: [],
       form: {
         target_ip: [],
         target_dest: '',
@@ -93,6 +73,14 @@ export default {
         ]
       }
     }
+  },
+  created() {
+    this.loading = true
+    getIpApi().then(res => {
+      this.options = res
+    }).finally(() => {
+      this.loading = false
+    })
   },
   methods: {
     showModel() {

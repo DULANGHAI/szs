@@ -16,7 +16,7 @@
             <el-button size="mini" @click="createFolder" :disabled="pathItems.length < 3">新建目录</el-button>
             <el-button size="mini" @click="upload" :disabled="pathItems.length < 3">上传</el-button>
             <el-button size="mini" @click="download" :disabled="downloadDisabled">下载</el-button>
-            <el-button size="mini" @click="deleteFiles" :disabled="pathItems.length < 3">删除</el-button>
+            <el-button size="mini" @click="deleteFiles" :disabled="(pathItems.length < 3) || (multipleSelection.length === 0)">删除</el-button>
             <el-button size="mini" @click="distribution" :disabled="pathItems.length < 3">分发</el-button>
           </div>
         </div>
@@ -122,6 +122,7 @@ export default {
       this.path = this.repository + '/file_buckets'
       this.pathItems = [this.repository, 'file_buckets']
 
+      this.loading = true
       getFileListApi({
         path: this.path
       }).then(res => {
@@ -129,6 +130,8 @@ export default {
         if (res.length) {
           this.project_id = res[0].project_id
         }
+      }).finally(() => {
+        this.loading = false
       })
     },
     jump(index) {
@@ -179,7 +182,17 @@ export default {
       this.multipleSelection = val
     },
     refresh() {
-      this.init()
+      this.loading = true
+      getFileListApi({
+        path: this.path
+      }).then(res => {
+        this.data = res
+        if (res.length) {
+          this.project_id = res[0].project_id
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     },
     /**
      * 按钮操作
@@ -241,7 +254,7 @@ export default {
   }
 }
 .file-model-container {
-  .el-breadcrumb__inner {
+  & /deep/ .el-breadcrumb__inner {
     cursor: pointer;
     &:hover {
       color: #1890FF;

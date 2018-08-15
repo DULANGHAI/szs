@@ -43,7 +43,7 @@
         </el-col>
         <el-col :span="11" :offset="2">
           <el-form-item label="目标IP" label-width="60px">
-            <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
+            <treeselect v-model="form.target_ip" :multiple="true" search-nested :options="options" placeholder="请选择" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -117,6 +117,7 @@ import CustomTimed from './CustomTimed'
 
 import { getJobListApi } from '@/api/pe/jobManage/instantJob'
 import { createJobApi, updateJobApi } from '@/api/pe/jobManage/timedJob'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   props: {
@@ -168,30 +169,7 @@ export default {
       },
       jobArr: [],
       selectJob: {},
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       loading: false
     }
   },
@@ -215,6 +193,11 @@ export default {
       this.form.target_ip = JSON.parse(val.target_ip).host
     }
   },
+  created() {
+    getIpApi().then(res => {
+      this.options = res
+    })
+  },
   methods: {
     showMoel() {
       this.show = true
@@ -228,7 +211,6 @@ export default {
       } else {
         this.initEdit()
       }
-      console.log('open callback ' + this.type)
     },
     handleClose() {
       console.log('close callback ')

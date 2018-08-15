@@ -29,6 +29,7 @@
 <script>
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   props: {
@@ -53,31 +54,13 @@ export default {
         frequency: '',
         handleFailed: ''
       },
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ]
+      options: []
     }
+  },
+  created() {
+    getIpApi().then(res => {
+      this.options = res
+    })
   },
   methods: {
     showMoel() {

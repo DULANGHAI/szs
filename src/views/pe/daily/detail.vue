@@ -109,6 +109,7 @@ import LogView from './components/LogView'
 import { getLanguageApi } from '@/api/pe/jobManage/timedJob'
 import { getJobListApi } from '@/api/pe/daily/index'
 import { getLogDetailApi } from '@/api/pe/jobManage/jobRecord'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   props: ['id'],
@@ -125,30 +126,7 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       loading: false,
       form: {
         name: '',
@@ -184,12 +162,12 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getLanguageApi(), getJobListApi(this.form)]).then(res => {
+      Promise.all([getLanguageApi(), getJobListApi(this.form), getIpApi()]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
-        this.loading = false
-      }).catch(() => {
+        this.options = res[2]
+      }).finally(() => {
         this.loading = false
       })
     },

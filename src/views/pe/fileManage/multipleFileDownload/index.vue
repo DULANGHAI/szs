@@ -64,6 +64,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 import { postDownloadApi, downloadListApi } from '@/api/pe/fileManage/multipleFileDownload'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   components: {
@@ -78,30 +79,7 @@ export default {
         path: '',
         system_type: 'linux'
       },
-      options: [
-        {
-          id: '10.111.2.41',
-          label: '10.111.2.41',
-          children: [
-            {
-              id: '10.111.2.42',
-              label: '10.111.2.43'
-            },
-            {
-              id: '10.111.2.43',
-              label: '10.111.2.43'
-            }
-          ]
-        },
-        {
-          id: '10.111.2.44',
-          label: '10.111.2.44'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       form2: {
         page: 1,
         per_page: 10,
@@ -113,7 +91,15 @@ export default {
     }
   },
   created() {
-    this.getListData()
+    this.loading = true
+    Promise.all([getIpApi(), downloadListApi(this.form2)])
+      .then(res => {
+        this.options = res[0]
+        this.data = res[1].items
+        this.total = res[1].total
+      }).finally(() => {
+        this.loading = false
+      })
   },
   methods: {
     handleSelectionChange(val) {
@@ -153,10 +139,9 @@ export default {
         params.page = index
       }
       downloadListApi(params).then(res => {
-        this.loading = false
         this.data = res.items
         this.total = res.total
-      }).catch(() => {
+      }).finally(() => {
         this.loading = false
       })
     },

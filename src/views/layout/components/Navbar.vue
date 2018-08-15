@@ -72,7 +72,7 @@ export default {
   height: 64px;
   line-height: 64px;
   border-radius: 0px !important;
-  z-index: 99999;
+  z-index: 100;
   .nav-tooltip{
     float:right;
     margin-right: 25px;
