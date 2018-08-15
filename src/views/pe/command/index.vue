@@ -186,8 +186,7 @@ export default {
     Promise.all([getIpApi()])
       .then(res => {
         this.options = res[0]
-        this.loading = false
-      }).catch(() => {
+      }).finally(() => {
         this.loading = false
       })
   },

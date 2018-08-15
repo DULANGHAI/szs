@@ -39,7 +39,7 @@
       </div>
 
       <!-- 流程创建 -->
-      <div class="container-content" :class="{'view': view === '1'}">
+      <div class="container-content" :class="{'view': view === '1'}" v-loading="loading">
         <!-- 左侧筛选列表 -->
         <div class="left">
           <!-- 筛选 -->
@@ -207,6 +207,7 @@ export default {
       'continue': '继续下一个作业'
     }
     return {
+      loading: false,
       form: {
         name: '',
         status: '',
@@ -253,19 +254,22 @@ export default {
     }
   },
   created() {
+    this.loading = true
     if (this.id) {
       Promise.all([getLanguageApi(), getFlowApi(this.id)])
         .then(res => {
           this.system_type_arr = this.handleSystemData(res[0])
           this.initFlowData(res[1])
-        }).catch(err => {
-          console.log(err)
+        }).finally(() => {
+          this.loading = false
           this.initFlowData()
         })
     } else {
       Promise.all([getLanguageApi()])
         .then(res => {
           this.system_type_arr = this.handleSystemData(res[0])
+        }).finally(() => {
+          this.loading = false
         })
     }
   },

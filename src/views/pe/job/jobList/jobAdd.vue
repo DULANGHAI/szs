@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="container-body">
+    <div class="container-body" v-loading="loading">
       <!-- 作业信息 -->
       <div class="block-item">
         <div class="block-title ">作业信息</div>
@@ -188,6 +188,7 @@ export default {
     }
     return {
       options: [],
+      loading: false,
       form: {
         name: '',
         description: '',
@@ -244,6 +245,7 @@ export default {
     }
   },
   created() {
+    this.loading = true
     if (this.id) {
       Promise.all([getLanguageApi(), getJobDataApi(this.id), getIpApi()])
         .then(res => {
@@ -252,8 +254,8 @@ export default {
           this.form.target_ip = JSON.parse(res[1].target_ip).host
           this.scheduling = JSON.parse(res[1].scheduling)
           this.options = res[2]
-        }).catch(err => {
-          console.log(err)
+        }).finally(() => {
+          this.loading = false
         })
     } else {
       // todo
@@ -261,6 +263,8 @@ export default {
         .then(res => {
           this.systemAndLang = res[0]
           this.options = res[1]
+        }).finally(() => {
+          this.loading = false
         })
     }
   },
@@ -393,9 +397,7 @@ export default {
         name: this.form.name,
         description: this.form.description,
         execution_account: this.form.execution_account,
-        target_ip: JSON.stringify({
-          host: this.form.target_ip
-        }),
+        target_ip: this.form.target_ip,
         frequency: this.form.frequency,
         system_type: this.form.system_type,
         job_type: this.form.job_type,
@@ -436,9 +438,7 @@ export default {
         name: this.form.name,
         description: this.form.description,
         execution_account: this.form.execution_account,
-        target_ip: JSON.stringify({
-          host: this.form.target_ip
-        }),
+        target_ip: this.form.target_ip,
         frequency: this.form.frequency,
         system_type: this.form.system_type,
         job_type: this.form.job_type,
