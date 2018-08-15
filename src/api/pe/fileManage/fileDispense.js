@@ -68,7 +68,7 @@ export function deleteFilesApi(id, data) {
  */
 export function createDistributionApi(data) {
   return request({
-    url: '/v1/buckets/distribution',
+    url: '/v1/buckets/distributions',
     method: 'post',
     data: data
   })
@@ -80,7 +80,7 @@ export function createDistributionApi(data) {
  */
 export function getDistributionListApi(params) {
   return request({
-    url: '/v1/buckets/distribution',
+    url: '/v1/buckets/distributions',
     method: 'get',
     params: params
   })

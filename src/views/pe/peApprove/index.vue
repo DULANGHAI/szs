@@ -88,7 +88,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="200">
+          <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <!-- <el-button type="text" size="small" @click="goDetail(scope.row)">详情</el-button> -->
               <el-button type="text" size="small" @click="pass(scope.row)" :disabled="scope.row.status !== '1'">通过</el-button>

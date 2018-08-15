@@ -5,6 +5,12 @@
     transition: margin-left .28s;
     margin-left: 255px;
     position: relative;
+    & /deep/ .navbar {
+      position: fixed;
+      top: 0;
+      left: 255px;
+      right: 0;
+    }
   }
   // 侧边栏
   .sidebar-container {
@@ -56,6 +62,12 @@
     }
     .main-container {
       margin-left: 54px;
+      & /deep/ .navbar {
+        position: fixed;
+        top: 0;
+        left: 54px;
+        right: 0;
+      }
     }
     .submenu-title-noDropdown {
       padding-left: 20px !important;

@@ -78,6 +78,7 @@
       <div class="toolbar">
         <el-button size="small" type="primary" icon="el-icon-plus" plain @click="goAdd">添加</el-button>
         <div>
+          <el-button size="small" plain :disabled="multipleSelection.length !== 1" @click="handleCopy">复制</el-button>
           <el-button size="small" plain :disabled="multipleStart" @click="handleMultipleStart">启用</el-button>
           <el-button size="small" plain :disabled="multipleStop" @click="handleMultipleStop">停用</el-button>
           <el-button size="small" type="danger" plain :disabled="multipleDelete" @click="handleMultipleDelete">删除</el-button>
@@ -125,12 +126,16 @@
         <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
       </div>
     </div>
+
+    <!-- 复制任务model -->
+    <copy-model ref="copyModel" :data="multipleSelection[0]" :refresh="refresh"></copy-model>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
+import CopyModel from './components/CopyModel'
 
 import { getListApi, getCreatorApi, getLanguageApi, changeTaskStatusApi, deleteTaskApi } from '@/api/pe/taskManage/taskList'
 
@@ -143,7 +148,8 @@ const taskTypeMap = {
 export default {
   components: {
     Breadcrumb,
-    RiskLevel
+    RiskLevel,
+    CopyModel
   },
   data() {
     return {
@@ -317,6 +323,9 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+    },
+    handleCopy() {
+      this.$refs.copyModel.showModel()
     },
     handleMultipleStart() {
       this.$confirm('确认要启用这些任务吗？', '提示', {

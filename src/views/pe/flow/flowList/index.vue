@@ -63,6 +63,7 @@
       <div class="toolbar">
         <el-button size="small" type="primary" icon="el-icon-plus" plain @click="goAdd">添加</el-button>
         <div>
+          <el-button size="small" plain :disabled="multipleSelection.length !== 1" @click="handleCopy">复制</el-button>
           <el-button size="small" plain :disabled="multipleStart" @click="handleMultipleStart">启用</el-button>
           <el-button size="small" plain :disabled="multipleStop" @click="handleMultipleStop">停用</el-button>
           <el-button size="small" type="danger" plain :disabled="multipleDelete" @click="handleMultipleDelete">删除</el-button>
@@ -109,12 +110,16 @@
       </div>
 
     </div>
+
+    <!-- 复制任务model -->
+    <copy-model ref="copyModel" :data="multipleSelection[0]" :refresh="refresh"></copy-model>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
+import CopyModel from './components/CopyModel'
 
 import ScriptOption from '@/components/ScriptOption'
 
@@ -124,7 +129,8 @@ export default {
   components: {
     Breadcrumb,
     RiskLevel,
-    ScriptOption
+    ScriptOption,
+    CopyModel
   },
   data() {
     return {
@@ -264,6 +270,9 @@ export default {
       this.$router.push({
         path: `/pe/flowManage/flowView/${id}/1`
       })
+    },
+    handleCopy() {
+      this.$refs.copyModel.showModel()
     },
     // 567
     getFlowIds() {

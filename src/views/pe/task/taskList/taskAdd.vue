@@ -6,7 +6,7 @@
     <div class="container-title">
       {{$route.name}}
     </div>
-    <div class="container-body">
+    <div class="container-body" v-loading="loading">
       <el-form ref="form" label-width="84px" size="small" label-position="left">
         <el-form-item label="任务名">
           <el-input v-if="!view" v-model="form.name" placeholder="请输入任务名"></el-input>
@@ -155,6 +155,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
         project_id: '',
         name: '',
@@ -199,6 +200,7 @@ export default {
     }
   },
   created() {
+    this.loading = true
     if (this.id) {
       Promise.all([getTaskApi(this.id), getLanguageApi()])
         .then(res => {
@@ -212,14 +214,18 @@ export default {
               this.doWhenFile()
             }
           })
-        }).catch(err => {
-          console.log(err)
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
         })
     } else {
       // todo
       Promise.all([getLanguageApi()])
         .then(res => {
           this.systemAndLang = res[0]
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
         })
     }
   },

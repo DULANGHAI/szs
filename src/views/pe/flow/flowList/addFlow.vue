@@ -39,7 +39,7 @@
       </div>
 
       <!-- 流程创建 -->
-      <div class="container-content" :class="{'view': view === '1'}">
+      <div class="container-content" :class="{'view': view === '1'}" v-loading="loading">
         <!-- 左侧筛选列表 -->
         <div class="left">
           <!-- 筛选 -->
@@ -207,6 +207,7 @@ export default {
       'continue': '继续下一个作业'
     }
     return {
+      loading: false,
       form: {
         name: '',
         status: '',
@@ -253,106 +254,33 @@ export default {
     }
   },
   created() {
+    this.loading = true
     if (this.id) {
       Promise.all([getLanguageApi(), getFlowApi(this.id)])
         .then(res => {
           this.system_type_arr = this.handleSystemData(res[0])
           this.initFlowData(res[1])
-        }).catch(err => {
-          console.log(err)
+        }).finally(() => {
+          this.loading = false
           this.initFlowData()
         })
     } else {
       Promise.all([getLanguageApi()])
         .then(res => {
           this.system_type_arr = this.handleSystemData(res[0])
+        }).finally(() => {
+          this.loading = false
         })
     }
   },
   methods: {
     initFlowData(res) {
-      // this.form = {
-      //   name: res.name,
-      //   status: res.status,
-      //   description: res.description
-      // }
-      // this.data = JSON.parse(res.scheduling)
       this.form = {
-        name: '123',
-        status: true,
-        description: 'tyubniafaffafa'
+        name: res.name,
+        status: res.status,
+        description: res.description
       }
-      this.data = [{
-        'status': true,
-        'job_task_id_list': null,
-        'scheduling': `{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:14\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":5,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"task1\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"task1\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:14\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:32\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":6,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"tasks2\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"tasks2\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:32\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[{\"type\":\"end_success\",\"description\":\"\",\"is_warning\":false,\"timestr\":1533263652314,\"next\":[],\"parentstr\":1533263635045}],\"timestr\":1533263635045,\"parentstr\":1533263628915,\"condition\":{\"type\":\"success\",\"value\":\"\",\"parent\":1533263628915}}],\"timestr\":1533263628915,\"node_level\":0}`,
-        'risk_level': 3,
-        'description': 'tasks',
-        'creator': '张三',
-        'created_at': '2018-08-03T10:34:29',
-        'execution_account': 'mds',
-        'job_type': 'ordinary',
-        'updated_at': '2018-08-03T10:34:29',
-        'success_rate': 0,
-        'applications': null,
-        'frequency': 1,
-        'system_type': 'linux',
-        'target_ip': '{"host":["10.111.2.40"]}',
-        'is_deleted': false,
-        'deleted_at': null,
-        'id': 6,
-        'name': 'tasks',
-        'timestr': 1533363229697
-      }, {
-        'status': false,
-        'job_task_id_list': null,
-        'scheduling': `{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T09:40:06\",\"risk_statement\":\"风险说明自动填写评估详情，用户不能修改\",\"deleted_at\":null,\"id\":2,\"file_owner\":\"王林1\",\"risk_level\":0,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"\",\"type\":\"file\",\"status\":\"无需审批\",\"file_selection\":\"[{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"},{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"}]\",\"description\":\"111111\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":true,\"is_deleted\":false,\"name\":\"文件分发任务1\",\"language\":\"\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T09:40:06\",\"file_permission\":\"root1\",\"command\":\"\",\"time_out\":1,\"next\":[{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T09:40:06\",\"risk_statement\":\"风险说明自动填写评估详情，用户不能修改\",\"deleted_at\":null,\"id\":2,\"file_owner\":\"王林2\",\"risk_level\":0,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"\",\"type\":\"file\",\"status\":\"无需审批\",\"file_selection\":\"[{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"},{\\\"file\\\":{\\\"update_user\\\":\\\"god\\\",\\\"name\\\":\\\"file1.txt\\\",\\\"absolute_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\",\\\"updated_at\\\":\\\"2018-08-01 06:53:15\\\",\\\"branch\\\":\\\"master\\\",\\\"path\\\":\\\"LDDS/scripts/linux/python/dir01\\\",\\\"project_id\\\":1,\\\"type\\\":\\\"blob\\\",\\\"id\\\":null,\\\"full_path\\\":\\\"LDDS/scripts/linux/python/dir01/file1.txt\\\"},\\\"target_path\\\":\\\"0.0.0.0\\\"}]\",\"description\":\"111111\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":true,\"is_deleted\":false,\"name\":\"文件分发任务1\",\"language\":\"\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T09:40:06\",\"file_permission\":\"root2\",\"command\":\"\",\"time_out\":1,\"next\":[],\"timestr\":1533211029990,\"parentstr\":1533211023580}],\"timestr\":1533211023580,\"node_level\":0}`,
-        'risk_level': 0,
-        'description': '',
-        'creator': '张三',
-        'created_at': '2018-08-02T19:58:00',
-        'execution_account': '王林',
-        'job_type': 'ordinary',
-        'updated_at': '2018-08-03T09:35:45',
-        'success_rate': 0,
-        'applications': null,
-        'frequency': 2,
-        'system_type': 'linux',
-        'target_ip': '{"host":["10.111.2.40"]}',
-        'is_deleted': false,
-        'deleted_at': null,
-        'id': 5,
-        'name': '文件分发作业',
-        'timestr': 1533363237752
-      }, {
-        'status': true,
-        'job_task_id_list': null,
-        'scheduling': `{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:14\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":5,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"task1\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"task1\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:14\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[{\"creator\":\"李四\",\"target_directory\":null,\"updated_at\":\"2018-08-02T11:16:32\",\"risk_statement\":\"没有匹配到任何风险命令\",\"deleted_at\":null,\"id\":6,\"file_owner\":\"\",\"risk_level\":3,\"script_version\":\"\",\"script\":\"\",\"is_enable\":true,\"project_id\":\"15\",\"type\":\"command\",\"status\":\"无需审批\",\"file_selection\":\"\",\"description\":\"tasks2\",\"approver\":null,\"target_system\":\"linux\",\"is_replace\":false,\"is_deleted\":false,\"name\":\"tasks2\",\"language\":\"shell\",\"script_parameter\":\"\",\"created_at\":\"2018-08-02T11:16:32\",\"file_permission\":\"\",\"command\":\"ls\",\"time_out\":1,\"next\":[],\"timestr\":1533179826877,\"parentstr\":1533179820955,\"condition\":{\"type\":\"success\",\"value\":\"\",\"parent\":1533179820955}}],\"timestr\":1533179820955,\"node_level\":0}`,
-        'risk_level': 3,
-        'description': 'task1',
-        'creator': '张三',
-        'created_at': '2018-08-02T11:17:18',
-        'execution_account': 'mds',
-        'job_type': 'ordinary',
-        'updated_at': '2018-08-02T11:17:18',
-        'success_rate': 0,
-        'applications': null,
-        'frequency': 1,
-        'system_type': 'linux',
-        'target_ip': '{"host":["10.111.2.40"]}',
-        'is_deleted': false,
-        'deleted_at': null,
-        'id': 4,
-        'name': 'task1',
-        'timestr': 1533363239671
-      }, {
-        'job_type': 'manual',
-        'name': '123',
-        'description': '456',
-        'notifier': '假数据1',
-        'notify_type': 'message',
-        'timestr': 1533363241856
-      }]
+      this.data = JSON.parse(res.scheduling)
     },
     handleSystemData(data) {
       const result = [{ label: '全部', value: '' }]

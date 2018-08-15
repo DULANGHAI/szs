@@ -6,7 +6,7 @@
     <div class="container-title">
       {{$route.name}}
     </div>
-    <div class="container-body">
+    <div class="container-body" v-loading="loading">
       <el-tabs v-model="activeName">
         <el-tab-pane label="任务审批" name="first">
           <div class="tabs-contents">
@@ -198,6 +198,7 @@ export default {
   data() {
     return {
       activeName: 'first',
+      loading: false,
       form: {
         creator: '',
         created_at: '',
@@ -231,6 +232,7 @@ export default {
     }
   },
   created() {
+    this.loading = true
     if (this.id) {
       Promise.all([getTaskDataApi(this.id), getAllScriptApi(), getLanguageApi()])
         .then(res => {
@@ -244,12 +246,16 @@ export default {
               this.doWhenScript()
             }
           })
-        }).catch(err => {
-          console.log(err)
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
         })
     } else {
       getAllScriptApi().then(res => {
         this.scriptOptions = res.items
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     }
   },
