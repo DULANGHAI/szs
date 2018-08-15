@@ -55,7 +55,7 @@ export default {
             name: this.form.name,
             description: this.data.description,
             execution_account: this.data.execution_account,
-            target_ip: this.data.target_ip,
+            target_ip: this.data.target_ip.split(','),
             frequency: this.data.frequency,
             system_type: this.data.system_type,
             job_type: this.data.job_type,

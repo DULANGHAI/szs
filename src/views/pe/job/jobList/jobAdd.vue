@@ -31,24 +31,19 @@
             <div class="flex-1 marr-20">
               <el-form ref="form" label-width="100px" size="small" label-position="left">
                 <el-form-item label="作业名">
-                  <el-input v-if="!view" v-model="form.name" placeholder="请输入"></el-input>
-                  <div v-if="view">{{form.name}}</div>
+                  <el-input v-model="form.name" placeholder="请输入" :disabled="view === '1'"></el-input>
                 </el-form-item>
                 <el-form-item label="描述">
-                  <el-input v-if="!view" type="textarea" v-model="form.description" rows="4" placeholder="请输入"></el-input>
-                  <div v-if="view">{{form.description}}</div>
+                  <el-input type="textarea" v-model="form.description" rows="4" placeholder="请输入" :disabled="view === '1'"></el-input>
                 </el-form-item>
                 <el-form-item label="账号">
-                  <el-input v-if="!view" v-model="form.execution_account" placeholder="请输入"></el-input>
-                  <div v-if="view">{{form.execution_account}}</div>
+                  <el-input v-model="form.execution_account" placeholder="请输入" :disabled="view === '1'"></el-input>
                 </el-form-item>
                 <el-form-item label="目标IP">
-                  <treeselect v-if="!view" v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
-                  <div v-if="view">{{form.target_ip}}</div>
+                  <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" :disabled="view === '1'" />
                 </el-form-item>
                 <el-form-item label="失败重试次数">
-                  <el-input-number v-if="!view" v-model="form.frequency" controls-position="right" :min="1" :precision="1"></el-input-number>
-                  <span v-if="view">{{form.frequency}}</span>
+                  <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="1" :disabled="view === '1'"></el-input-number>
                   次
                 </el-form-item>
               </el-form>
@@ -56,22 +51,19 @@
             <div class="flex-1 marr-20">
               <el-form ref="form" label-width="84px" size="small" label-position="left">
                 <el-form-item label="系统类型">
-                  <el-select v-if="!view" v-model="form.system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
+                  <el-select v-model="form.system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length || view === '1'">
                     <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
                   </el-select>
-                  <div v-if="view">{{form.system_type}}</div>
                 </el-form-item>
                 <el-form-item label="作业类型">
-                  <el-radio-group v-if="!view" v-model="form.job_type">
+                  <el-radio-group v-model="form.job_type" :disabled="view === '1'">
                     <el-radio v-for="(item, index) in Object.keys(job_type_map)" :key="index" :label="item">{{job_type_map[item]}}</el-radio>
                   </el-radio-group>
-                  <div v-if="view">{{job_type_map[form.job_type]}}</div>
                 </el-form-item>
-                <el-form-item v-if="form.job_type === '应用更新&发布' || form.job_type === '应用下线'" label="应用实例">
-                  <el-select v-if="!view" v-model="form.applications" placeholder="请选择">
+                <el-form-item v-if="form.job_type === 'update' || form.job_type === 'quit'" label="应用实例">
+                  <el-select v-model="form.applications" placeholder="请选择">
                     <el-option v-for="item in applications_arr" :key="item" :label="item" :value="item"></el-option>
                   </el-select>
-                  <div v-if="view">{{form.applications}}</div>
                 </el-form-item>
                 <el-form-item label="启用">
                   <el-switch v-model="form.status" :disabled="view === '1'"></el-switch>
@@ -250,8 +242,8 @@ export default {
       Promise.all([getLanguageApi(), getJobDataApi(this.id), getIpApi()])
         .then(res => {
           this.systemAndLang = res[0]
+          res[1].target_ip = res[1].target_ip.split(',')
           this.form = res[1]
-          this.form.target_ip = JSON.parse(res[1].target_ip).host
           this.scheduling = JSON.parse(res[1].scheduling)
           this.options = res[2]
         }).finally(() => {

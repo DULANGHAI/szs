@@ -5,6 +5,7 @@
       :show-timeout="200"
       :default-active="$route.path"
       :collapse="isCollapse"
+      :unique-opened="true"
       background-color="#001529"
       text-color="#bfcbd9"
       active-text-color="#409EFF"
