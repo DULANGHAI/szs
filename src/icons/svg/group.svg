@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>云服务</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="小雪" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.45">
+        <g id="49-主机组管理" transform="translate(-412.000000, -396.000000)" fill="#000000">
+            <g id="Group-29" transform="translate(384.000000, 284.000000)">
+                <g id="Group-33" transform="translate(28.000000, 110.000000)">
+                    <g id="Group-27">
+                        <path d="M18,6.49999448 L8.99998896,2 L0,6.49999448 L8.99998896,10.999989 L18,6.49999448 Z M8.99998896,3.79996688 L15.2100083,6.49999448 L8.99998896,9.2 L2.7000276,6.49999448 L8.99998896,3.79996688 Z M8.99998896,13.7000166 L2.7000276,10.0999503 L0,10.0999503 L8.99998896,15.4999834 L18,10.0999503 L15.2100083,10.0999503 L8.99998896,13.7000166 Z M8.99998896,18.200011 L2.7000276,14.5999669 L0,14.5999669 L8.99998896,20 L18,14.5999669 L15.2100083,14.5999669 L8.99998896,18.200011 Z" id="云服务"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -13,6 +13,7 @@
     "test": "npm run lint"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "0.0.32",
     "axios": "0.17.1",
     "codemirror": "^5.39.0",
     "dayjs": "^1.7.2",
@@ -21,6 +22,9 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "vue": "2.5.10",
+    "vue-code-diff": "0.0.4",
+    "vue-codemirror-lite": "^1.0.4",
+    "vue-infinite-loading": "^2.3.1",
     "vue-router": "3.0.1",
     "vuex": "3.0.1"
   },

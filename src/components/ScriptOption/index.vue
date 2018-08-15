@@ -5,10 +5,10 @@
         <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
         <div>
           <div class="name">{{data.name}}</div>
-          <div class="path">{{data.full_path}}</div>
+          <div class="path" v-if="data.full_path">{{data.full_path}}</div>
         </div>
       </div>
-      <div class="comment">{{'介绍：' + data.comment}}</div>
+      <div class="comment">{{'介绍：' + (data.comment || data.description)}}</div>
     </div>
     <risk-level :level="data.risk_level"></risk-level>
   </div>

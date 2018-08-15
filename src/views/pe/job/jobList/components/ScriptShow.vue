@@ -1,0 +1,134 @@
+<template>
+  <div>
+    <el-form ref="form" label-width="84px" size="small" label-position="left">
+      <el-form-item label="任务类型">
+        <div>{{taskTypeMap[data.type]}}</div>
+      </el-form-item>
+
+      <div style="display: flex;">
+        <el-form-item label="目标系统">
+          <div>{{data.target_system}}</div>
+        </el-form-item>
+        <el-form-item label="语言" label-width="50px" style="margin-left: 40px;">
+          <div>{{data.language}}</div>
+        </el-form-item>
+      </div>
+
+      <div>
+        <el-form-item label="脚本">
+          <div>{{selectedScript.name}}</div>
+        </el-form-item>
+        <el-form-item label="脚本版本">
+          <div>{{selectedVersion.version}}</div>
+          <el-button type="text" size="small">查看脚本</el-button>
+        </el-form-item>
+        <el-form-item label="脚本变量">
+          <el-input v-if="view !== '1'" v-model="data.script_parameter"></el-input>
+          <div v-else>{{data.script_parameter}}</div>
+        </el-form-item>
+      </div>
+
+      <div>
+        <el-form-item label="超时时间">
+          <span>{{data.time_out}}</span>
+          秒
+        </el-form-item>
+        <el-form-item label="风险">
+          <risk-level :level="data.risk_level"></risk-level>
+        </el-form-item>
+        <el-form-item label="风险说明">
+          <div>{{data.risk_statement}}</div>
+        </el-form-item>
+      </div>
+
+      <el-form-item label="启用">
+        <el-switch v-model="data.is_enable" disabled></el-switch>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import RiskLevel from '@/components/RiskLevel'
+import { getLanguageApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
+
+export default {
+  props: {
+    view: String,
+    data: Object
+  },
+  components: {
+    RiskLevel
+  },
+  data() {
+    return {
+      taskTypeMap: {
+        command: '命令',
+        script: '脚本',
+        file: '文件分发'
+      },
+      systemAndLang: {},
+      scriptOptions: [],
+      scriptVersionOptions: [],
+      selectedScript: {}, // 选中的脚本
+      selectedVersion: {}
+    }
+  },
+  created() {
+    getLanguageApi().then(res => {
+      this.systemAndLang = res
+    }).then(() => {
+      // 1.先获取脚本选项
+      const id = this.getLanguageId(this.data.language)
+      getAllScriptApi({ id: id }).then(res => {
+        this.scriptOptions = res
+        // 2.确定选中的脚本是哪个
+        this.selectedScript = this.computeSelectedScript(res)
+        // 3.获取脚本版本选项
+        getScriptVersionApi(this.selectedScript.id).then(res1 => {
+          this.scriptVersionOptions = res1
+          // 4.确定选中的版本是哪个
+          this.selectedVersion = this.computeSelectedVersion(res1)
+        })
+      })
+    })
+  },
+  methods: {
+    getLanguageId(val) {
+      let result = ''
+      const data = this.systemAndLang[this.data.target_system]
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].name === val) {
+          result = data[i].id
+          break
+        }
+      }
+      return result
+    },
+    computeSelectedScript(res) {
+      let result = {}
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].full_path === this.data.script) {
+          result = res[i]
+          break
+        }
+      }
+      return result
+    },
+    computeSelectedVersion(res) {
+      let result = {}
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].commit_sha === this.data.script_version) {
+          result = res[i]
+          break
+        }
+      }
+      return result
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

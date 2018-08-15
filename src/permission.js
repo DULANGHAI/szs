@@ -3,9 +3,9 @@ import store from './store'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
 import { Message } from 'element-ui'
-import { getToken } from '@/utils/auth' // 验权
+import { getToken, getUserInit } from '@/utils/auth' // 验权
 
-const whiteList = ['/login'] // 不重定向白名单
+const whiteList = ['/login', '/resouce'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
@@ -15,14 +15,38 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) {
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
-          next()
+          // 进入下一个页面前判断所属功能模块
+          if (to.path.indexOf('/pe') === 0) {
+            store.commit('SET_MODULE_NAME', 'pe')
+          } else if (to.path.indexOf('/resouce') === 0) {
+            store.commit('SET_MODULE_NAME', 'resouce')
+          } else if (to.path.indexOf('/system') === 0) {
+            store.commit('SET_MODULE_NAME', 'system')
+          }
+          if (getUserInit()) {
+            next('/resouce/dashboard/index')
+          } else {
+            next()
+          }
         }).catch((err) => {
           store.dispatch('FedLogOut').then(() => {
             Message.error(err || 'Verification failed, please login again')
             next({ path: '/' })
           })
         })
+        store.dispatch('GetBussiness').then(res => { // 拉取业务组
+          next()
+        })
       } else {
+        // 进入下一个页面前判断所属功能模块
+        if (to.path.indexOf('/pe') === 0) {
+          store.commit('SET_MODULE_NAME', 'pe')
+        } else if (to.path.indexOf('/resouce') === 0) {
+          store.commit('SET_MODULE_NAME', 'resouce')
+        } else if (to.path.indexOf('/system') === 0) {
+          store.commit('SET_MODULE_NAME', 'system')
+        }
+
         next()
       }
     }

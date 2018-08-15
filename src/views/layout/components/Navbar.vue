@@ -1,22 +1,38 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
-        <i class="el-icon-caret-bottom"></i>
-      </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            Home
-          </el-dropdown-item>
-        </router-link>
-        <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">LogOut</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+    <module-nav></module-nav>
+    <div class="nav-tooltip">
+      <span class="tooltip-icon">
+        <svg-icon icon-class="setting" />
+      </span>
+      <span class="tooltip-icon">
+        <svg-icon icon-class="wenti" />
+      </span>
+      <span class="tooltip-icon">
+        <el-badge :value="12" :max="99" class="item">
+          <svg-icon icon-class="notice" />
+        </el-badge>
+      </span>
+      <span class="tooltip-icon">
+        <el-dropdown trigger="click">
+          <div>
+            <svg-icon icon-class="icon-avatar" :style="{ transform: 'scale(1.5)' }"/>
+            <span class="tooltip-name">{{ name }}</span>
+          </div>
+          <el-dropdown-menu class="user-dropdown" slot="dropdown">
+            <router-link class="inlineBlock" to="/">
+              <el-dropdown-item>
+                <div>个人信息</div>
+              </el-dropdown-item>
+            </router-link>
+            <el-dropdown-item divided>
+              <div @click="logout">退出账号</div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </span>
+    </div>
   </el-menu>
 </template>
 
@@ -24,16 +40,18 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import ModuleNav from '@/components/ModuleNav'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    ModuleNav
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'name'
     ])
   },
   methods: {
@@ -54,6 +72,24 @@ export default {
   height: 64px;
   line-height: 64px;
   border-radius: 0px !important;
+  z-index: 100;
+  .nav-tooltip{
+    float:right;
+    margin-right: 25px;
+    .tooltip-icon{
+      display: inline-block;
+      margin-left: 20px;
+      cursor: pointer;
+      position: relative;
+      line-height: 25px;
+    }
+    .icon-avatar{
+      margin-right: 3px;
+    }
+    .tooltip-name{
+      padding-left: 5px;
+    }
+  }
   .hamburger-container {
     line-height: 72px;
     height: 64px;

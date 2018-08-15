@@ -28,7 +28,7 @@
             <el-col :span="7">
               <el-form-item label="创建人">
                 <el-select v-model="form.user" placeholder="请选择">
-                  <el-option v-for="item in fileTypeList" :label="item.label" :value="item.value"></el-option>
+                  <el-option v-for="(item, index)in fileTypeList" :key="index" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>

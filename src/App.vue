@@ -39,4 +39,14 @@ export default {
   height: 6px;
   background: #F5222D;
 }
+
+// 颜色
+.active-blue {
+  color: #46a1ff;
+}
+
+// treeselect
+.el-form-item.is-error .vue-treeselect__control {
+  border-color: #f56c6c;
+}
 </style>
