@@ -21,8 +21,8 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="主机" prop="host_ips">
-            <el-select size="small" multiple v-model="form.host_ips" placeholder="请选择主机">
+          <el-form-item label="主机" prop="host_ids">
+            <el-select size="small" multiple v-model="form.host_ids" placeholder="请选择主机">
               <el-option
                 v-for="item in hostList"
                 :key="item.id"
@@ -71,7 +71,7 @@
   const formData = {
     'name': '',
     'description': '',
-    'host_ips': [],
+    'host_ids': [],
     'comment': '',
     'params': []
   }
@@ -148,10 +148,10 @@
               const params = {
                 'name': this.form.name,
                 'description': this.form.description,
-                'host_ips': this.form.host_ips,
+                'host_ids': this.form.host_ids,
                 'params': this.form.params,
-                'pid': this.marry[0].pid,
-                'business': this.marry[0].business
+                'pid': this.marry.id,
+                'business': this.marry.business
               }
               getAddGroups(params).then(response => {
                 successCallBack()
