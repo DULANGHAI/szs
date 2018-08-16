@@ -103,16 +103,17 @@
       this.getHostArray()
     },
     methods: {
-      doCreate(flag, item, marry) {
+      doCreate(flag, item) {
         this.dialogVisible = true
         this.form = Object.assign({}, formData)
         this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
         this.isEdit = flag
         if (flag) {
-          this.form = item
-          this.isEditId = item.id
+          this.form = item[0]
+          this.isEditId = item[0].id
+        } else {
+          this.marry = item[0]
         }
-        this.marry = marry
       },
       // 添加变量
       addParameters() {
