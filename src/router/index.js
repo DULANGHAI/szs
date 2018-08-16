@@ -437,6 +437,79 @@ export const constantRouterMap = [
       }
     ]
   },
+  // 系统管理 system
+  {
+    path: '/system',
+    component: Empty,
+    name: '系统管理',
+    meta: { title: '系统管理' },
+    module: true,
+    redirect: '/system/user',
+    children: [
+      {
+        path: 'manage',
+        component: Layout,
+        name: '系统管理',
+        meta: { title: '系统管理', icon: 'banben' },
+        children: [
+          {
+            path: 'info',
+            component: () => import('@/views/system/info'),
+            name: 'info',
+            meta: { title: '消息', icon: 'banben' }
+          },
+          {
+            path: 'changepassword',
+            component: () => import('@/views/system/changepassword'),
+            name: 'changepassword',
+            meta: { title: '修改密码', icon: 'banben' }
+          },
+          {
+            path: 'personalInfo',
+            component: () => import('@/views/system/personalInfo'),
+            name: 'personalInfo',
+            meta: { title: '个人信息', icon: 'banben' }
+          },
+          {
+            path: 'user',
+            component: () => import('@/views/system/user'),
+            name: 'user',
+            meta: { title: '用户管理', icon: 'banben' }
+          },
+          {
+            path: 'role',
+            component: () => import('@/views/system/role'),
+            name: 'Role',
+            meta: { title: '角色管理', icon: 'banben' }
+          },
+          {
+            path: 'role/admin',
+            component: () => import('@/views/system/role/admin'),
+            name: 'RoleAdmin',
+            meta: { title: '超级管理员', icon: 'banben' }
+          },
+          {
+            path: 'role/list',
+            component: () => import('@/views/system/role/list'),
+            name: 'RoleList',
+            meta: { title: '权限浏览', icon: 'banben' }
+          },
+          {
+            path: 'audit',
+            component: () => import('@/views/system/audit'),
+            name: 'audit',
+            meta: { title: '系统审计', icon: 'banben' }
+          },
+          {
+            path: 'setting',
+            component: () => import('@/views/system/config'),
+            name: 'setting',
+            meta: { title: '系统配置', icon: 'banben' }
+          }
+        ]
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
