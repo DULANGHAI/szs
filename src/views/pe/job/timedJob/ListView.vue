@@ -83,7 +83,6 @@
         <el-table-column prop="created_at" label="创建时间" :formatter="formatterTime1"></el-table-column>
         <el-table-column prop="timed_type" label="定时类型"></el-table-column>
         <el-table-column prop="system_type" label="系统"></el-table-column>
-        <el-table-column prop="target_ip" label="目标IP" width="160px" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column label="风险等级" width="88px">
           <template slot-scope="scope">
