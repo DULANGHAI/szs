@@ -87,8 +87,8 @@ const user = {
       return new Promise((resolve, reject) => {
         getRepository().then(response => {
           const data = response
-          setBussinessGroup(data[0].name)
-          commit('SET_REPOSITORY', data[0].name)
+          getBussinessGroup() || setBussinessGroup(data[0].name)
+          getBussinessGroup() || commit('SET_REPOSITORY', data[0].name)
           commit('SET_BUSSINESS', data)
           resolve(response)
         }).catch(error => {

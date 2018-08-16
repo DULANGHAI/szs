@@ -57,7 +57,7 @@ export default {
       })
     },
     businessChange(val) {
-      // this.$store.state.user.repository = val
+      this.$store.state.user.repository = val
       Cookies.set('BussinessGroup', val)
     },
     goPe() {
