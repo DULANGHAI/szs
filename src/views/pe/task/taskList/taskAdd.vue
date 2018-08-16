@@ -128,7 +128,7 @@
         </el-form-item>
         <!-- 查看的按钮组 -->
         <el-form-item v-if="view">
-          <el-button @click="goEdit" :disabled="form.status === '审批中'">编辑</el-button>
+          <el-button @click="goEdit" :disabled="form.status === '审批中' || form.change_result === '修改内容审批中'">编辑</el-button>
           <el-button @click="goBack">返回</el-button>
         </el-form-item>
       </el-form>

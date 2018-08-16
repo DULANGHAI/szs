@@ -44,7 +44,7 @@
             </el-form>
             <div class="divider"></div>
             <!-- 任务内容展示 -->
-            <el-form ref="form" label-width="84px" size="small" label-position="left">
+            <el-form :model="form" ref="form" label-width="84px" size="small" label-position="left">
               <el-form-item label="任务名">
                 <div>{{form.name}}</div>
               </el-form-item>
@@ -88,17 +88,23 @@
                 <el-form-item label="风险">
                   <risk-level :level.sync="form.risk_level" :changeable="!view"></risk-level>
                 </el-form-item>
-                <el-form-item label="风险说明">
+                <el-form-item label="风险说明" prop="risk_statement"
+                  :rules="[
+                    { required: true, message: '请输入风险说明', trigger: ['blur'] }
+                  ]">
                   <el-input v-if="!view" type="textarea" v-model="form.risk_statement"></el-input>
                   <div v-if="view">{{form.risk_statement}}</div>
                 </el-form-item>
               </div>
               
               <el-form-item label="启用">
-                <div>{{form.is_enable}}</div>
+                <el-switch v-model="form.is_enable" disabled></el-switch>
               </el-form-item>
 
-              <el-form-item label="审批说明">
+              <el-form-item label="审批说明" prop="approval_comments"
+                :rules="[
+                  { required: true, message: '请输入审批说明', trigger: ['blur'] }
+                ]">
                 <el-input v-if="!view" type="textarea" v-model="form.approval_comments"></el-input>
                 <div v-if="view">{{form.approval_comments}}</div>
               </el-form-item>
@@ -328,20 +334,24 @@ export default {
       this.submit('no-pass')
     },
     submit(status) {
-      const data = {
-        status: status,
-        approval_comments: this.form.approval_comments,
-        risk_level: this.form.risk_level,
-        risk_statement: this.form.risk_statement
-      }
-      submitApproveApi(this.id, data).then(res => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-        this.$router.push({
-          path: `/pe/taskManage/taskApprove`
-        })
+      this.$refs.form.validate((valide) => {
+        if (valide) {
+          const data = {
+            status: status,
+            approval_comments: this.form.approval_comments,
+            risk_level: this.form.risk_level,
+            risk_statement: this.form.risk_statement
+          }
+          submitApproveApi(this.id, data).then(res => {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.$router.push({
+              path: `/pe/taskManage/taskApprove`
+            })
+          })
+        }
       })
     }
   }
