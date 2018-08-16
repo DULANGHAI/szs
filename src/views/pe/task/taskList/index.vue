@@ -109,7 +109,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="is_enable" label="状态" :formatter="formatterEnable"></el-table-column>
-          <el-table-column prop="task_approver" label="审批人"></el-table-column>
+          <el-table-column prop="status" label="审批状态"></el-table-column>
+          <el-table-column prop="change_result" label="编辑状态"></el-table-column>
+          <el-table-column prop="approver" label="审批人"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.status === '审批中'">编辑</el-button>

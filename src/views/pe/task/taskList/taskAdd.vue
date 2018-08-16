@@ -128,7 +128,7 @@
         </el-form-item>
         <!-- 查看的按钮组 -->
         <el-form-item v-if="view">
-          <el-button @click="goEdit">编辑</el-button>
+          <el-button @click="goEdit" :disabled="form.status === '审批中'">编辑</el-button>
           <el-button @click="goBack">返回</el-button>
         </el-form-item>
       </el-form>
@@ -379,27 +379,39 @@ export default {
         risk_statement: '风险说明自动填写评估详情，用户不能修改',
         is_enable: false
       }
+      this.$refs.fileSelect && this.$refs.fileSelect.reset()
     },
     submit() {
-      if (this.form.id) { // update
-        upadateTaskApi(this.form.id, this.form).then(res => {
-          if (res.id) {
-            this.$router.push({
-              path: `/pe/taskManage/taskList`
-            })
+      if (this.form.type === 'file') {
+        this.$refs.fileSelect.$refs.selectForm.validate((valid) => {
+          if (valid) {
+            this.form.file_selection = JSON.stringify(this.$refs.fileSelect.getData())
+            this.mainValide()
+          } else {
+            return
           }
         })
-      } else { // create
-        if (this.form.type === 'file') {
-          this.form.file_selection = JSON.stringify(this.$refs.fileSelect.getData())
-        }
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            if (this.form.type === 'file' ||
+      } else {
+        this.mainValide()
+      }
+    },
+    mainValide() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.form.type === 'file' ||
               this.form.type !== 'file' && this.form.risk_level === 0) {
-              this.$message.info('等待风险等级返回，稍后提交')
-              return
-            }
+            this.$message.info('等待风险等级返回，稍后提交')
+            return
+          }
+          if (this.form.id) { // update
+            upadateTaskApi(this.form.id, this.form).then(res => {
+              if (res.id) {
+                this.$router.push({
+                  path: `/pe/taskManage/taskList`
+                })
+              }
+            })
+          } else {
             createTaskApi(this.form).then(res => {
               if (res.id) {
                 this.$router.push({
@@ -408,8 +420,8 @@ export default {
               }
             })
           }
-        })
-      }
+        }
+      })
     },
     goEdit() {
       this.$router.push({

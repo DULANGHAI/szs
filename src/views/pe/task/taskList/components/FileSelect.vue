@@ -97,6 +97,20 @@ export default {
       })
       return result
     },
+    reset() {
+      this.selectForm = {
+        group: [
+          {
+            file: {
+              name: ''
+            },
+            target_path: ''
+          }
+        ]
+      }
+      this.current = null
+      this.$refs.selectForm.resetField()
+    },
     fileOk(data) {
       if (this.current !== null) {
         this.selectForm.group[this.current].file = data
