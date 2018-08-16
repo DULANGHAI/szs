@@ -25,3 +25,11 @@ export function getAddGroups(params) {
   })
 }
 
+// 编辑主机组
+export function getEditGroups(id) {
+  return request({
+    url: '/v1/groups/' + id,
+    method: 'get'
+  })
+}
+

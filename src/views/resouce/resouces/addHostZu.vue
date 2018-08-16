@@ -21,8 +21,8 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="主机" prop="host_ids">
-            <el-select size="small" multiple v-model="form.host_ids" placeholder="请选择主机">
+          <el-form-item label="主机" prop="hosts">
+            <el-select size="small" multiple v-model="form.hosts" placeholder="请选择主机">
               <el-option
                 v-for="item in hostList"
                 :key="item.id"
@@ -64,14 +64,15 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { putRisk } from '@/api/resouce/versionLibrary/risk'
-  import { getAppHostList, getAddGroups } from '@/api/resouce/resouces/host'
+  import { getAppHostList, getAddGroups, getEditGroups } from '@/api/resouce/resouces/host'
   import { Message } from 'element-ui'
 
   const formData = {
     'name': '',
     'description': '',
-    'host_ids': [],
+    'hosts': [],
     'comment': '',
     'params': []
   }
@@ -99,6 +100,11 @@
         }
       }
     },
+    computed: {
+      ...mapGetters([
+        'repository'
+      ])
+    },
     created() {
       this.getHostArray()
     },
@@ -109,11 +115,20 @@
         this.$refs.ruleForm && this.$refs.ruleForm.clearValidate()
         this.isEdit = flag
         if (flag) {
-          this.form = item[0]
+          // this.form = item[0]
+          this.getEditGroup(item[0].id)
           this.isEditId = item[0].id
         } else {
           this.marry = item[0]
         }
+      },
+      // 编辑获取data
+      getEditGroup(id) {
+        getEditGroups(id).then(response => {
+          this.form = response
+        }).catch(error => {
+          Message.error(error)
+        })
       },
       // 添加变量
       addParameters() {
@@ -129,8 +144,9 @@
           this.form.params.splice(index, 1)
         }
       },
+      // 获取主机列表
       getHostArray() {
-        getAppHostList('LDDS').then(response => {
+        getAppHostList(this.repository).then(response => {
           this.hostList = response
         }).catch(error => {
           Message.error(error)
@@ -145,15 +161,15 @@
               this.dialogVisible = false
             }
             if (!this.isEdit) {
-              const params = {
+              const paramsArr = {
                 'name': this.form.name,
                 'description': this.form.description,
-                'host_ids': this.form.host_ids,
+                'host_ids': this.form.hosts,
                 'params': this.form.params,
                 'pid': this.marry.id,
                 'business': this.marry.business
               }
-              getAddGroups(params).then(response => {
+              getAddGroups(paramsArr).then(response => {
                 successCallBack()
               }).catch(error => {
                 Message.error(error)
