@@ -24,8 +24,8 @@
           <el-form-item label="主机" prop="hosts">
             <el-select size="small" multiple v-model="form.hosts" placeholder="请选择主机">
               <el-option
-                v-for="item in hostList"
-                :key="item.id"
+                v-for="(item, index) in hostList"
+                :key="index"
                 :label="item.identity_ip"
                 :value="item.id">
               </el-option>
@@ -35,7 +35,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="账号" class="label-border">
+          <el-form-item label="变量" class="label-border">
             <el-button size="small" @click="addParameters"><i class="el-icon-plus" />添加</el-button>
           </el-form-item>
         </el-col>
@@ -65,8 +65,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { putRisk } from '@/api/resouce/versionLibrary/risk'
-  import { getAppHostList, getAddGroups, getEditGroups } from '@/api/resouce/resouces/host'
+  import { getAppHostList, getAddGroups, getEditGroups, putGroups } from '@/api/resouce/resouces/host'
   import { Message } from 'element-ui'
 
   const formData = {
@@ -74,7 +73,9 @@
     'description': '',
     'hosts': [],
     'comment': '',
-    'params': []
+    'params': [],
+    'pid': '',
+    'business': ''
   }
   export default {
     props: ['pid'],
@@ -118,6 +119,7 @@
           // this.form = item[0]
           this.getEditGroup(item[0].id)
           this.isEditId = item[0].id
+          this.marry = item[0]
         } else {
           this.marry = item[0]
         }
@@ -125,7 +127,12 @@
       // 编辑获取data
       getEditGroup(id) {
         getEditGroups(id).then(response => {
+          const host_id = []
+          response.hosts.map((item) => {
+            host_id.push(item.id)
+          })
           this.form = response
+          this.form.hosts = host_id
         }).catch(error => {
           Message.error(error)
         })
@@ -175,12 +182,14 @@
                 Message.error(error)
               })
             } else {
-              const params = {
+              const paramsArr = {
                 'name': this.form.name,
-                'risk_level': this.form.risk_level,
-                'comment': this.form.comment
+                'description': this.form.description,
+                'host_ids': this.form.hosts,
+                'params': this.form.params,
+                'business': this.marry.business
               }
-              putRisk(this.isEditId, params).then(response => {
+              putGroups(this.form.id, paramsArr).then(response => {
                 successCallBack()
               }).catch(error => {
                 Message.error(error)

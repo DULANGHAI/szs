@@ -126,7 +126,6 @@ export default {
     this.getBreadcrumb()
     this.getYWZ()
     this.isSpeed = 2
-    alert(this.repository)
   },
   methods: {
     getBreadcrumb() {
