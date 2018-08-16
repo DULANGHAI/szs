@@ -61,7 +61,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
 import TreeTable from './treeTable'
-import AddHost from './addHostZu' // 新建风险命令
+import AddHost from './addHostGroup' // 新建风险命令
 
 const formData = {
   'datatime': []

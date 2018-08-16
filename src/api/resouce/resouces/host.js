@@ -33,3 +33,12 @@ export function getEditGroups(id) {
   })
 }
 
+// 更新主机组
+export function putGroups(id, params) {
+  return request({
+    url: '/v1/groups/' + id,
+    method: 'put',
+    data: params
+  })
+}
+

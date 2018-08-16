@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
             store.commit('SET_MODULE_NAME', 'system')
           }
           if (getUserInit()) {
-            next('/resouce/dashboard/index')
+            next('/system/manage/changepassword')
           } else {
             next()
           }
