@@ -81,8 +81,8 @@ export default {
     // }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
