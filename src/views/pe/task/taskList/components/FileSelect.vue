@@ -1,20 +1,26 @@
 <template>
   <div class="file-select-container">
-    <el-form label-width="70px" size="small">
-      <el-row v-for="(item, index) in arr" :key="index">
+    <el-form :mode="form" ref="form" label-width="80px" size="small">
+      <el-row v-for="(item, index) in form.arr" :key="index">
         <el-col :span="9">
-          <el-form-item label="文件选择">
+          <el-form-item label="文件选择" :prop="`arr.${index}.file.name`"
+            :rules="{
+              required: true, message: '文件不能为空', trigger: 'blur'
+            }">
             <el-input v-if="!view" v-model="item.file.name" @focus="openFile(index)" readonly placeholder="请选择"></el-input>
             <div v-if="view">{{item.file.name}}</div>
           </el-form-item>
         </el-col>
         <el-col :span="9" :offset="2">
-          <el-form-item label="目标目录">
+          <el-form-item label="目标目录" :prop="`arr.${index}.target_path`"
+            :rules="{
+              required: true, message: '目标目录不能为空', trigger: 'blur'
+            }">
             <el-input v-if="!view"  v-model="item.target_path"></el-input>
             <div v-if="view">{{item.target_path}}</div>
           </el-form-item>
         </el-col>
-        <el-col :span="4" v-show="!view && arr.length > 1">
+        <el-col :span="4" v-show="!view && form.arr.length > 1">
           <el-form-item label="" label-width="10px">
             <i class="el-icon-delete" @click="deleteItem(index)"></i>
           </el-form-item>
@@ -43,31 +49,34 @@ export default {
   },
   data() {
     return {
-      arr: [
-        {
-          file: {
-            name: ''
-          },
-          target_path: ''
-        }
-      ],
+      form: {
+        arr: [
+          {
+            file: {
+              name: ''
+            },
+            target_path: ''
+          }
+        ]
+      },
       current: null
     }
   },
   methods: {
     addItems() {
-      this.arr.push(
+      this.form.arr.push(
         {
           file: {
-            name: ''
+            name: '',
+            key: Date.now()
           },
           target_path: ''
         }
       )
     },
     deleteItem(index) {
-      if (this.arr.length > 1) {
-        this.arr.splice(index, 1)
+      if (this.form.arr.length > 1) {
+        this.form.arr.splice(index, 1)
       }
     },
     openFile(index) {
@@ -77,11 +86,11 @@ export default {
       }
     },
     setData(data) {
-      this.arr = data
+      this.form.arr = data
     },
     getData() {
       const result = []
-      this.arr.forEach((item) => {
+      this.form.arr.forEach((item) => {
         if (item.file.name) {
           result.push(item)
         }
@@ -90,7 +99,7 @@ export default {
     },
     fileOk(data) {
       if (this.current !== null) {
-        this.arr[this.current].file = data
+        this.form.arr[this.current].file = data
       }
     }
   }

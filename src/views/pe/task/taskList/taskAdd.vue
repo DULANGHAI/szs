@@ -7,16 +7,16 @@
       {{$route.name}}
     </div>
     <div class="container-body" v-loading="loading">
-      <el-form ref="form" label-width="84px" size="small" label-position="left">
-        <el-form-item label="任务名">
+      <el-form ref="form" :model="form" :rules="rules" label-width="94px" size="small" label-position="left">
+        <el-form-item label="任务名" prop="name">
           <el-input v-if="!view" v-model="form.name" placeholder="请输入任务名"></el-input>
           <div v-if="view">{{form.name}}</div>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop="description">
           <el-input v-if="!view" type="textarea" v-model="form.description" :autosize="{ minRows: 4 }" placeholder="请输入备注"></el-input>
           <div v-if="view">{{form.description}}</div>
         </el-form-item>
-        <el-form-item label="任务类型">
+        <el-form-item label="任务类型" prop="type">
           <el-radio-group v-if="!view" v-model="form.type" @change="systemChange">
             <el-radio label="command">命令</el-radio>
             <el-radio label="script">脚本</el-radio>
@@ -26,13 +26,13 @@
         </el-form-item>
 
         <div style="display: flex;">
-          <el-form-item label="目标系统">
+          <el-form-item label="目标系统" prop="target_system">
             <el-select v-if="!view" v-model="form.target_system" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length">
               <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
             </el-select>
             <div v-if="view">{{form.target_system}}</div>
           </el-form-item>
-          <el-form-item label="语言" label-width="50px" style="margin-left: 40px;" v-if="form.type !== 'file'">
+          <el-form-item label="语言" prop="language" label-width="50px" style="margin-left: 40px;" v-if="form.type !== 'file'">
             <el-select v-if="!view" v-model="form.language" placeholder="请选择" :disabled="!form.target_system" @change="languageChange">
               <el-option v-for="(item, index) in systemAndLang[form.target_system]" :key="index" :label="item.name" :value="item.name"></el-option>
             </el-select>
@@ -41,14 +41,14 @@
         </div>
         
         <!-- 命令 -->
-        <el-form-item label="命令" v-if="form.type === 'command'">
+        <el-form-item label="命令" v-if="form.type === 'command'" prop="command">
           <el-input v-if="!view" type="textarea" v-model="form.command" @blur="getRiskAndState" :autosize="{ minRows: 4 }" placeholder="请输入命令"></el-input>
           <!-- <div v-if="view">{{form.command}}</div> -->
           <pre v-if="view" class="pre">{{form.command}}</pre>
         </el-form-item>
         <!-- 脚本 -->
         <div v-if="form.type === 'script'">
-          <el-form-item label="脚本">
+          <el-form-item label="脚本" prop="script">
             <el-select v-if="!view" value-key="full_path" v-model="selectedScript"
               :disabled="!form.language"
               filterable
@@ -61,7 +61,7 @@
             </el-select>
             <div v-if="view">{{selectedScript.name}}</div>
           </el-form-item>
-          <el-form-item label="脚本版本">
+          <el-form-item label="脚本版本" prop="script_version">
             <el-select v-if="!view" value-key="version" v-model="selectedVersion"
               :disabled="!form.script"
               filterable
@@ -71,7 +71,7 @@
             <div v-if="view">{{selectedVersion.version}}</div>
             <el-button type="text" size="small">查看脚本</el-button>
           </el-form-item>
-          <el-form-item label="脚本变量">
+          <el-form-item label="脚本变量" prop="script_parameter">
             <el-input v-if="!view" v-model="form.script_parameter"></el-input>
             <div v-if="view">{{form.script_parameter}}</div>
           </el-form-item>
@@ -81,37 +81,36 @@
           <el-form-item label="文件分发"></el-form-item>
           <file-select ref="fileSelect" :view="view"></file-select>
           <div style="display: flex;">
-            <el-form-item label="文件所有者">
+            <el-form-item label="文件所有者" prop="file_owner">
               <el-input v-if="!view" v-model="form.file_owner" placeholder="请输入"></el-input>
               <div v-if="view">{{form.file_owner}}</div>
             </el-form-item>
-            <el-form-item label="文件权限" style="margin-left: 40px;">
+            <el-form-item label="文件权限" prop="file_permission" style="margin-left: 40px;">
               <el-input v-if="!view" v-model="form.file_permission" placeholder="请输入"></el-input>
               <div v-if="view">{{form.file_permission}}</div>
             </el-form-item>
           </div>
-          <el-form-item label="文件替换">
-            <el-switch v-if="!view" v-model="form.is_replace"></el-switch>
-            <div v-if="view">{{form.is_replace}}</div>
+          <el-form-item label="文件替换" prop="is_replace">
+            <el-switch v-model="form.is_replace" :disabled="view === '1'"></el-switch>
           </el-form-item>
         </div>
 
         <div v-if="form.type !== 'file'">
-          <el-form-item label="超时时间">
-            <el-input-number v-if="!view" v-model="form.time_out" controls-position="right" :min="1" :precision="1"></el-input-number>
+          <el-form-item label="超时时间" prop="time_out">
+            <el-input-number v-if="!view" v-model="form.time_out" controls-position="right" :min="1" :precision="0"></el-input-number>
             <span v-if="view">{{form.time_out}}</span>
             秒
           </el-form-item>
-          <el-form-item label="风险">
+          <el-form-item label="风险" prop="risk_level">
             <risk-level :level="form.risk_level"></risk-level>
           </el-form-item>
-          <el-form-item label="风险说明">
+          <el-form-item label="风险说明" prop="risk_statement">
             <el-input v-if="!view" type="textarea" v-model="form.risk_statement" disabled></el-input>
             <div v-if="view">{{form.risk_statement}}</div>
           </el-form-item>
         </div>
         
-        <el-form-item label="启用">
+        <el-form-item label="启用" prop="is_enable">
           <el-switch v-model="form.is_enable" :disabled="view === '1'"></el-switch>
         </el-form-item>
 
@@ -179,6 +178,50 @@ export default {
         risk_statement: '风险说明自动填写评估详情，用户不能修改',
         is_enable: false
       },
+      rules: {
+        name: [
+          { required: true, message: '请输入任务名称', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '请输入备注', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '请选择任务类型', trigger: 'change' }
+        ],
+        target_system: [
+          { required: true, message: '请选择目标系统', trigger: 'change' }
+        ],
+        language: [
+          { required: true, message: '请选择语言', trigger: 'change' }
+        ],
+        command: [
+          { required: true, message: '请输入命令', trigger: 'blur' }
+        ],
+        script: [
+          { required: true, message: '请选择脚本', trigger: 'change' }
+        ],
+        script_parameter: [
+          { required: true, message: '请输入脚本参数', trigger: 'blur' }
+        ],
+        script_version: [
+          { required: true, message: '请选择版本', trigger: 'change' }
+        ],
+        file_owner: [
+          { required: true, message: '请输入文件所有者', trigger: 'blur' }
+        ],
+        file_permission: [
+          { required: true, message: '请输入文件权限', trigger: 'blur' }
+        ],
+        is_replace: [
+          { required: true, message: '请设置是否文件替换', trigger: 'blur' }
+        ],
+        time_out: [
+          { required: true, message: '请设置超时时间', trigger: 'change' }
+        ],
+        is_enable: [
+          { required: true, message: '请设置是否启用', trigger: 'blur' }
+        ]
+      },
       systemAndLang: {},
       scriptOptions: [],
       scriptVersionOptions: [],
@@ -188,9 +231,15 @@ export default {
   },
   watch: {
     selectedScript(val) {
-      this.form.script = val.full_path
-      this.form.risk_level = val.risk_level
-      this.form.risk_statement = val.comment
+      if (val.full_path) {
+        this.form.script = val.full_path
+        this.form.risk_level = val.risk_level
+        this.form.risk_statement = val.comment
+      } else {
+        this.form.script = ''
+        this.form.risk_level = ''
+        this.form.risk_statement = ''
+      }
     },
     selectedVersion(val) {
       this.form.script_version = val.commit_sha
@@ -292,6 +341,7 @@ export default {
       this.form.script_version = ''
     },
     languageChange(val) {
+      this.selectedScript = {}
       const id = this.getLanguageId(val)
       getAllScriptApi({ id: id }).then(res => {
         this.scriptOptions = res
@@ -354,10 +404,14 @@ export default {
           if (this.form.type === 'file') {
             this.form.file_selection = JSON.stringify(this.$refs.fileSelect.getData())
           }
-          createTaskApi(this.form).then(res => {
-            if (res.id) {
-              this.$router.push({
-                path: `/pe/taskManage/taskList`
+          this.$refs.form.validate((valid) => {
+            if (valid) {
+              createTaskApi(this.form).then(res => {
+                if (res.id) {
+                  this.$router.push({
+                    path: `/pe/taskManage/taskList`
+                  })
+                }
               })
             }
           })
