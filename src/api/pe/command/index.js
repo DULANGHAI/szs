@@ -28,10 +28,10 @@ export function getListApi(params) {
  * 获取即时命令结果
  * @param {Object} data
  */
-export function getResultApi(data) {
+export function getResultApi(params) {
   return request({
-    url: '/v1/command/result/',
+    url: '/v1/jobs/job-record/log/',
     method: 'get',
-    data: data
+    params: params
   })
 }
