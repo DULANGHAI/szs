@@ -11,7 +11,7 @@
     <div class="module-nav">
       <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/pe')}" @click="goPe">运维作业</div>
       <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/resouce')}" @click="goResouce">资源管理</div>
-      <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/system')}">系统管理</div>
+      <div class="module-nav-item" :class="{'module-nav-item-active': isActive('/system')}" @click="goSystem">系统管理</div>
     </div>
   </div>
 </template>
@@ -74,6 +74,14 @@ export default {
       }
       this.$router.push({
         path: '/resouce/dashboard/index'
+      })
+    },
+    goSystem() {
+      if (this.moduleName === 'system') {
+        return
+      }
+      this.$router.push({
+        path: '/system/manage/info'
       })
     }
   }
