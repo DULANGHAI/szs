@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { getRepository, getRepositoryZizu, getRepositoryYuyan, deleteRepositoryYuyan } from '@/api/script'
@@ -116,10 +117,16 @@ export default {
       this.getBreadcrumb()
     }
   },
+  computed: {
+    ...mapGetters([
+      'repository'
+    ])
+  },
   created() {
     this.getBreadcrumb()
     this.getYWZ()
     this.isSpeed = 2
+    alert(this.repository)
   },
   methods: {
     getBreadcrumb() {
