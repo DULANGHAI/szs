@@ -19,7 +19,7 @@
     <!-- 时间和耗时 -->
     <div class="flex time">
       <div class="flex-1">{{$dayjs(data.updated_at).format('YYYY-MM-DD HH:mm:ss')}}</div>
-      <div>{{data.time + ' second'}}</div>
+      <div>{{data.time === '执行中' ? data.time : (data.time + ' second')}}</div>
     </div>
     <!-- IP -->
     <div class="ellipsis">{{getIp()}}</div>
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     getIp() {
-      return 'IP:' + JSON.parse(this.data.target_ip).host.toString()
+      return 'IP:' + this.data.target_ip.split(',').toString()
     },
     getCommand() {
       return '命令:' + this.data.command

@@ -9,7 +9,7 @@
         <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
       </el-form-item>
       <el-form-item label="重试次数">
-        <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="1"></el-input-number>
+        <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="0"></el-input-number>
         次
       </el-form-item>
     </el-form>
@@ -62,7 +62,7 @@ export default {
     handleOpen() {
       this.form = {
         execution_account: this.data.execution_account,
-        target_ip: JSON.parse(this.data.target_ip).host,
+        target_ip: this.data.target_ip.split(','),
         frequency: this.data.frequency
       }
       this.uniqueId = +new Date()
@@ -79,7 +79,7 @@ export default {
      */
     submit() {
       const data = {
-        'target_ip': JSON.stringify({ host: this.form.target_ip }),
+        'target_ip': this.form.target_ip,
         'scheduling': this.data.scheduling,
         'frequency': this.form.frequency,
         'execution_account': this.form.execution_account

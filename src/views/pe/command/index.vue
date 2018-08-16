@@ -70,13 +70,13 @@
           <div class="flex">
             <div class="title">执行结果</div>
             <div class="select-container">
-              <el-select v-model="selectedIp" placeholder="请选择" @change="changeIp" size="small">
+              <el-select v-model="selectedIp" placeholder="请选择" @change="changeIp" size="small" :disabled="ipList.length === 0">
                 <el-option v-for="item in ipList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </div>
           </div>
           <!-- 执行记录 -->
-          <div>
+          <div v-if="log">
             <codemirror v-model="log" ref="codemirror" :options="codeOptions"></codemirror>
           </div>
         </div>
@@ -136,26 +136,12 @@ export default {
         page: 1,
         per_page: 10
       },
-      dataJob: [
-        {
-          'is_deleted': false,
-          'created_at': '2018-08-07T11:07:41.188Z',
-          'execution_account': 'string',
-          'updated_at': '2018-08-07T11:07:41.188Z',
-          'command': 'stringstringstringstringstringstringstringstring',
-          'end_time': '2018-08-07T11:07:41.188Z',
-          'time': 0,
-          'target_ip': `{"host":["172.168.1.101","172.168.1.102"]}`,
-          'deleted_at': '2018-08-07T11:07:41.188Z',
-          'id': 1,
-          'execution_id': 'string'
-        }
-      ],
+      dataJob: [],
       selectedJob: {},
       uniqueId: +new Date(),
       ipList: [],
       selectedIp: '',
-      log: '"#!/usr/bin/python\n# -*- coding: UTF-8 -*-\n \nfor i in range(1,5):\n    for j in range(1,5):\n        for k in range(1,5):\n            if( i != k ) and (i != j) and (j != k):\n                print i,j,k"',
+      log: '',
       codeOptions: { // 文件内容配置
         tabSize: 2,
         lineNumbers: true,
@@ -170,12 +156,14 @@ export default {
   watch: {
     selectedJob(val) {
       if (val.id) {
-        this.form = {
-          target_ip: JSON.parse(val.target_ip).host,
-          execution_account: val.execution_account,
-          command: val.command
+        this.form.execution_account = val.execution_account
+        this.form.command = val.command
+        if (val.time !== '执行中') {
+          this.ipList = val.target_ip.split(',')
+        } else {
+          this.ipList = []
         }
-        this.ipList = JSON.parse(val.target_ip).host
+
         this.selectedIp = ''
         this.log = ''
       }
@@ -243,7 +231,7 @@ export default {
         target_ip: ip,
         execution_id: this.selectedJob.execution_id
       }).then(res => {
-        this.log = res.result
+        this.log = res.execution_log
       })
     }
   }

@@ -115,6 +115,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 import { getLanguageApi, getRecordListApi, getCreatorApi, startJobApi, stopJobApi, deleteJobApi } from '@/api/pe/jobManage/instantJob'
+import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   components: {
@@ -128,30 +129,7 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
+      options: [],
       loading: false,
       form: {
         name: '',
@@ -184,11 +162,12 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getLanguageApi(), getRecordListApi(this.form), getCreatorApi()]).then(res => {
+      Promise.all([getLanguageApi(), getRecordListApi(this.form), getCreatorApi(), getIpApi()]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
         this.creator_arr = res[2].creator
+        this.options = res[3]
         this.loading = false
       }).catch(() => {
         this.loading = false
