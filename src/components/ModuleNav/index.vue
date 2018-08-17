@@ -81,7 +81,7 @@ export default {
         return
       }
       this.$router.push({
-        path: '/system/manage/info'
+        path: '/system/dashboard/setting'
       })
     }
   }

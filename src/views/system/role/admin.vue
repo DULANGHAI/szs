@@ -73,15 +73,15 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import common from "../common";
+import Breadcrumb from '@/components/Breadcrumb'
+import common from '../common'
 
 const defaultFormData = {
   permission: [],
-  resource_type: "",
-  resource_action: "",
-  desc: ""
-};
+  resource_type: '',
+  resource_action: '',
+  desc: ''
+}
 
 export default {
   mixins: [common],
@@ -104,117 +104,117 @@ export default {
         username: [
           {
             required: true,
-            message: "用户名不能为空",
-            trigger: "blur"
+            message: '用户名不能为空',
+            trigger: 'blur'
           }
         ]
       },
       options: [
         {
-          value: "选项1",
-          label: "选项1"
+          value: '选项1',
+          label: '选项1'
         },
         {
-          value: "选项2",
-          label: "选项2"
+          value: '选项2',
+          label: '选项2'
         },
         {
-          value: "选项3",
-          label: "选项3"
+          value: '选项3',
+          label: '选项3'
         },
         {
-          value: "选项4",
-          label: "选项4"
+          value: '选项4',
+          label: '选项4'
         },
         {
-          value: "选项5",
-          label: "选项5"
+          value: '选项5',
+          label: '选项5'
         }
       ]
-    };
+    }
   },
   computed: {
     selected() {
-      return Boolean(this.multipleSelection.length);
+      return Boolean(this.multipleSelection.length)
     },
     selectedOne() {
-      return this.multipleSelection.length === 1;
+      return this.multipleSelection.length === 1
     },
     multipleSelectionFilter() {
       return this.tableData.filter(item => {
-        return !~this.multipleSelection.indexOf(item);
-      });
+        return !~this.multipleSelection.indexOf(item)
+      })
     }
   },
   created() {
     setTimeout(() => {
-      this.tableLoading = false;
+      this.tableLoading = false
       this.tableData = [
         {
-          permission: ["1", "2"],
-          resource_type: "rt1",
-          resource_action: "ra1",
-          created_at: "2018-07-25T04:31:00.499Z",
-          desc: "desc1"
+          permission: ['1', '2'],
+          resource_type: 'rt1',
+          resource_action: 'ra1',
+          created_at: '2018-07-25T04:31:00.499Z',
+          desc: 'desc1'
         },
         {
-          permission: ["2", "3"],
-          resource_type: "rt2",
-          resource_action: "ra2",
-          created_at: "2018-07-25T04:31:00.499Z",
-          desc: "desc2"
+          permission: ['2', '3'],
+          resource_type: 'rt2',
+          resource_action: 'ra2',
+          created_at: '2018-07-25T04:31:00.499Z',
+          desc: 'desc2'
         }
-      ];
-      this.currentPage = 1;
-      this.totalPage = 2;
-    }, 2000);
+      ]
+      this.currentPage = 1
+      this.totalPage = 2
+    }, 2000)
   },
   methods: {
     formatterTime(row, column, cellValue) {
-      return this.formatterDate(cellValue);
+      return this.formatterDate(cellValue)
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     },
     createPremission() {
-      this.temp = { ...defaultFormData };
-      this.dialogVisible = true;
+      this.temp = { ...defaultFormData }
+      this.dialogVisible = true
     },
     removePremission() {
-      this.$confirm("此操作将永久删除该权限, 是否继续?", "删除权限", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "error"
+      this.$confirm('此操作将永久删除该权限, 是否继续?', '删除权限', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
       })
         .then(() => {
-          this.tableData = this.multipleSelectionFilter;
-          this.messageSuccess();
-          this.$refs.multipleTable.clearSelection();
+          this.tableData = this.multipleSelectionFilter
+          this.messageSuccess()
+          this.$refs.multipleTable.clearSelection()
         })
         .catch(e => {
-          this.messageCancel();
-        });
+          this.messageCancel()
+        })
     },
     // 选择展示页数
     handleSizeChange(val) {
-      this.currentPage = 1;
-      this.pageSize = val;
+      this.currentPage = 1
+      this.pageSize = val
     },
     // 选择当前页
     handleCurrentChange(val) {
-      this.currentPage = val;
+      this.currentPage = val
     },
     submit(fromName) {
       this.$refs[fromName].validate(valid => {
         if (valid) {
-          console.log("submit", fromName);
-          this.messageSuccess();
-          this.dialogVisible = false;
+          console.log('submit', fromName)
+          this.messageSuccess()
+          this.dialogVisible = false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

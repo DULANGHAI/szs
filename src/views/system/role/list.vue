@@ -65,9 +65,9 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import common from "../common";
-import { getAdduserApi } from "@/api/systemManage/system.js";
+import Breadcrumb from '@/components/Breadcrumb'
+import common from '../common'
+import { getAdduserApi, getrolesId, getonepermissions } from '@/api/systemManage/system.js'
 
 export default {
   mixins: [common],
@@ -80,55 +80,64 @@ export default {
       pageSizesArray: [10, 20, 30, 40, 50],
       pageSize: 0,
       totalPage: 0,
-      keyword: "",
+      keyword: '',
       tableLoading: true,
-      tableData: []
-    };
+      tableData: [],
+      id: ''
+    }
+  },
+  mounted() {
+
   },
   created() {
+    // getrolesId().then(res=>{
+    //       this.id=res.
+    //         console.log(res)
+    //         }).catch(error=>{
+    //         })
     setTimeout(() => {
-      this.tableLoading = false;
+      this.tableLoading = false
       this.tableData = [
         {
-          permission: ["1", "2"],
-          resource_type: "rt1",
-          resource_action: "ra1",
-          created_at: "2018-07-25T04:31:00.499Z",
-          desc: "desc1"
+          permission: ['1', '2'],
+          resource_type: 'rt1',
+          resource_action: 'ra1',
+          created_at: '2018-07-25T04:31:00.499Z',
+          desc: 'desc1'
         },
         {
-          permission: ["2", "3"],
-          resource_type: "rt2",
-          resource_action: "ra2",
-          created_at: "2018-07-25T04:31:00.499Z",
-          desc: "desc2"
+          permission: ['2', '3'],
+          resource_type: 'rt2',
+          resource_action: 'ra2',
+          created_at: '2018-07-25T04:31:00.499Z',
+          desc: 'desc2'
         }
-      ];
-      this.currentPage = 1;
-      this.totalPage = 2;
-    }, 2000);
+      ]
+      this.currentPage = 1
+      this.totalPage = 2
+    }, 2000)
   },
   methods: {
     formatterTime(row, column, cellValue) {
-      return this.formatterDate(cellValue);
+      return this.formatterDate(cellValue)
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     },
     // 选择展示页数
     handleSizeChange(val) {
-      this.currentPage = 1;
-      this.pageSize = val;
+      this.currentPage = 1
+      this.pageSize = val
     },
     // 选择当前页
     handleCurrentChange(val) {
-      this.currentPage = val;
+      this.currentPage = val
     },
     submit() {
-      console.log("submit", this.keyword);
+      console.log('submit', this.keyword)
     }
   }
-};
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

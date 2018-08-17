@@ -60,60 +60,60 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import { createUserApi } from "@/api/systemManage/system.js";
+import Breadcrumb from '@/components/Breadcrumb'
+import { createUserApi } from '@/api/systemManage/system.js'
 // import {mapActions,mapGetters} from 'vuex'
 // import {mapGetters} from 'vuex'
 
 export default {
-  name: "personalInfo",
+  name: 'personalInfo',
   components: {
     Breadcrumb
   },
   data() {
     var validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请再次输入密码'))
-            } else if (value !== this.form.password) {
-                callback(new Error('两次输入密码不一致!'))
-            } else {
-                callback()
-            }
-        }
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.form.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       options: [
         {
-          value: "LDDS",
-          label: "LDDS"
+          value: 'LDDS',
+          label: 'LDDS'
         },
         {
-          value: "上证云",
-          label: "上证云"
+          value: '上证云',
+          label: '上证云'
         }
       ],
       form: {
-        userName: "root",
-        password: "",
-        rePassword: "",
-        name: "",
-        business: ["LDDS", "上证云"],
-        email: "",
-        phone: "",
-        weixin: "",
-        role: ""
+        userName: 'root',
+        password: '',
+        rePassword: '',
+        name: '',
+        business: ['LDDS', '上证云'],
+        email: '',
+        phone: '',
+        weixin: '',
+        role: ''
         // user_id:''
       },
       rules: {
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         rePassword: [
-          { required: true, trigger: "blur" , validator:validatePass}
+          { required: true, trigger: 'blur', validator: validatePass }
         ],
-        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
-        phone: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
-        weixin: [{ required: true, message: "请输入微信号", trigger: "blur" }]
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+        phone: [{ required: true, message: '请输入手机号码', trigger: 'blur' }],
+        weixin: [{ required: true, message: '请输入微信号', trigger: 'blur' }]
       }
-    };
+    }
   },
   mounted() {},
   created() {
@@ -121,10 +121,10 @@ export default {
   },
   methods: {
     blur() {
-      if (this.form.password == this.form.rePassword) {
-        console.log("1");
+      if (this.form.password === this.form.rePassword) {
+        console.log('1')
       } else {
-        console.log("2");
+        console.log('2')
       }
     },
     submitForm(formName) {
@@ -139,16 +139,15 @@ export default {
         wechat: this.form.weixin,
         password: this.form.password,
         email: this.form.email
-      };
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           createUserApi(params)
             .then(res => {
-              console.log(res);
+              console.log(res)
               // setItem(key,value)
               // localStorage.setItem('user_id',res.user_id);
 
-              alert("提交成功!");
               //   saveSearch() {
               //     this.saveSearchHistory(res)
               //   },
@@ -157,21 +156,21 @@ export default {
               // ])
               // this.$store.dispatch('Res',res);
               this.$router.push({
-                path: "/system/manage/user"
+                name: 'user'
                 // query: {res: res},
-              });
+              })
             })
             .catch(error => {
-              Message.error(error);
-            });
+              console.error(error)
+            })
         } else {
-          console.log("提交失败!!");
-          return false;
+          console.log('提交失败!!')
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>

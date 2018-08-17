@@ -29,6 +29,7 @@
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="editPermission">编辑权限</el-button>
+            <el-button type="text" @click="check">查看权限</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -50,21 +51,25 @@
     <!-- 弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
       <el-form v-show="dialogRole" ref="form-role" :model="role" :rules="rulesRole" label-width="80px" size="small">
+        <el-form-item label="用户名" prop="remark">
+          <el-input v-model="role.name"></el-input>
+        </el-form-item>
         <el-form-item label="角色" prop="rolename">
           <el-input v-model="role.rolename" auto-complete="off" placeholder="请输入"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="role.passward"></el-input>
         </el-form-item>
+        
       </el-form>
       <el-form v-show="dialogPermission" ref="form-permission" :model="permission" :rules="rulesPermission" label-width="80px" size="small">
         <el-form-item label="选择权限" prop="roles">
-          <el-select v-model="permission.roles" multiple placeholder="请选择" :style="{width: '100%'}">
+          <el-select v-model="value" multiple placeholder="请选择" :style="{width: '100%'}">
             <el-option
               v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              :key="item.id"
+              :label="item.id"
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -82,12 +87,11 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import common from '../common'
 // import {getAdduserApi} from '@/api/pe/systemManage/system.js'
-import { getAdduserApi,deleteAdduserApi,getAlluserApi,getrolesId } from "@/api/systemManage/system.js";
+import { getAdduserApi, deleteAdduserApi, getAlluserApi, getrolesId, createdrolesId, deleterolesId } from '@/api/systemManage/system.js'
 import { getToken } from '@/utils/auth'
+import { getpermissions } from '@/api/systemManage/system.js'
 
 //  import {createUserApi,deleteUserApi,queryUserApi,updateidUserApi,deleteidUserApi,getidUserApi,updatepassUserApi,jumppassUserApi,getAdduserApi,deleteAdduserApi,getAlluserApi} from '@/api/pe/systemManage/system.js'
-
-
 
 const defaultRole = {
   rolename: '',
@@ -102,8 +106,9 @@ export default {
   data() {
     return {
       // 表单状态
-      rolesid:'',
-      id:'',//传给后端的user_id
+      id1: [],
+      rolesid: '',
+      id: '', // 传给后端的user_id
       tableLoading: true,
       currentPage: 1,
       pageSizesArray: [10, 20, 30, 40, 50],
@@ -112,7 +117,11 @@ export default {
       multipleSelection: [],
       // 角色数据
       roles: [],
-      role: {},
+      role: {
+        rolename: '',
+        passward: '',
+        name: ''
+      },
       permission: {},
       // 弹出框
       dialogType: 'roleCreate',
@@ -120,7 +129,7 @@ export default {
       rulesRole: {
         rolename: [
           {
-            required: false,
+            required: true,
             message: '角色不能为空',
             trigger: 'blur'
           }
@@ -136,27 +145,28 @@ export default {
         ]
       },
       options: [
-        {
-          value: '选项1',
-          label: '选项1'
-        },
-        {
-          value: '选项2',
-          label: '选项2'
-        },
-        {
-          value: '选项3',
-          label: '选项3'
-        },
-        {
-          value: '选项4',
-          label: '选项4'
-        },
-        {
-          value: '选项5',
-          label: '选项5'
-        }
-      ]
+        // {
+        //   value: '选项1',
+        //   label: '选项1'
+        // },
+        // {
+        //   value: '选项2',
+        //   label: '选项2'
+        // },
+        // {
+        //   value: '选项3',
+        //   label: '选项3'
+        // },
+        // {
+        //   value: '选项4',
+        //   label: '选项4'
+        // },
+        // {
+        //   value: '选项5',
+        //   label: '选项5'
+        // }
+      ],
+      value: ''
     }
   },
   computed: {
@@ -199,25 +209,24 @@ export default {
     }
   },
   mounted() {
-    getrolesId().then(res=>{
-      // for(let i=0;i<res.length;i++){
-      //   this.rolesid.res[i].id
-      // }
-      // console.log(res.id)
-      this.rolesid=res[0].id
-      // console.log(this.rolesid,'888')
-    }).catch(error=>{
+    getrolesId().then(res => {
+      this.roles = res
+      this.totalPage = res.length
+      // console.log(res)
+    }).catch(() => {
+
     })
-      getAlluserApi({
-        // role_ids:'1,2,3',
-        user_id:this.id
-      }).then(res=>{
-        this.roles=res,
-        this.totalPage=res.length
-        console.log(res,'1')
-      }).catch(error=>{
-        console.log('2')
-      })
+
+    //   getAlluserApi({
+    //     // role_ids:'1,2,3',
+    //     user_id:this.id
+    //   }).then(res=>{
+    //     this.roles=res,
+    //     this.totalPage=res.length
+    //     console.log(res,'1')
+    //   }).catch(error=>{
+    //     console.log('2')
+    //   })
     // console.log(this.id)
     // getAdduserApi({
 
@@ -238,7 +247,7 @@ export default {
     // })
   },
   created() {
-    this.id=getToken()
+    this.id = getToken()
     // getAlluserApi({
     //   user_id:1
     // }).then(res=>{
@@ -299,9 +308,9 @@ export default {
     // queryUserApi({
     //   page:1,
     //   per_page:2,
-     
+
     //   status:'1',
-    
+
     // }).then(res=>{
     //   console.log('1')
     // }).catch(res=>{
@@ -329,44 +338,42 @@ export default {
     //   }).catch(res=>{
     //     console.log('2')
     //   }),
-   
-    
-      this.tableLoading = false
-      this.roles = [
-        // {
-        //   id: '1',
-        //   rolename: 'rn1',
-        //   remark: 'rm1',
-        //   created_at: '2018-07-25T04:31:00.499Z',
-        //   created_by: 'string',
-        //   sex: 'man',
-        //   role: [
-        //     'a',
-        //     'b',
-        //     'c'
-        //   ]
-        // },
-        // {
-        //   id: '2',
-        //   rolename: 'rn2',
-        //   remark: 'rm2',
-        //   created_at: '2018-07-25T04:31:00.499Z',
-        //   created_by: 'string',
-        //   sex: 'female',
-        //   role: [
-        //     'a',
-        //     'b',
-        //     'c'
-        //   ]
-        // }
-      ]
-      this.currentPage = 1
-      // this.totalPage = 2
-  
+
+    this.tableLoading = false
+    this.roles = [
+      // {
+      //   id: '1',
+      //   rolename: 'rn1',
+      //   remark: 'rm1',
+      //   created_at: '2018-07-25T04:31:00.499Z',
+      //   created_by: 'string',
+      //   sex: 'man',
+      //   role: [
+      //     'a',
+      //     'b',
+      //     'c'
+      //   ]
+      // },
+      // {
+      //   id: '2',
+      //   rolename: 'rn2',
+      //   remark: 'rm2',
+      //   created_at: '2018-07-25T04:31:00.499Z',
+      //   created_by: 'string',
+      //   sex: 'female',
+      //   role: [
+      //     'a',
+      //     'b',
+      //     'c'
+      //   ]
+      // }
+    ]
+    this.currentPage = 1
+    // this.totalPage = 2
   },
 
   methods: {
-   
+
     formatterTime(row, column, cellValue) {
       return this.formatterDate(cellValue)
     },
@@ -382,9 +389,22 @@ export default {
       this.role = { ...defaultRole }
       this.dialogType = 'roleCreate'
       this.dialogVisible = true
-    
+    },
+    check() {
+      // getonepermissions({
+      //   permission_ids:'',
+      //   permission_id:'',
+      //   role_id:''
+      // })
+      this.$router.push({ path: '/system/dashboard/role/list' })
     },
     editPermission() {
+      getpermissions().then(res => {
+        this.options = res
+        console.log(res, '1')
+      }).catch(() => {
+
+      })
       this.dialogType = 'permissionEdit'
       this.dialogVisible = true
     },
@@ -396,19 +416,15 @@ export default {
           type: 'error'
         })
         .then(() => {
-          console.log(this.rolesid)
-          deleteAdduserApi({
-            role_ids:[this.rolesid],
-            user_id:this.id
-          }).then(res=>{
-             console.log('222')
-          }).catch(error=>{
-            console.log('333')
-          })
+          // 删除角色
+          // deleterolesId({
+          //   identifier:this.id1[0]
+          // }).then(res=>{
+
+          // })
           this.users = this.multipleSelectionFilter
           this.messageSuccess()
           this.$refs.multipleTable.clearSelection()
-
         })
         .catch(() => {
           this.messageCancel()
@@ -427,20 +443,38 @@ export default {
     },
     submit(fromName) {
       this.$refs[fromName].validate((valid) => {
-            console.log(this.rolesid)
-        
+        console.log(this.rolesid)
+
         if (valid) {
           // console.log(this.id,'2222')
           // console.log('submit', fromName)
-           getAdduserApi({
-            role_ids:[this.rolesid],
-            user_id:this.id
-          }).then(res=>{
-
-            // console.log(res,this.rolesid)
-          }).catch(error=>{
-            console.log('2')
+          getrolesId().then(res => {
+            this.roles = res
+            this.totalPage = res.length
+            for (let i = 0; i < res.length; i++) {
+              this.id1.push(res[i].id)
+            }
+            console.log(this.id1)
+            // this.id1=res.
+            // console.log(res)
+          }).catch(() => {
           })
+
+          createdrolesId({
+            created_user: this.role.rolename,
+            name: this.role.name,
+            description: this.role.passward
+          }).then(res => {
+
+            // console.log(res,'1')
+          }).catch(() => {
+            // console.log('2')
+          })
+          // deleterolesId().then(res=>{
+          //   identifier:
+          // }).catch(res=>{
+
+          // })
           this.messageSuccess()
           this.dialogVisible = false
         }
