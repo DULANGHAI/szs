@@ -12,7 +12,11 @@
         <el-row>
           <el-col :span="24">
             <div class="file-nav">
-              <div class="file-nav-left"></div>
+              <div class="file-nav-left">
+                <el-input placeholder="可搜索组名或ip地址" size="small" v-model="searchContent">
+                  <el-button slot="append" icon="el-icon-search" @click="datafilter"></el-button>
+                </el-input>
+              </div>
               <div class="file-nav-right">
                 <el-button size="small" >导入主机账号</el-button>
                 <el-button size="small" >导入CSV</el-button>
@@ -103,15 +107,34 @@ export default {
       listLoading: false,
       form: JSON.parse(JSON.stringify(formData)),
       listData: [],
+      tableDataClone: [],
+      filtervalue: '',
+      searchContent: '',
+      searchColumn: 'name',
       currentPage: 1, // 当前页面
       pageSizesArray: [10, 20, 30, 40], // 可选每页数量
       pageSizes: '',
       pageSize: 0, // list长度
-      totalPage: 0 // list总数
+      totalPage: 0 // list总数,
     }
   },
   created() {
     this.getList()
+  },
+  watch: {
+    // 因父组件表格数据通常存在异步操作
+    // 需监听props以得到正确的数据
+    listData(newTableData) {
+      if (newTableData.length > 0 && this.tableDataClone.length === 0) {
+        this.tableDataClone = newTableData
+      }
+    }
+  },
+  filters: {
+    listData: function(val) {
+      // const searchRegex = new RegExp(this.filtervalue, 'i')
+      console.log(val)
+    }
   },
   methods: {
     getList() {
@@ -137,6 +160,48 @@ export default {
           Message.error(error)
         })
       }).catch(() => { })
+    },
+    // 表格搜索函数，可支持多列搜索
+    search(data, argumentObj) {
+      // data = data || this.data
+      // // console.log(filter)
+      // for (const node of data) {
+      //   // console.log(node.indexOf(filter))
+      //   var searched = data.filter(d => {
+      //     return d[node].indexOf(filter[data]) > -1
+      //   })
+      //   // this.$set(node, 'searched', searched)
+      //   // this.$set(node, 'visible', false)
+      //   // this.$emit('toggleshow', node, filter ? searched : true)
+      //   if (node.children && node.children.length) {
+      //     if (searched) this.$set(node, 'expanded', true)
+      //     this.search(filter, node.children)
+      //   }
+      // }
+
+      var res = data
+      var dataClone = data
+      // var argumentObjStr = '{"' + this.searchColumn + '": "' + this.searchContent + '"}'
+      for (var argu in argumentObj) {
+        if (argumentObj[argu].length > 0) {
+          // if (argu.children.length > 0) {
+          //   this.search(argu.children, JSON.parse(argumentObjStr))
+          // }
+          res = dataClone.filter(d => {
+            return d[argu].indexOf(argumentObj[argu]) > -1
+          })
+          dataClone = res
+        }
+      }
+      return res
+    },
+    // 数据过滤
+    datafilter() {
+      var argumentObjStr = '{"' + this.searchColumn + '": "' + this.searchContent + '"}' // 拼接json
+      console.log(argumentObjStr)
+      var argumentObj = JSON.parse(argumentObjStr) // 转为对象
+      var res = this.search(this.tableDataClone, argumentObj) // 执行搜索，获取搜索结果
+      this.listData = res
     },
     // 选择展示页数
     handleSizeChange(val) {
