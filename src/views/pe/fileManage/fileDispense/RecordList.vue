@@ -43,6 +43,9 @@ export default {
       total: 0
     }
   },
+  created() {
+    this.getListData()
+  },
   methods: {
     // 记录
     getListData(index) {
