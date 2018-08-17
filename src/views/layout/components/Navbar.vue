@@ -21,7 +21,7 @@
             <span class="tooltip-name">{{ name }}</span>
           </div>
           <el-dropdown-menu class="user-dropdown" slot="dropdown">
-            <router-link class="inlineBlock" to="/">
+            <router-link class="inlineBlock" to="/system/dashboard/personalInfo">
               <el-dropdown-item>
                 <div>个人信息</div>
               </el-dropdown-item>
