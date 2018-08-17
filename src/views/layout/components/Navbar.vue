@@ -10,9 +10,11 @@
         <svg-icon icon-class="wenti" />
       </span>
       <span class="tooltip-icon">
-        <el-badge :value="12" :max="99" class="item">
+        <router-link to="/system/dashboard/info">
+        <el-badge v-model="num" :max="99" class="item">
           <svg-icon icon-class="notice" />
         </el-badge>
+        </router-link>
       </span>
       <span class="tooltip-icon">
         <el-dropdown trigger="click">
@@ -41,6 +43,8 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ModuleNav from '@/components/ModuleNav'
+import { getNum } from '@/api/systemManage/system.js'
+import { getToken } from '@/utils/auth'
 
 export default {
   components: {
@@ -48,11 +52,25 @@ export default {
     Hamburger,
     ModuleNav
   },
+  data() {
+    return {
+      num: '',
+      id: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'name'
     ])
+  },
+  mounted() {
+    setInterval(() => {
+      this.id = getToken()
+      getNum({ user_id: this.id }).then(res => {
+        this.num = res.count
+      })
+    }, 10000)
   },
   methods: {
     toggleSideBar() {
