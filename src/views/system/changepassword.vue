@@ -62,7 +62,7 @@ export default {
       id: '',
       options: [
         {
-          value: 'LDDS',
+          value: 'LDDS1',
           label: 'LDDS'
         },
         {
