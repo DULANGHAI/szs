@@ -19,8 +19,6 @@
                 <el-button size="small" >同步CMBD</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="$refs.app.doCreate(false, multipleSelection)">添加主机组</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="$refs.app.doCreate(true, multipleSelection)">编辑</el-button>
-                <el-button size="small" >查看</el-button>
-                <el-button size="small" >删除</el-button>
               </div>
             </div>
           </el-col>
@@ -29,6 +27,7 @@
       <template>
         <tree-table :data.sync="listData" :expandAll="false" :multipleSelection.sync="multipleSelection">
           <el-table-column
+            width="100px"
             label="类型">
             <template slot-scope="scope">
               <span v-if="scope.row.type === 'business'">业务</span>
@@ -38,30 +37,54 @@
           </el-table-column>
           <el-table-column
             prop="description"
+            width="200px"
             label="描述">
           </el-table-column>
           <el-table-column
             prop="updated_at"
+            width="180px"
             label="修改时间">
           </el-table-column>
           <el-table-column
             prop="modified_by"
+            width="120px"
             label="修改人">
+          </el-table-column>
+          <el-table-column
+            width="100px"
+            label="操作">
+            <template slot-scope="scope">
+              <el-button v-if="scope.row.type === 'group'" type="text">
+                <el-tooltip class="item" effect="dark" content="查看主机组" placement="top" style="margin-right:10px;">
+                  <i @click.prevent="$refs.see.doCreate(true, scope.row)" class="el-icon-view"></i>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="删除主机组" placement="top" style="margin-right:10px;">
+                  <i @click.prevent="delGroupsDlg(scope.row.id)" class="el-icon-delete"></i>
+                </el-tooltip>
+              </el-button>
+              <el-button v-if="scope.row.type === 'host'" type="text">
+                <el-tooltip class="item" effect="dark" content="查看主机组" placement="top" style="margin-right:10px;">
+                  <i @click.prevent="$refs.see.doCreate(false, scope.row)" class="el-icon-view"></i>
+                </el-tooltip>
+              </el-button>
+            </template>
           </el-table-column>
         </tree-table>
       </template>
     </div>
     <add-host ref="app" v-on:getList="getList"></add-host>
+    <see-host ref="see" v-on:getList="getList"></see-host>
   </div>
 </template>
 
 <script>
-import { getHostList } from '@/api/resouce/resouces/host'
+import { getHostList, delGroups } from '@/api/resouce/resouces/host'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import TreeTable from './treeTable'
-import AddHost from './addHostGroup' // 新建风险命令
+import AddHost from './addHostGroup' // 新建主机组
+import SeeHost from './seeHostDlg'
 
 const formData = {
   'datatime': []
@@ -71,7 +94,8 @@ export default {
     Breadcrumb,
     RiskLevel,
     TreeTable,
-    AddHost
+    AddHost,
+    SeeHost
   },
   data() {
     return {
@@ -102,41 +126,17 @@ export default {
       }).catch(error => {
         Message.error(error)
       })
-      // getRiskList(params).then(response => {
-      //   this.listData = [
-      //     {
-      //       comment: 'sfdsfdsf',
-      //       risk_level: 2,
-      //       name: 'abvvvvv',
-      //       creator: 'od',
-      //       created_at: '2018-07-24T10:48:11',
-      //       updated_at: '2018-07-27T17:27:38',
-      //       id: 3,
-      //       children: [{
-      //         comment: 'sfdsfdsf',
-      //         risk_level: 2,
-      //         name: 'abvvvvv',
-      //         creator: 'od',
-      //         created_at: '2018-07-24T10:48:11',
-      //         updated_at: '2018-07-27T17:27:38',
-      //         id: 3
-      //       }]
-      //     },
-      //     {
-      //       comment: 'this is test',
-      //       risk_level: 1,
-      //       name: 'cat',
-      //       creator: 'god',
-      //       created_at: '2018-07-24T10:31:35',
-      //       updated_at: '2018-07-24T10:31:35',
-      //       id: 1
-      //     }
-      //   ]
-      //   this.listLoading = false
-      //   this.totalPage = response.total
-      // }).catch(error => {
-      //   Message.error(error)
-      // })
+    },
+    // 删除文件
+    delGroupsDlg(id) {
+      MessageBox.confirm('此操作将永久删除该主机组，是否继续', '删除风主机组', { type: 'error' }).then(() => {
+        delGroups(id).then(response => {
+          this.getList()
+          Message.success('删除成功')
+        }).catch(error => {
+          Message.error(error)
+        })
+      }).catch(() => { })
     },
     // 选择展示页数
     handleSizeChange(val) {

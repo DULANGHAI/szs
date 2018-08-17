@@ -23,7 +23,7 @@ router.beforeEach((to, from, next) => {
           } else if (to.path.indexOf('/system') === 0) {
             store.commit('SET_MODULE_NAME', 'system')
           }
-          if (getUserInit()) {
+          if (getUserInit() === true) {
             next('/system/manage/changepassword')
           } else {
             next()

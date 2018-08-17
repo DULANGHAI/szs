@@ -41,6 +41,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { updatepassUserApi } from "@/api/systemManage/system.js";
 import { createUserApi } from "@/api/systemManage/system.js";
 import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
 
 export default {
   name: "changepassword",
@@ -96,27 +97,22 @@ export default {
       console.log(this.id)      
       this.$refs[formName].validate(valid => {
         if (valid) {
-          
           updatepassUserApi({
             // payload:
             // user_id:
             // user_id:this.form.userName,
-            user_id:this.id,
+            user_id: this.id,
             password: this.form.oldpassword,
             new_pwd: this.form.password,
             verify_pwd: this.form.rePassword
-          })
-            .then(res => {
-              // console.log(this.getCookie(id))
-          
-              // console.log(res);
-              alert("提交成功");
+          }).then(res => {
+            this.$router.push({
+              name: 'pe-dashboard'
             })
-            .catch(res => {
-              // console.log("2");
-            
-              alert("提交失败");
-            });
+            Message.succes('修改成功')
+          }).catch(res => {
+            Message.succes('修改失败')
+          })
         } else {
           console.log("error submit!!");
           return false;
