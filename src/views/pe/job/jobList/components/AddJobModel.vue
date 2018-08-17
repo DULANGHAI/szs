@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加作业" :visible.sync="show" :show-close="false">
+  <el-dialog title="添加作业" :visible.sync="show">
     <el-form>
       <el-form-item label="作业类型">
         <el-radio-group v-model="form.type">

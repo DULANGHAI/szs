@@ -144,3 +144,15 @@ export function getBranchApi(id) {
     method: 'get'
   })
 }
+
+/**
+ * 查看脚本获取内容
+ * @param {*} params
+ */
+export function getScriptApi(id, params) {
+  return request({
+    url: `/v1/repositories/project/${id}/file`,
+    method: 'get',
+    params: params
+  })
+}

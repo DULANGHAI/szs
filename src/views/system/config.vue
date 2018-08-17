@@ -55,7 +55,7 @@
           >
             <el-table-column type="selection"></el-table-column>
             <el-table-column width="180" prop="name" label="集群名称"></el-table-column>
-            <el-table-column prop="describe" label="描述"></el-table-column>
+            <el-table-column prop="description" label="描述"></el-table-column>
           </el-table>
         </div>
 
@@ -129,18 +129,14 @@
             </el-col>
            <br>
             <span style="display:inline-block;margin-right:50px;">交易时段</span>
-
              <el-time-picker
-           
               is-range
               v-model="form.value4"
               range-separator="-"
               start-placeholder="开始时间"
               end-placeholder="结束时间"
               placeholder="选择时间范围">
-            </el-time-picker>
-            
-            
+            </el-time-picker>   
           </el-row>
         </div>
       </el-form>
@@ -154,19 +150,22 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from '@/components/Breadcrumb'
+import { cpostsysconfigs, getsysconfigs } from '@/api/systemManage/system.js'
 
 export default {
-  name: "config",
+  name: 'config',
   components: {
     Breadcrumb
   },
   data() {
     return {
       tableData: [],
+      name: '',
+      description: '',
       tableLoading: false,
       form: {
-        rate: "",
+        rate: '',
         switch1: false,
         switch2: false,
         switch3: false,
@@ -176,51 +175,127 @@ export default {
         exceptionEvent: [],
         riskEvent: [],
         warnType: [],
-        person: "",
+        person: '',
         value4: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)]
       }
-    };
+    }
+  },
+  mounted() {
+    getsysconfigs().then(res => {
+      // 渲染业务集群配置
+      // console.log(res.business_config,'业务集群配置')
+      this.tableData = res.business_config
+      // 渲染审批配置
+      console.log(res.approve_config, '审批配置')
+      this.form.switch1 = res.script_on
+      this.form.switch2 = res.software_on
+      this.form.switch3 = res.config_on
+
+      console.log(res, '成功')
+    }).catch(res => {
+      console.log('失败', '2')
+    })
   },
   created() {
     this.tableData = [
-      {
-        name: "上证云",
-        describe:
-          "这是一段很长的文案很长很长的文案很长的很长很长很长很长的很长很长很长很长的很长很长很长很长的很上证云计算集群"
-      },
-      {
-        name: "LDDS",
-        describe: "LDDS计算集群"
-      },
-      {
-        name: "LDDS",
-        describe: "LDDS计算集群"
-      },
-      {
-        name: "LDDS",
-        describe: "LDDS计算集群"
-      }
-    ];
+      // {
+      //   name: "上证云",
+      //   describe:
+      //     "这是一段很长的文案很长很长的文案很长的很长很长很长很长的很长很长很长很长的很长很长很长很长的很上证云计算集群"
+      // },
+      // {
+      //   name: "LDDS",
+      //   describe: "LDDS计算集群"
+      // },
+      // {
+      //   name: "LDDS",
+      //   describe: "LDDS计算集群"
+      // },
+      // {
+      //   name: "LDDS",
+      //   describe: "LDDS计算集群"
+      // }
+    ]
+    // for(let i=0;i<this.tableData.length;i++){
+    //   return this.tableData[i].name; this.tableData[i].description
+    // }
+    // name =  this.tableData[i].name;
+    // description = this.tableData[i].description;
   },
   methods: {
+    // for(let i=0;i<this.tableData.length;i++){
+    //   return this.tableData[i].name
+    // },
     handleSelectionChange(val) {
-      console.log(val);
+      console.log(val)
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          cpostsysconfigs({
+            business_config: [
+              {
+                name: 'LDD',
+                description: 'lDDsedfsfs'
+              }
+            ],
+            approve_config: {
+              level: this.form.rate,
+              script_on: this.form.switch1,
+              software_on: this.form.switch2,
+              config_on: this.form.switch3
+            },
+            alarm_config: [
+              {
+                alarm_to: '张三',
+                type: '日常检查',
+                alarm_by: 'wechat, email',
+                alarm_on: this.form.switch4,
+                name: '风险事件'
+              },
+              {
+                alarm_to: '张三',
+                type: '日常检查',
+                alarm_by: 'wechat, email',
+                alarm_on: 1,
+                name: '异常事件'
+              },
+              {
+                alarm_to: '张三',
+                type: '定时作业',
+                alarm_by: 'wechat, email',
+                alarm_on: 0,
+                name: null
+              }
+
+            ],
+            exchange_config: {
+              start_time: '08:40:00',
+              is_on: 0,
+              end_time: '09:00:00'
+            }
+          }).then(res => {
+            this.form.switch1 === false ? this.from.switch1 = '0' : this.from.switch1 = '1'
+            this.form.switch2 === false ? this.from.switch2 = '0' : this.from.switch2 = '1'
+            this.form.switch3 === false ? this.from.switch3 = '0' : this.from.switch3 = '1'
+            this.form.switch4 === false ? this.from.switch4 = '0' : this.from.switch4 = '1'
+            this.form.switch5 === false ? this.from.switch5 = '0' : this.from.switch5 = '1'
+            this.form.switch6 === false ? this.from.switch6 = '0' : this.from.switch6 = '1'
+            console.log(res, '1')
+          }).catch(() => {
+            console.log('失败', '2')
+          })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -227,7 +227,7 @@ export default {
       return this.operation_type_map[row.operation_type]
     },
     formatterIp(row) {
-      return JSON.parse(row.target).host.toString()
+      return row.target.split(',').toString()
     },
     formatterStatus(row) {
       return this.job_status_map[row.status]

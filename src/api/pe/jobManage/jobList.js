@@ -96,9 +96,8 @@ export function deleteJobApi(data) {
 
 /**
  * 获取应用实例
- * @param {Object} data
  */
-export function getAppListApi(data) {
+export function getAppListApi() {
   return request({
     url: '/v1/applications/list',
     method: 'get'

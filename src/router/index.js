@@ -446,29 +446,19 @@ export const constantRouterMap = [
     module: true,
     redirect: '/system/user',
     children: [
+      //    1.用户管理
       {
-        path: 'manage',
+        path: 'dashboard',
+        name: '用户管理',
         component: Layout,
-        name: '系统管理',
-        meta: { title: '系统管理', icon: 'banben' },
+        meta: { title: '用户管理', icon: 'dashboard' },
+        noNest: true,
         children: [
-          {
-            path: 'info',
-            component: () => import('@/views/system/info'),
-            name: 'info',
-            meta: { title: '消息', icon: 'banben' }
-          },
           {
             path: 'changepassword',
             component: () => import('@/views/system/changepassword'),
             name: 'changepassword',
             meta: { title: '修改密码', icon: 'banben' }
-          },
-          {
-            path: 'personalInfo',
-            component: () => import('@/views/system/personalInfo'),
-            name: 'personalInfo',
-            meta: { title: '个人信息', icon: 'banben' }
           },
           {
             path: 'user',
@@ -477,29 +467,65 @@ export const constantRouterMap = [
             meta: { title: '用户管理', icon: 'banben' }
           },
           {
+            path: 'personalInfo',
+            component: () => import('@/views/system/personalInfo'),
+            name: 'personalInfo',
+            meta: { title: '个人信息', icon: 'banben' }
+          }
+        ]
+      },
+      //    2.角色管理
+      {
+        path: 'dashboard',
+        name: '角色管理',
+        component: Layout,
+        meta: { title: '角色管理', icon: 'dashboard' },
+        noNest: true,
+        children: [
+          {
             path: 'role',
             component: () => import('@/views/system/role'),
             name: 'Role',
             meta: { title: '角色管理', icon: 'banben' }
           },
           {
-            path: 'role/admin',
-            component: () => import('@/views/system/role/admin'),
-            name: 'RoleAdmin',
-            meta: { title: '超级管理员', icon: 'banben' }
-          },
-          {
             path: 'role/list',
             component: () => import('@/views/system/role/list'),
             name: 'RoleList',
             meta: { title: '权限浏览', icon: 'banben' }
+          }
+        ]
+      },
+      //    3.审计与通知
+      {
+        path: 'dashboard',
+        name: '审计与通知',
+        component: Layout,
+        meta: { title: '审计与通知', icon: 'dashboard' },
+        noNest: true,
+        children: [
+          {
+            path: 'info',
+            component: () => import('@/views/system/info'),
+            name: 'info',
+            meta: { title: '消息', icon: 'banben' }
           },
           {
             path: 'audit',
             component: () => import('@/views/system/audit'),
             name: 'audit',
             meta: { title: '系统审计', icon: 'banben' }
-          },
+          }
+        ]
+      },
+      //    4.系统配置
+      {
+        path: 'dashboard',
+        name: '系统配置',
+        component: Layout,
+        meta: { title: '系统配置', icon: 'dashboard' },
+        noNest: true,
+        children: [
           {
             path: 'setting',
             component: () => import('@/views/system/config'),
