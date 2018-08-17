@@ -93,3 +93,14 @@ export function deleteJobApi(data) {
     data: data
   })
 }
+
+/**
+ * 获取应用实例
+ * @param {Object} data
+ */
+export function getAppListApi(data) {
+  return request({
+    url: '/v1/applications/list',
+    method: 'get'
+  })
+}

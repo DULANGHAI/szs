@@ -153,7 +153,7 @@ import CommandShow from './components/CommandShow'
 import ScriptShow from './components/ScriptShow'
 import FileShow from './components/FileShow'
 
-import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi } from '@/api/pe/jobManage/jobList'
+import { getLanguageApi, createJobApi, getJobDataApi, updateJobApi, getAppListApi } from '@/api/pe/jobManage/jobList'
 import { getIpApi } from '@/api/pe/common/index'
 
 export default {
@@ -239,13 +239,14 @@ export default {
   created() {
     this.loading = true
     if (this.id) {
-      Promise.all([getLanguageApi(), getJobDataApi(this.id), getIpApi()])
+      Promise.all([getLanguageApi(), getJobDataApi(this.id), getIpApi(), getAppListApi()])
         .then(res => {
           this.systemAndLang = res[0]
           res[1].target_ip = res[1].target_ip.split(',')
           this.form = res[1]
           this.scheduling = JSON.parse(res[1].scheduling)
           this.options = res[2]
+          this.applications_arr = res[3]
         }).finally(() => {
           this.loading = false
         })

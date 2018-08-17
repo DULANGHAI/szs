@@ -46,6 +46,7 @@ export default {
       this.form = {
         name: ''
       }
+      this.dialogVisible = false
       this.$refs.ruleForm.resetFields()
     },
     doSubmit() {
