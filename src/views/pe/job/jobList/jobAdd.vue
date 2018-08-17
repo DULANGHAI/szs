@@ -27,50 +27,53 @@
       <div class="block-item">
         <div class="block-title ">作业信息</div>
         <div class="block-content">
-          <div class="flex">
-            <div class="flex-1 marr-20">
-              <el-form ref="form" label-width="100px" size="small" label-position="left">
-                <el-form-item label="作业名">
-                  <el-input v-model="form.name" placeholder="请输入" :disabled="view === '1'"></el-input>
-                </el-form-item>
-                <el-form-item label="描述">
-                  <el-input type="textarea" v-model="form.description" rows="4" placeholder="请输入" :disabled="view === '1'"></el-input>
-                </el-form-item>
-                <el-form-item label="账号">
-                  <el-input v-model="form.execution_account" placeholder="请输入" :disabled="view === '1'"></el-input>
-                </el-form-item>
-                <el-form-item label="目标IP">
-                  <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" :disabled="view === '1'" />
-                </el-form-item>
-                <el-form-item label="失败重试次数">
-                  <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="1" :disabled="view === '1'"></el-input-number>
-                  次
-                </el-form-item>
-              </el-form>
+          <el-form :model="form" ref="form" :rules="rules" size="small" label-position="left">
+            <div class="flex">
+              <div class="flex-1 marr-20">
+                <!-- <el-form ref="form" label-width="100px" size="small" label-position="left"> -->
+                  <el-form-item label="作业名" prop="name" label-width="106px">
+                    <el-input v-model="form.name" placeholder="请输入" :disabled="view === '1'"></el-input>
+                  </el-form-item>
+                  <el-form-item label="描述" prop="description" label-width="106px">
+                    <el-input type="textarea" v-model="form.description" rows="4" placeholder="请输入" :disabled="view === '1'"></el-input>
+                  </el-form-item>
+                  <el-form-item label="账号" prop="execution_account" label-width="106px">
+                    <el-input v-model="form.execution_account" placeholder="请输入" :disabled="view === '1'"></el-input>
+                  </el-form-item>
+                  <el-form-item label="目标IP" prop="target_ip" label-width="106px">
+                    <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" :disabled="view === '1'" />
+                  </el-form-item>
+                  <el-form-item label="失败重试次数" prop="frequency" label-width="106px">
+                    <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="0" :disabled="view === '1'"></el-input-number>
+                    次
+                  </el-form-item>
+                <!-- </el-form> -->
+              </div>
+              <div class="flex-1 marr-20">
+                <!-- <el-form ref="form" label-width="84px" size="small" label-position="left"> -->
+                  <el-form-item label="系统类型" prop="system_type" label-width="84px">
+                    <el-select v-model="form.system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length || view === '1'">
+                      <el-option v-for="(item, index) in Object.keys(systemAndLang)" :key="index" :label="item" :value="item"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="作业类型" prop="job_type" label-width="84px">
+                    <el-radio-group v-model="form.job_type" :disabled="view === '1'">
+                      <el-radio v-for="(item, index) in Object.keys(job_type_map)" :key="index" :label="item">{{job_type_map[item]}}</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item v-if="form.job_type === 'update' || form.job_type === 'quit'" label="应用实例" prop="applications" label-width="84px">
+                    <el-select v-model="form.applications" placeholder="请选择">
+                      <el-option v-for="item in applications_arr" :key="item.id" :label="item.name" :value="item"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="启用" prop="status" label-width="84px">
+                    <el-switch v-model="form.status" :disabled="view === '1'"></el-switch>
+                  </el-form-item>
+                <!-- </el-form> -->
+              </div>
             </div>
-            <div class="flex-1 marr-20">
-              <el-form ref="form" label-width="84px" size="small" label-position="left">
-                <el-form-item label="系统类型">
-                  <el-select v-model="form.system_type" @change="systemChange" placeholder="请选择" :disabled="!Object.keys(systemAndLang).length || view === '1'">
-                    <el-option v-for="item in Object.keys(systemAndLang)" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="作业类型">
-                  <el-radio-group v-model="form.job_type" :disabled="view === '1'">
-                    <el-radio v-for="(item, index) in Object.keys(job_type_map)" :key="index" :label="item">{{job_type_map[item]}}</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-                <el-form-item v-if="form.job_type === 'update' || form.job_type === 'quit'" label="应用实例">
-                  <el-select v-model="form.applications" placeholder="请选择">
-                    <el-option v-for="item in applications_arr" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="启用">
-                  <el-switch v-model="form.status" :disabled="view === '1'"></el-switch>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
+          </el-form>
+          
         </div>
       </div>
       <!-- 作业编排 -->
@@ -192,6 +195,35 @@ export default {
         applications: '',
         status: false
       },
+      rules: {
+        name: [
+          { required: true, message: '请输入作业名称', trigger: ['blur', 'change'] }
+        ],
+        description: [
+          { required: true, message: '请输入备注', trigger: ['blur', 'change'] }
+        ],
+        execution_account: [
+          { required: true, message: '请输入账号', trigger: ['blur', 'change'] }
+        ],
+        target_ip: [
+          { required: true, message: '请选择目标IP', trigger: ['change'] }
+        ],
+        frequency: [
+          { required: true, message: '请输入失败重试次数', trigger: ['blur', 'change'] }
+        ],
+        system_type: [
+          { required: true, message: '请选择系统类型', trigger: ['blur', 'change'] }
+        ],
+        job_type: [
+          { required: true, message: '请选择作业类型', trigger: ['change'] }
+        ],
+        applications: [
+          { required: true, message: '请输入失败重试次数', trigger: ['blur', 'change'] }
+        ],
+        status: [
+          { required: true, message: '请输入失败重试次数', trigger: ['blur', 'change'] }
+        ]
+      },
       ip_arr: [],
       applications_arr: [],
       systemAndLang: {},
@@ -252,10 +284,11 @@ export default {
         })
     } else {
       // todo
-      Promise.all([getLanguageApi(), getIpApi()])
+      Promise.all([getLanguageApi(), getIpApi(), getAppListApi()])
         .then(res => {
           this.systemAndLang = res[0]
           this.options = res[1]
+          this.applications_arr = res[2]
         }).finally(() => {
           this.loading = false
         })
@@ -384,25 +417,29 @@ export default {
      * 提交操作
      */
     submitAll() {
-      const task_id_list = []
-      this.getTaskIdList(this.scheduling, task_id_list)
-      const data = {
-        name: this.form.name,
-        description: this.form.description,
-        execution_account: this.form.execution_account,
-        target_ip: this.form.target_ip,
-        frequency: this.form.frequency,
-        system_type: this.form.system_type,
-        job_type: this.form.job_type,
-        applications: this.form.applications,
-        status: this.form.status,
-        scheduling: JSON.stringify(this.scheduling),
-        task_id_list: task_id_list
-      }
-      createJobApi(data).then(res => {
-        this.$router.push({
-          path: '/pe/jobManage/jobList'
-        })
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const task_id_list = []
+          this.getTaskIdList(this.scheduling, task_id_list)
+          const data = {
+            name: this.form.name,
+            description: this.form.description,
+            execution_account: this.form.execution_account,
+            target_ip: this.form.target_ip,
+            frequency: this.form.frequency,
+            system_type: this.form.system_type,
+            job_type: this.form.job_type,
+            applications: this.form.applications,
+            status: this.form.status,
+            scheduling: JSON.stringify(this.scheduling),
+            task_id_list: task_id_list
+          }
+          createJobApi(data).then(res => {
+            this.$router.push({
+              path: '/pe/jobManage/jobList'
+            })
+          })
+        }
       })
     },
     getTaskIdList(data, res) {
@@ -424,28 +461,32 @@ export default {
       })
     },
     update() {
-      const task_id_list = []
-      this.getTaskIdList(this.scheduling, task_id_list)
-      const data = {
-        id: this.form.id,
-        name: this.form.name,
-        description: this.form.description,
-        execution_account: this.form.execution_account,
-        target_ip: this.form.target_ip,
-        frequency: this.form.frequency,
-        system_type: this.form.system_type,
-        job_type: this.form.job_type,
-        applications: this.form.applications,
-        status: this.form.status,
-        scheduling: JSON.stringify(this.scheduling),
-        task_id_list: task_id_list,
-        creator: this.form.creator,
-        success_rate: this.form.success_rate
-      }
-      updateJobApi(data).then(res => {
-        this.$router.push({
-          path: '/pe/jobManage/jobList'
-        })
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const task_id_list = []
+          this.getTaskIdList(this.scheduling, task_id_list)
+          const data = {
+            id: this.form.id,
+            name: this.form.name,
+            description: this.form.description,
+            execution_account: this.form.execution_account,
+            target_ip: this.form.target_ip,
+            frequency: this.form.frequency,
+            system_type: this.form.system_type,
+            job_type: this.form.job_type,
+            applications: this.form.applications,
+            status: this.form.status,
+            scheduling: JSON.stringify(this.scheduling),
+            task_id_list: task_id_list,
+            creator: this.form.creator,
+            success_rate: this.form.success_rate
+          }
+          updateJobApi(data).then(res => {
+            this.$router.push({
+              path: '/pe/jobManage/jobList'
+            })
+          })
+        }
       })
     }
   }

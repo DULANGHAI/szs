@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加作业" :visible.sync="show" :show-close="false">
+  <el-dialog title="添加作业" :visible.sync="show" @close="handleClose">
     <el-form>
       <el-form-item label="作业类型">
         <el-radio-group v-model="form.type">
@@ -119,6 +119,9 @@ export default {
       this.jobArr = []
       this.selectedObj = null
       this.$emit('update:show', false)
+    },
+    handleClose() {
+      this.cancel()
     },
     handleOk() {
       if (!this.selectedObj.next) {
