@@ -200,7 +200,7 @@ export default {
     }
   },
   created() {
-    if (this.id) {
+    if (this.id && this.id !== ':id') {
       this.form.execution_id = this.id
     }
     this.init()
