@@ -219,3 +219,85 @@ export function getrolesId(params) {
     params: params
   })
 }
+/**
+ * 创建列表roles
+ * @param {Object} params
+ */
+export function createdrolesId(params) {
+  return request({
+    url: '/v1/roles/',
+    method: 'post',
+    data: params
+  })
+}
+/**
+ * 删除列表roles
+ * @param {Object} params
+ */
+export function deleterolesId(params, identifier) {
+  return request({
+    url: `/v1/roles/${params.identifier}`,
+    method: 'delete',
+    params: params
+  })
+}
+
+/**
+ * 获取消息数
+ * @param {Object} params
+ */
+export function getNum(params) {
+  return request({
+    url: '/v1/messages/user-count',
+    method: 'get',
+    params: params
+  })
+}
+
+
+/**
+ * 创建系统配置
+ * @param {Object} params
+ */
+export function cpostsysconfigs(params) {
+  return request({
+    url: '/v1/sysconfigs/',
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 获取系统配置
+ * @param {Object} params
+ */
+export function getsysconfigs(params) {
+  return request({
+    url: '/v1/sysconfigs/',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 获取系统配置
+ * @param {Object} params
+ */
+export function getpermissions() {
+  return request({
+    url: '/v1/permissions/',
+    method: 'get'
+  })
+}
+
+/**
+ * 查看单个用户权限
+ * @param {Object} params
+ */
+export function getonepermissions(params) {
+  return request({
+    url: `/v1/roles/role-permission/${params.role_id}`,
+    method: 'get'
+    // params: params
+  })
+}

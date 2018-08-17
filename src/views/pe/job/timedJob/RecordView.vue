@@ -180,11 +180,14 @@ export default {
       return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     formatterTime2(row) {
-      return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      if (row.end_time) {
+        return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     formatterIp(row) {
-      const data = JSON.parse(row.target_ip).host
-      return data.toString()
+      return row.target_ip.split(',').toString()
     },
     getListData(index) {
       this.loading = true
@@ -233,7 +236,7 @@ export default {
       })
     },
     stopJob(id) {
-      stopJobApi({ execution_id: id }).then(res => {
+      stopJobApi(id).then(res => {
         this.$message({
           message: '操作成功',
           type: 'success'

@@ -25,10 +25,18 @@ export function getAddGroups(params) {
   })
 }
 
-// 编辑主机组
+// 编辑主机组获取信息
 export function getEditGroups(id) {
   return request({
     url: '/v1/groups/' + id,
+    method: 'get'
+  })
+}
+
+// 获取主机信息
+export function getHostView(id) {
+  return request({
+    url: '/v1/hosts/' + id,
     method: 'get'
   })
 }
@@ -39,6 +47,14 @@ export function putGroups(id, params) {
     url: '/v1/groups/' + id,
     method: 'put',
     data: params
+  })
+}
+
+// 删除主机组
+export function delGroups(id) {
+  return request({
+    url: '/v1/groups/' + id,
+    method: 'delete'
   })
 }
 

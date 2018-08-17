@@ -69,7 +69,7 @@
               <el-option v-for="item in scriptVersionOptions" :key="item.id" :label="item.version" :value="item"></el-option>
             </el-select>
             <div v-if="view">{{selectedVersion.version}}</div>
-            <el-button type="text" size="small">查看脚本</el-button>
+            <el-button type="text" size="small" @click="handleViewScript">查看脚本</el-button>
           </el-form-item>
           <el-form-item label="脚本变量" prop="script_parameter" key="script_parameter">
             <el-input v-if="!view" v-model="form.script_parameter"></el-input>
@@ -133,6 +133,9 @@
         </el-form-item>
       </el-form>
     </div>
+
+    <!-- 查看脚本 -->
+    <view-script ref="viewScript"></view-script>
   </div>
 </template>
 
@@ -141,6 +144,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import FileSelect from './components/FileSelect'
+import ViewScript from './components/ViewScript'
 
 import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 
@@ -150,7 +154,8 @@ export default {
     Breadcrumb,
     RiskLevel,
     ScriptOption,
-    FileSelect
+    FileSelect,
+    ViewScript
   },
   data() {
     return {
@@ -327,9 +332,9 @@ export default {
       })
     },
     systemChange() {
-      this.form.language = ''
-      this.form.script = ''
-      this.form.script_version = ''
+      // this.form.language = ''
+      // this.form.script = ''
+      // this.form.script_version = ''
     },
     languageChange(val) {
       this.selectedScript = {}
@@ -430,6 +435,26 @@ export default {
     },
     goBack() {
       this.$router.back()
+    },
+    handleViewScript() {
+      if (!this.form.project_id) {
+        this.$message.info('请选择语言')
+        return
+      }
+      if (!this.selectedScript.full_path) {
+        this.$message.info('请选择脚本')
+        return
+      }
+      if (!this.selectedVersion.commit_sha) {
+        this.$message.info('请选择脚本版本')
+        return
+      }
+      this.$refs.viewScript.setParames({
+        id: this.form.project_id,
+        full_path: this.selectedScript.full_path,
+        branch: this.selectedVersion.commit_sha
+      })
+      this.$refs.viewScript.showModel()
     }
   }
 }

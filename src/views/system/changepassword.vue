@@ -37,97 +37,93 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import { updatepassUserApi } from "@/api/systemManage/system.js";
-import { createUserApi } from "@/api/systemManage/system.js";
+import Breadcrumb from '@/components/Breadcrumb'
+import { updatepassUserApi } from '@/api/systemManage/system.js'
+// import { createUserApi } from '@/api/systemManage/system.js'
 import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
 
 export default {
-  name: "changepassword",
+  name: 'changepassword',
   components: {
     Breadcrumb
   },
   data() {
-     var validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请再次输入密码'))
-            } else if (value !== this.form.password) {
-                callback(new Error('两次输入密码不一致!'))
-            } else {
-                callback()
-            }
-        }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.form.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      id:'',
+      id: '',
       options: [
         {
-          value: "LDDS",
-          label: "LDDS"
+          value: 'LDDS1',
+          label: 'LDDS'
         },
         {
-          value: "上证云",
-          label: "上证云"
+          value: '上证云',
+          label: '上证云'
         }
       ],
       form: {
-        userName: "",
-        name: "",
-        password: "",
-        rePassword: "",
-        oldpassword: ""
+        userName: '',
+        name: '',
+        password: '',
+        rePassword: '',
+        oldpassword: ''
       },
       rules: {
-        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         rePassword: [
           // { required: true, message: "请输入确认密码", trigger: "blur" }
-          { required: true, trigger: "blur" , validator:validatePass}          
+          { required: true, trigger: 'blur', validator: validatePass }
         ],
         oldpassword: [
-          { required: true, message: "请输入旧密码", trigger: "blur" }
+          { required: true, message: '请输入旧密码', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   methods: {
-    
+
     submitForm(formName) {
       this.id = getToken()
-      console.log(this.id)      
+      console.log(this.id)
       this.$refs[formName].validate(valid => {
         if (valid) {
-          
           updatepassUserApi({
             // payload:
             // user_id:
             // user_id:this.form.userName,
-            user_id:this.id,
+            user_id: this.id,
             password: this.form.oldpassword,
             new_pwd: this.form.password,
             verify_pwd: this.form.rePassword
-          })
-            .then(res => {
-              // console.log(this.getCookie(id))
-          
-              // console.log(res);
-              alert("提交成功");
+          }).then(res => {
+            this.$router.push({
+              name: 'pe-dashboard'
             })
-            .catch(res => {
-              // console.log("2");
-            
-              alert("提交失败");
-            });
+            Message.succes('修改成功')
+          }).catch(res => {
+            Message.succes('修改失败')
+          })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     }
   }
-};
+}
 </script>
 
 <style scoped>

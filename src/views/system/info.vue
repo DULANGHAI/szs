@@ -37,7 +37,8 @@
             <el-form-item label="风险">
               <el-select v-model="queryForm.riskLevel" placeholder="请选择">
                 <el-option
-                  v-for="item in levelOptions"
+                  v-for="(item, index) in levelOptions"
+                  :key="index"
                   :label="item.label"
                   :value="item.value">
                 </el-option>
@@ -103,41 +104,41 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import RiskLevel from "@/components/RiskLevel";
-import { createsystemMessage,getsystemMessage } from "@/api/systemManage/system.js";
+import Breadcrumb from '@/components/Breadcrumb'
+import RiskLevel from '@/components/RiskLevel'
+import { createsystemMessage, getsystemMessage } from '@/api/systemManage/system.js'
 
 export default {
-  name: "info",
+  name: 'info',
   data() {
     return {
-      currentPage: 1, //当前页数
+      currentPage: 1, // 当前页数
       pageSizesArray: [10, 20, 30, 40, 50],
-      pageSize: 0, //每页显示条目个数
-      total: 0, //总条目数
+      pageSize: 0, // 每页显示条目个数
+      total: 0, // 总条目数
       tableData: [],
       tableLoading: false,
       levelOptions: [
         {
-          label: "低危",
+          label: '低危',
           value: 1
         },
         {
-          label: "中危",
+          label: '中危',
           value: 2
         },
         {
-          label: "高危",
+          label: '高危',
           value: 3
         }
       ],
       queryForm: {
-        date: "",
-        type: "",
-        riskLevel: "",
-        status: ""
+        date: '',
+        type: '',
+        riskLevel: '',
+        status: ''
       }
-    };
+    }
   },
   components: {
     Breadcrumb,
@@ -157,8 +158,8 @@ export default {
       //   info: "XSS系统异常,访问查看详情",
       //   status: "已确认"
       // }
-    ];
-    this.total = 2;
+    ]
+    this.total = 2
   },
   mounted() {
   // createsystemMessage({
@@ -175,63 +176,61 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      this.currentPage = 1;
-      this.pageSize = val;
+      this.currentPage = 1
+      this.pageSize = val
     },
     handleCurrentChange(val) {
-      this.currentPage = val;
+      this.currentPage = val
     },
     handleSearchBtn() {
       getsystemMessage({
-        page:this.currentPage,
-        per_page:this.total
+        page: this.currentPage,
+        per_page: this.total
       })
         .then(res => {
+          this.tableData = res.items
+          for (let i = 0; i < this.tableData.length; i++) {
+            if (this.tableData[i].classify == '0') this.tableData[i].classify = '通知'
+            if (this.tableData[i].classify == '1') this.tableData[i].classify = '确认'
 
-          this.tableData=res.items
+            if (this.tableData[i].status == '0') this.tableData[i].status = '已确认'
+            if (this.tableData[i].status == '1') this.tableData[i].status = '无需确认'
+            if (this.tableData[i].status == '2') this.tableData[i].status = '没有确认'
 
-          for(let i=0;i<this.tableData.length;i++){   
-            if(this.tableData[i].classify=='0')this.tableData[i].classify="通知"
-            if(this.tableData[i].classify=='1')this.tableData[i].classify="确认" 
-            
-            if(this.tableData[i].status=='0')this.tableData[i].status="已确认"
-            if(this.tableData[i].status=='1')this.tableData[i].status="无需确认"
-            if(this.tableData[i].status=='2')this.tableData[i].status="没有确认"
-           
-            if(this.tableData[i].risk_level=='0')this.tableData[i].risk_level="1"
-            if(this.tableData[i].risk_level=='1')this.tableData[i].risk_level="2"
-            if(this.tableData[i].risk_level=='2')this.tableData[i].risk_level="3"
+            if (this.tableData[i].risk_level == '0') this.tableData[i].risk_level = '1'
+            if (this.tableData[i].risk_level == '1') this.tableData[i].risk_level = '2'
+            if (this.tableData[i].risk_level == '2') this.tableData[i].risk_level = '3'
           }
           // this.queryForm.type=res.classify
           // this.queryForm.riskLevel=res.risk_level
           // this.queryForm.status=res.status
-          console.log(res,"1")
+          console.log(res, '1')
         })
         .catch(error => {
           console.log('2')
-        });
+        })
     },
     handleConfirmBtn() {
-      this.$confirm("是否根据消息中的要求已完成相关操作？", "确认操作", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "success"
+      this.$confirm('是否根据消息中的要求已完成相关操作？', '确认操作', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'success'
       })
         .then(() => {
           this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+            type: 'success',
+            message: '消息已确认!'
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
-};
+}
 </script>
 
 <style scoped>

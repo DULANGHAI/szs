@@ -7,7 +7,7 @@
       {{$route.name}}
     </div>
     <div class="container-body">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="文件列表" name="first">
           <div class="tabs-contents">
             <file-list></file-list>
@@ -15,7 +15,7 @@
         </el-tab-pane>
         <el-tab-pane label="分发记录" name="second">
           <div class="tabs-contents">
-            <record-list></record-list>
+            <record-list ref="recordList"></record-list>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -44,6 +44,11 @@ export default {
   created() {
   },
   methods: {
+    handleClick(tab, event) {
+      if (tab.name === 'second') {
+        this.$refs.recordList.getListData()
+      }
+    }
   }
 }
 </script>

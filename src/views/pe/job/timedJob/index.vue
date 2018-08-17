@@ -7,7 +7,7 @@
       {{$route.name}}
     </div>
     <div class="container-body">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="定时作业" name="first">
           <div class="tabs-contents">
             <list-view></list-view>
@@ -44,6 +44,11 @@ export default {
   created() {
   },
   methods: {
+    handleClick(tab, event) {
+      if (tab.name === 'second') {
+        this.$refs.recordList.init()
+      }
+    }
   }
 }
 </script>

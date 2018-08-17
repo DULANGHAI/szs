@@ -55,8 +55,8 @@
         </el-row>
         <el-row>
           <el-col :span="9">
-            <el-form-item label="资源ID">
-               <el-input style="width: 200px" v-model="queryForm.resourceId"></el-input>
+            <el-form-item label="资源ID">          
+                 <el-input style="width: 200px" v-model="queryForm.resourceId"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -98,7 +98,11 @@
         v-loading.body="tableLoading">
         <el-table-column prop="created_at" label="时间"></el-table-column>
         <el-table-column prop="source_ip" label="源IP"></el-table-column>
-        <el-table-column prop="resource_id" label="资源ID"></el-table-column>
+        <el-table-column label="资源ID">
+          <template slot-scope="scope">
+            <router-link :to="jumper1"><el-button type="text">{{ scope.row.resource_id }}</el-button></router-link>
+          </template>  
+        </el-table-column>
         <el-table-column prop="resource" label="资源类型"></el-table-column>
         <el-table-column prop="operation" label="操作"></el-table-column>
         <el-table-column prop="status" label="结果"></el-table-column>
@@ -121,75 +125,82 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import {UserSearch,Resources,getAudit,getAuditSearch} from '@/api/systemManage/system.js'
+import Breadcrumb from '@/components/Breadcrumb'
+import { UserSearch, Resources, getAudit, getAuditSearch } from '@/api/systemManage/system.js'
 
 export default {
-  name: "audit",
+  name: 'audit',
   components: {
     Breadcrumb
   },
   data() {
     return {
-      currentPage: 1,//当前页数
+      currentPage: 1, // 当前页数
       pageSizesArray: [10, 20, 30, 40, 50],
       pageSize: 0,
-      total: 0,//总条目数
+      total: 0, // 总条目数
       tableData: [],
       tableLoading: false,
+      jumper1: '',
       queryForm: {
-        time: "",
-        user: "",
-        val:"",
-        sourceId: "",
-        resourceType: "",
-        val2:"",
-        resourceId: "",
-        actionType: "",
-        status: "",
-        message: ""
+        time: '',
+        user: '',
+        val: '',
+        sourceId: '',
+        resourceType: '',
+        val2: '',
+        resourceId: '',
+        actionType: '',
+        status: '',
+        message: ''
       }
-    };
+    }
   },
   mounted() {
-     getAudit({
-      page:this.currentPage,
-      per_page:this.total 
+    getAudit({
+      page: this.currentPage,
+      per_page: this.total
       // start_time:
-      }).then(res=>{
+    }).then(res => {
       // console.log(res.items,'3')
-      this.total=res.items.length;
+      this.total = res.items.length
       //  this.tableData.time="2017-10-31  23:12:00";
       //   this.tableData.sourceId=res.items.resource_id
-      this.tableData=res.items;
+      this.tableData = res.items
       // this.tableData.message=res.items.message.notes;
-       
-      for(let i=0;i< this.tableData.length;i++){
-        // console.log(JSON.parse(res.items[i].message))
-        // console.log(res.items[i].message)
-        
-         this.tableData[i].message=JSON.parse(res.items[i].message).notes;
-        
+
+      for (let i = 0; i < this.tableData.length; i++) {
+        // console.log(JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args.identifier))
+        // console.log(JSON.stringify(JSON.parse(res.items[i].message).notes))
+        // console.log( JSON.stringify(JSON.parse(res.items[i].message).path_args))
+      //  console.log('/system/dashboard/audit'+JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args))
+        // console.log(JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args.identifier))
+        this.tableData[i].message = JSON.parse(res.items[i].message).notes
       }
-     
-      
-    }).catch(error=>{
+      for (let i = 0; i < this.tableData.length; i++) {
+        // console.log(res.items[i].resource)
+        if (res.items[i].resource === 'Todo') {
+          this.jumper1 = '/system/dashboard/role'
+          // console.log( this.jumper1)
+        }
+      }
+      //  this.jumper1='/system/dashboard/audit'+JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args.identifier)
+    }).catch(() => {
       // console.log('2')
     })
     // handleExportBtn()
-    UserSearch().then(res=>{
+    UserSearch().then(res => {
       // console.log(res,'1')
-      this.queryForm.user=res.creator;
-      
-    }).catch(error=>{
-       Message.error(error);
-    }),
-    Resources().then(res=>{
-      this.queryForm.resourceType=res.resource;
+      this.queryForm.user = res.creator
+    }).catch(error => {
+      console.error(error)
+    })
+    Resources().then(res => {
+      this.queryForm.resourceType = res.resource
       // console.log(res,'1')
-    }).catch(error=>{
+    }).catch(error => {
       // console.log(res,'2')
-      Message.error(error);
+      console.error(error)
     })
   },
   created() {
@@ -211,7 +222,7 @@ export default {
     //   console.log('2')
     // })
 
-    this.total = 6;
+    this.total = 6
     this.tableData = [
       // {
       //   time: "2017-10-31  23:12:00",
@@ -263,66 +274,59 @@ export default {
       //   result: "200",
       //   message: "用户登录成功"
       // }
-    ];
+    ]
   },
   methods: {
     handleSizeChange(val) {
-      this.currentPage = 1;
-      this.pageSize = val;
+      this.currentPage = 1
+      this.pageSize = val
     },
     handleCurrentChange(val) {
-      this.currentPage = val;
+      this.currentPage = val
     },
     handleSearchBtn() {
       // console.log('2')
-      getAuditSearch().then(res=>{
+      getAuditSearch().then(res => {
         // console.log('1')
-      this.queryForm.time=res.created_at;
-      this.queryForm.sourceId=res.id;
-      this.queryForm.message=res.message.notes;
-      this.queryForm.resourceId=res.source_ip;
-      this.queryForm.status=res.status;
-      this.queryForm.actionType=res.operation;
-      
+        this.queryForm.time = res.created_at
+        this.queryForm.sourceId = res.id
+        this.queryForm.message = res.message.notes
+        this.queryForm.resourceId = res.source_ip
+        this.queryForm.status = res.status
+        this.queryForm.actionType = res.operation
 
-      console.log(res,'1')
-
-    }).catch(error=>{
-      console.log('2')
-    })
+        console.log(res, '1')
+      }).catch(() => {
+        console.log('2')
+      })
 
       // console.log("search");
     },
     handleExportBtn() {
       getAudit({
-      page:this.currentPage,
-      per_page:this.total 
+        page: this.currentPage,
+        per_page: this.total
       // start_time:
-      }).then(res=>{
-      console.log(res.items,'3')
-      this.total=res.items.length;
-      //  this.tableData.time="2017-10-31  23:12:00";
-      //   this.tableData.sourceId=res.items.resource_id
-      this.tableData=res.items;
-      // this.tableData.message=res.items.message.notes;
-       
-      for(let i=0;i< this.tableData.length;i++){
+      }).then(res => {
+        console.log(res.items, '3')
+        this.total = res.items.length
+        //  this.tableData.time="2017-10-31  23:12:00";
+        //   this.tableData.sourceId=res.items.resource_id
+        this.tableData = res.items
+        // this.tableData.message=res.items.message.notes;
+
+        for (let i = 0; i < this.tableData.length; i++) {
         // console.log(JSON.parse(res.items[i].message))
         // console.log(res.items[i].message)
-        
-         this.tableData[i].message=JSON.parse(res.items[i].message).notes;
-        
-      }
-     
-      
-    }).catch(error=>{
+
+          this.tableData[i].message = JSON.parse(res.items[i].message).notes
+        }
+      }).catch(() => {
       // console.log('2')
-    })
-   
-  
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>

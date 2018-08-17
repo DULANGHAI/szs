@@ -110,11 +110,10 @@ export function startJobApi(data) {
  * 停止定时作业-记录中
  * @param {Object} data
  */
-export function stopJobApi(data) {
+export function stopJobApi(id) {
   return request({
-    url: '/v1/jobs/instant/stop/',
-    method: 'post',
-    data: data
+    url: `/v1/jobs/${id}/stop/`,
+    method: 'post'
   })
 }
 
