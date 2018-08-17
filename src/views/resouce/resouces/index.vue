@@ -18,8 +18,28 @@
                 </el-input>
               </div>
               <div class="file-nav-right">
-                <el-button size="small" >导入主机账号</el-button>
-                <el-button size="small" >导入CSV</el-button>
+                <span class="hostuploadpanel" style="display:inline-block">
+                  <el-upload
+                    class="upload-demo"
+                    :onSuccess="uploadSuccess"
+                    :onError="uploadError"
+                    :action="uploadHost()"
+                    :show-file-list="false"
+                    :limit="1">
+                    <el-button size="small" >导入主机账号</el-button>
+                  </el-upload>
+                </span>
+                <span class="hostuploadpanel" style="display:inline-block">
+                  <el-upload
+                    class="upload-demo"
+                    :onSuccess="uploadSuccess"
+                    :onError="uploadError"
+                    :action="uploadCSV()"
+                    :show-file-list="false"
+                    :limit="1">
+                    <el-button size="small" >导入CSV</el-button>
+                  </el-upload>
+                </span>
                 <el-button size="small" >同步CMBD</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="$refs.app.doCreate(false, multipleSelection)">添加主机组</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="$refs.app.doCreate(true, multipleSelection)">编辑</el-button>
@@ -161,6 +181,23 @@ export default {
         })
       }).catch(() => { })
     },
+    // 导入csv
+    uploadCSV() {
+      return '/v1/hosts/infos'
+    },
+    // 导入主机账号
+    uploadHost() {
+      return '/v1/hosts/accounts'
+    },
+    // 上传成功后的回调
+    uploadSuccess(response, file, fileList) {
+      this.getList()
+      Message.succes('上传成功')
+    },
+    // 上传错误
+    uploadError(response, file, fileList) {
+      Message.error('上传失败，请重试！')
+    },
     // 表格搜索函数，可支持多列搜索
     search(data, argumentObj) {
       // data = data || this.data
@@ -221,4 +258,12 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .hostuploadpanel {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: middle;
+  }
+  .hostuploadpanel ul{
+    display: none !important;
+  }
 </style>
