@@ -10,7 +10,6 @@
         </span>
         <svg-icon :icon-class="scope.row.type" />
         {{scope.row.name}}
-        {{searchText}}
       </template>
     </el-table-column>
     <slot></slot>

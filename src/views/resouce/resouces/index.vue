@@ -88,7 +88,7 @@
                 </el-tooltip>
               </el-button>
               <el-button v-if="scope.row.type === 'host'" type="text">
-                <el-tooltip class="item" effect="dark" content="查看主机组" placement="top" style="margin-right:10px;">
+                <el-tooltip class="item" effect="dark" content="查看主机" placement="top" style="margin-right:10px;">
                   <i @click.prevent="$refs.see.doCreate(false, scope.row)" class="el-icon-view"></i>
                 </el-tooltip>
               </el-button>
