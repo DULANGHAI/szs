@@ -68,6 +68,10 @@
         <div class="abh-left">宿主机:</div>
         <div class="abh-right">{{ form.machine }}</div>
       </div>
+      <div v-for="kp in form.others" style="padding-bottom: 10px;">
+        <div class="abh-left">{{ kp.key_cn }}:</div>
+        <div class="abh-right">{{ kp.value }}</div>
+      </div>
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false" type="primary">确 定</el-button>

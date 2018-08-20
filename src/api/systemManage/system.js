@@ -253,8 +253,6 @@ export function getNum(params) {
     params: params
   })
 }
-
-
 /**
  * 创建系统配置
  * @param {Object} params
@@ -301,3 +299,27 @@ export function getonepermissions(params) {
     // params: params
   })
 }
+/**
+ * 查看单个用户权限
+ * @param {Object} params
+ */
+export function getOnepermissions(params) {
+  return request({
+    url: `/v1/roles/role-permission/${params.role_id}`,
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 获取用户名字
+ * @param {Object} params
+ */
+export function getusername() {
+  return request({
+    url: '/v1/users/names',
+    method: 'get'
+    // params: params
+  })
+}
+
