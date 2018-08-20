@@ -65,10 +65,12 @@ export default {
     ])
   },
   mounted() {
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.id = getToken()
       getNum({ user_id: this.id }).then(res => {
         this.num = res.count
+      }).catch(() => {
+        clearInterval(this.interval)
       })
     }, 10000)
   },
