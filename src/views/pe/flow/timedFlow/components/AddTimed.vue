@@ -118,10 +118,8 @@ export default {
       if (this.type !== 'add') {
         this.initEdit()
       }
-      console.log('open callback ' + this.type)
     },
     handleClose() {
-      console.log('close callback ')
     },
     initEdit() {
       // 编辑时，已经选的作业和定时作业名不能更改

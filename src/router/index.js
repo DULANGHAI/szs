@@ -42,14 +42,14 @@ export const constantRouterMap = [
       // 0. DashBoard
       {
         path: 'dashboard',
-        name: 'dashboard',
+        name: 'pe-dashboard',
         component: Layout,
         meta: { title: 'Dashboard', icon: 'dashboard' },
         noNest: true,
         children: [
           {
             path: 'index',
-            name: 'pe-dashboard',
+            // name: 'pe-dashboard',
             component: () => import('@/views/pe/dashboard/index'),
             meta: { title: 'Dashboard', icon: 'dashboard' }
           }
@@ -267,7 +267,7 @@ export const constantRouterMap = [
         children: [
           {
             path: 'index',
-            name: '即时命令',
+            // name: '即时命令',
             component: () => import('@/views/pe/command/index'),
             meta: { title: '即时命令', icon: 'command' }
           }
@@ -305,7 +305,7 @@ export const constantRouterMap = [
         children: [
           {
             path: 'index',
-            name: '审批列表',
+            // name: '审批列表',
             component: () => import('@/views/pe/peApprove/index'),
             meta: { title: '运维审批', icon: 'peApprove' }
           }
@@ -331,7 +331,7 @@ export const constantRouterMap = [
         children: [
           {
             path: 'index',
-            name: 'dashboard',
+            // name: 'dashboard',
             component: () => import('@/views/resouce/dashboard/index'),
             meta: { title: 'Dashboard', icon: 'dashboard' }
           }

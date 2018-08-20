@@ -3,10 +3,7 @@ export default function() {
     name: 'node 1-1',
     expanded: true,
     children: [{
-      name: 'node 1-1-1',
-      children: [{
-        name: 'node 6-1-1'
-      }]
+      name: 'node 1-1-1'
     }, {
       name: 'node 1-1-2'
     }, {

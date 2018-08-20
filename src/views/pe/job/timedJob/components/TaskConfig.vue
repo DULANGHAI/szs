@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import MyChart from '@/views/pe/job/joblist/components/MyChart'
-import CommandShow from '@/views/pe/job/joblist/components/CommandShow'
-import ScriptShow from '@/views/pe/job/joblist/components/ScriptShow'
-import FileShow from '@/views/pe/job/joblist/components/FileShow'
+import MyChart from '@/views/pe/job/jobList/components/MyChart'
+import CommandShow from '@/views/pe/job/jobList/components/CommandShow'
+import ScriptShow from '@/views/pe/job/jobList/components/ScriptShow'
+import FileShow from '@/views/pe/job/jobList/components/FileShow'
 
 import { updateJobApi } from '@/api/pe/jobManage/timedJob'
 
@@ -94,10 +94,8 @@ export default {
     handleOpen() {
       this.scheduling = JSON.parse(this.data.scheduling)
       this.uniqueId = +new Date()
-      console.log('open callback ')
     },
     handleClose() {
-      console.log('close callback ')
     },
     init() {
 

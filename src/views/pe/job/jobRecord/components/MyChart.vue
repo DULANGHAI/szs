@@ -7,6 +7,9 @@
         <!-- 条件按钮 -->
         <div class="cmd" :class="{'active': data.condition}">cmd</div>
       </div>
+
+      <!-- 横线 -->
+      <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
       
       <!-- 当前节点 -->
       <div>
@@ -15,8 +18,7 @@
           :data.sync="data"
           :uniqueId="uniqueId"></end-option>
       </div>
-      <!-- 横线 -->
-      <div v-if="bro !== 0 || index !== 0" :class="getClass()"></div>
+      
       <!-- 子节点 -->
       <div v-if="data.next && data.next.length" style="margin-top: 80px;">
         <div class="flex-between flex-h">
@@ -60,16 +62,16 @@ export default {
     getClass2() {
       if (this.data.task_reult === 'runner_on_ok') {
         return 'execution-status-success'
-      } else if (this.data.task_reult === 'runner_on_skipped') {
+      } else if (this.data.task_reult === 'runner_on_skipped' || !this.data.task_reult) {
         return ''
       } else {
         return 'execution-status-failed'
       }
     },
     getSuccessBro() {
-      if (this.data.next && this.data.next.length > 1) {
+      if (this.data.next && this.data.next.length) {
         return this.data.next.map((item, index) => {
-          if (item.task_reult === 'success') {
+          if (item.task_reult === 'runner_on_ok') {
             return 1
           }
           return 0
@@ -120,7 +122,6 @@ export default {
           result = ' execution-status-success'
         }
       }
-      console.log('>----' + index + ': ' + result)
       return result
     },
     getMiddle(index) {
