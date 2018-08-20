@@ -329,13 +329,11 @@ export default {
       this.data.push(temp)
     },
     moveUp() {
-      console.log('up')
       if (this.selectRowIndex > 0) {
         this.swapArray(this.selectRowIndex - 1, this.selectRowIndex)
       }
     },
     moveDown() {
-      console.log('down')
       if (this.selectRowIndex < this.data.length - 1) {
         this.swapArray(this.selectRowIndex, this.selectRowIndex + 1)
       }

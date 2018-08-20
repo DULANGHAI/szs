@@ -413,12 +413,42 @@ export default {
     openEndModel() {
       this.showEndModel = true
     },
+    // 作业的校验，1.必须有值；2.每个分支的最后一个节点必须要有结束节点
+    jobValidateFun() {
+      // 1.看值是否为空
+      if (!this.scheduling.type) {
+        this.$message.warning('请编排作业')
+        return false
+      }
+      // 2.每个分支的最后一个节点必须要有结束节点
+      // 方法： 先找出next.length === 0 的节点，判断该节点的type.indexOf('end') === 0
+      const nodeArr = this.findNoNextNode(this.scheduling)
+      if (nodeArr.length > 0) {
+        this.$message.warning('作业必须要以结束节点结束')
+        return false
+      }
+      return true
+    },
+    findNoNextNode(temp) {
+      let result = []
+      if (!temp.next.length && temp.type.indexOf('end') === -1) {
+        result.push({
+          type: temp.type
+        })
+      } else if (temp.next.length) {
+        for (let i = 0; i < temp.next.length; i++) {
+          result = result.concat(this.findNoNextNode(temp.next[i]))
+        }
+      }
+      return result
+    },
     /**
      * 提交操作
      */
     submitAll() {
       this.$refs.form.validate((valid) => {
-        if (valid) {
+        // 加上作业的校验
+        if (this.jobValidateFun() && valid) {
           const task_id_list = []
           this.getTaskIdList(this.scheduling, task_id_list)
           const data = {
@@ -462,7 +492,7 @@ export default {
     },
     update() {
       this.$refs.form.validate((valid) => {
-        if (valid) {
+        if (this.jobValidateFun() && valid) {
           const task_id_list = []
           this.getTaskIdList(this.scheduling, task_id_list)
           const data = {
