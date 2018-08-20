@@ -93,10 +93,8 @@ export default {
     handleOpen() {
       this.scheduling = JSON.parse(this.data.scheduling)
       this.uniqueId = +new Date()
-      console.log('open callback ')
     },
     handleClose() {
-      console.log('close callback ')
     },
     init() {
 

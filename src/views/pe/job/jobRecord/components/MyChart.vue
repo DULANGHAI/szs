@@ -120,7 +120,6 @@ export default {
           result = ' execution-status-success'
         }
       }
-      console.log('>----' + index + ': ' + result)
       return result
     },
     getMiddle(index) {

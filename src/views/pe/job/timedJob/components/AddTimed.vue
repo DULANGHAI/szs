@@ -213,7 +213,6 @@ export default {
       }
     },
     handleClose() {
-      console.log('close callback ')
     },
     init() {
 
