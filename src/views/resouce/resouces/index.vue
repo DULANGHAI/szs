@@ -13,7 +13,7 @@
           <el-col :span="24">
             <div class="file-nav">
               <div class="file-nav-left">
-                <el-input placeholder="可搜索组名或ip地址" size="small" v-model="searchContent">
+                <el-input placeholder="可搜索组名或ip地址" size="small" v-model="searchContent" @change="search">
                   <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
                   </i>
                 </el-input>
@@ -50,7 +50,7 @@
         </el-row>
       </template>
       <template>
-        <tree-table :data.sync="nodeList" :expandAll="false" :multipleSelection.sync="multipleSelection">
+        <tree-table :data.sync="nodeList" :expandAll="false" :multipleSelection.sync="multipleSelection" :searchText="searchText">
           <el-table-column
             width="100px"
             label="类型">
@@ -110,7 +110,7 @@ import { Message, MessageBox } from 'element-ui'
 import TreeTable from './treeTable'
 import AddHost from './addHostGroup' // 新建主机组
 import SeeHost from './seeHostDlg'
-import nodeListFunc from './data.js'
+import _ from 'lodash'
 
 const formData = {
   'datatime': []
@@ -124,12 +124,11 @@ export default {
     SeeHost
   },
   data() {
-    var list = nodeListFunc()
     return {
       multipleSelection: [],
       listLoading: false,
       form: JSON.parse(JSON.stringify(formData)),
-      nodeList: list,
+      nodeList: [],
       searchText: '',
       listData: [],
       tableDataClone: [],
@@ -204,7 +203,8 @@ export default {
     search() {
       var self = this
       // 把树形结构还原成搜索以前的。
-      this.nodeList = nodeListFunc()
+      var cda = _.cloneDeep(this.listData)
+      this.nodeList = cda
       if (this.searchContent === '') {
         this.searchText = ''
         return
@@ -282,6 +282,7 @@ export default {
       this.listLoading = true
       getHostList().then(response => {
         this.listLoading = false
+        this.nodeList = response
         this.listData = response
       }).catch(error => {
         Message.error(error)
@@ -309,7 +310,7 @@ export default {
     // 上传成功后的回调
     uploadSuccess(response, file, fileList) {
       this.getList()
-      Message.succes('上传成功')
+      Message.success('上传成功')
     },
     // 上传错误
     uploadError(response, file, fileList) {
