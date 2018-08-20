@@ -71,10 +71,8 @@ export default {
       } else {
         this.form.timestr = +new Date()
       }
-      console.log('open callback ')
     },
     handleClose() {
-      console.log('close callback ')
     },
     init() {
 

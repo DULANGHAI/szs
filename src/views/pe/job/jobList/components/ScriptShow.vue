@@ -53,6 +53,7 @@ import RiskLevel from '@/components/RiskLevel'
 import { getLanguageApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 
 export default {
+  name: 'ScriptShow',
   props: {
     view: String,
     data: Object

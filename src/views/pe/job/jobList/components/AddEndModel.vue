@@ -48,7 +48,9 @@ export default {
       this.form = {
         type: '',
         description: '',
-        is_warning: true
+        is_warning: true,
+        timestr: +new Date(),
+        next: []
       }
       this.$emit('update:show', false)
     },

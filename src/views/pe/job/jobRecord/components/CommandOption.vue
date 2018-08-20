@@ -32,7 +32,7 @@ export default {
     getClass() {
       if (this.data.task_reult === 'runner_on_ok') {
         return 'execution-status-success'
-      } else if (this.data.task_reult === 'runner_on_skipped') {
+      } else if (this.data.task_reult === 'runner_on_skipped' || !this.data.task_reult) {
         return ''
       } else {
         return 'execution-status-failed'
@@ -46,9 +46,9 @@ export default {
   },
   methods: {
     getSuccessBro() {
-      if (this.data.next && this.data.next.length > 1) {
+      if (this.data.next && this.data.next.length) {
         return this.data.next.map((item, index) => {
-          if (item.task_reult === 'success') {
+          if (item.task_reult === 'runner_on_ok') {
             return 1
           }
           return 0

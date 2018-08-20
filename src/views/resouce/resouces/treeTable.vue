@@ -38,7 +38,8 @@ export default {
     expandAll: {
       type: Boolean,
       default: false
-    }
+    },
+    searchText: String
   },
   computed: {
     // 格式化数据源
@@ -52,6 +53,25 @@ export default {
       const func = this.evalFunc || treeToArray
       const args = this.evalArgs ? Array.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll]
       return func.apply(null, args)
+    },
+    // 判断当前节点是否存在孩子节点
+    isHasChildren() {
+      let flag = false
+      if (this.node.children && this.node.children.length > 0) {
+        flag = true
+      }
+      return flag
+    },
+    // 如果当前节点名称，有文字和搜索内容匹配，就把匹配的文字标红。
+    // 反之，则正常显示节点名称。
+    nodeName() {
+      if (this.searchText === undefined || this.searchText === '' || this.searchText == null) {
+        return this.node.name
+      }
+      if (this.node.name.indexOf(this.searchText) <= -1) {
+        return this.node.name
+      }
+      return this.replaceAll(this.node.name, this.searchText, '<span style="color:red;">' + this.searchText + '</span>')
     }
   },
   methods: {
@@ -72,6 +92,12 @@ export default {
     handleSelectionChange(val) {
       console.log(val)
       this.$emit('update:multipleSelection', val)
+    },
+    replaceAll(str, substr, replacement) {
+      if (!str) {
+        return ''
+      }
+      return str.split(substr).join(replacement)
     }
   }
 }

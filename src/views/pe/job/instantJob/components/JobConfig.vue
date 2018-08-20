@@ -66,10 +66,8 @@ export default {
         frequency: this.data.frequency
       }
       this.uniqueId = +new Date()
-      console.log('open callback ')
     },
     handleClose() {
-      console.log('close callback ')
     },
     init() {
 

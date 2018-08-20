@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'Vuex'
+import { mapGetters } from 'vuex'
 import { approveApi } from '@/api/pe/peApprove'
 
 export default {
