@@ -244,14 +244,19 @@ export default {
     })
     getsysconfigs().then(res => {
       // 渲染业务集群配置
-      // console.log(res.business_config,'业务集群配置')
+      console.log(res.business_config,'业务集群配置')
       this.tableData = res.business_config
       // 渲染审批配置
       // console.log(res.approve_config, '审批配置')
-      this.form.switch1 = res.script_on
-      this.form.switch2 = res.software_on
-      this.form.switch3 = res.config_on
-      
+      this.form.switch1 = this.boolena1(res.approve_config.script_on)
+      this.form.switch2 = this.boolena1(res.approve_config.software_on)
+      this.form.switch3 = this.boolena1(res.approve_config.config_on)
+      this.form.rate = this.low1(res.approve_config.level)
+      this.form.switch6 = this.boolena1(res.exchange_config.is_on)
+      // this.form.value4[0] = res.exchange_config.start_time
+      // this.form.value4[1] = res.exchange_config.end_time
+      this.form.switch4 = this.boolena1(res.alarm_config[0].alarm_on)
+      this.form.switch5 = this.boolena1(res.alarm_config[2].alarm_on)
 
       // console.log(res, '成功')
     }).catch(res => {
@@ -330,7 +335,7 @@ export default {
       this.role = { ...defaultRole }
       this.dialogType = 'roleCreate'
       this.dialogVisible = true
-      this.tableData = this.role
+      // this.tableData = this.role
     },
     handleSelectionChange(val) {
       console.log(val)
@@ -341,6 +346,9 @@ export default {
     //判断布尔值
     boolena(val) {
       return val === false ? 0 : 1
+    },
+    boolena1(val){
+      return val === 1? true : false
     },
     //判断低中搞
     low(val1){
@@ -354,16 +362,20 @@ export default {
         }
       }
     },
+    low1(val1){
+      if(val1 == 'high'){
+        return '1'
+      } else {
+        if(val1 == 'middle'){
+          return '2'
+        } else {
+          return '3'
+        }
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-            // this.form.switch1 === 'false' ? this.from.switch1 = 0 : this.from.switch1 = 1
-            // this.form.switch2 === false ? this.from.switch2 = 0 : this.from.switch2 = 1
-            // this.form.switch3 === false ? this.from.switch3 = 0 : this.from.switch3 = 1
-            // this.form.switch4 === false ? this.from.switch4 = 0 : this.from.switch4 = 1
-            // this.form.switch5 === false ? this.from.switch5 = 0 : this.from.switch5 = 1
-            // this.form.switch6 === false ? this.from.switch6 = 0 : this.from.switch6 = 1      
-
+        if (valid) {   
           cpostsysconfigs(
             {
               
@@ -406,16 +418,12 @@ export default {
             exchange_config: {
               start_time: this.formatterTime(this.form.value4[0]),
               // start_time: this.form.value4[0].substring(1,9),
-              is_on: this.form.switch6,
+              is_on:  this.boolena(this.form.switch6),
               end_time: this.formatterTime(this.form.value4[1])
             }
           }).then(res => {
-           this.form.switch1 === false ? this.from.switch1 = 0 : this.from.switch1 = 1
-            this.form.switch2 === false ? this.from.switch2 = 0 : this.from.switch2 = 1
-            this.form.switch3 === false ? this.from.switch3 = 0 : this.from.switch3 = 1
-            this.form.switch4 === false ? this.from.switch4 = 0 : this.from.switch4 = 1
-            this.form.switch5 === false ? this.from.switch5 = 0 : this.from.switch5 = 1
-            this.form.switch6 === false ? this.from.switch6 = 0 : this.from.switch6 = 1
+
+          this.tableData = res.business_config
             console.log(res, '1')
           }).catch(() => {
             console.log('失败', '2')
