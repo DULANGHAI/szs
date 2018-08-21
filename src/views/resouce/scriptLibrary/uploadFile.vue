@@ -96,8 +96,12 @@
       // 上传成功后的回调
       uploadSuccess(response, file, fileList) {
         // console.log('上传文件', response, file, fileList)
-        this.fileList = fileList
-        Message.success('上传成功！')
+        if (response.IsSuccess) {
+          this.fileList = fileList
+          Message.success('上传成功！')
+        } else {
+          Message.error('上传失败，请重试！')
+        }
       },
       // 上传文件大小
       beforeAvatarUpload(file) {

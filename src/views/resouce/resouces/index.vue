@@ -42,15 +42,15 @@
                   </el-upload>
                 </span>
                 <el-button size="small" >同步CMBD</el-button>
-                <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="$refs.app.doCreate(false, multipleSelection)">添加主机组</el-button>
-                <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="$refs.app.doCreate(true, multipleSelection)">编辑</el-button>
+                <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="dappAdd">添加主机组</el-button>
+                <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="dappEdit">编辑</el-button>
               </div>
             </div>
           </el-col>
         </el-row>
       </template>
       <template>
-        <tree-table :data.sync="nodeList" :expandAll="false" :multipleSelection.sync="multipleSelection" :searchText="searchText">
+        <tree-table :data.sync="nodeList" :loading="listLoading" :expandAll="false" :multipleSelection.sync="multipleSelection" :searchText="searchText">
           <el-table-column
             width="100px"
             label="类型">
@@ -98,6 +98,7 @@
       </template>
     </div>
     <add-host ref="app" v-on:getList="getList"></add-host>
+    <edit-host ref="edit" v-on:getList="getList"></edit-host>
     <see-host ref="see" v-on:getList="getList"></see-host>
   </div>
 </template>
@@ -109,6 +110,7 @@ import RiskLevel from '@/components/RiskLevel'
 import { Message, MessageBox } from 'element-ui'
 import TreeTable from './treeTable'
 import AddHost from './addHostGroup' // 新建主机组
+import editHost from './editHost' // 编辑主机
 import SeeHost from './seeHostDlg'
 import _ from 'lodash'
 
@@ -121,12 +123,13 @@ export default {
     RiskLevel,
     TreeTable,
     AddHost,
-    SeeHost
+    SeeHost,
+    editHost
   },
   data() {
     return {
       multipleSelection: [],
-      listLoading: false,
+      listLoading: true,
       form: JSON.parse(JSON.stringify(formData)),
       nodeList: [],
       searchText: '',
@@ -276,6 +279,22 @@ export default {
             stack.push(tmpNode.children[i])
           }
         }
+      }
+    },
+    dappAdd() {
+      if (this.multipleSelection[0].type === 'host') {
+        Message.error('主机下不能添加主机组')
+      } else {
+        this.$refs.app.doCreate(false, this.multipleSelection)
+      }
+    },
+    dappEdit() {
+      if (this.multipleSelection[0].type === 'business') {
+        Message.error('只有主机组和主机可以编辑')
+      } else if (this.multipleSelection[0].type === 'host') {
+        this.$refs.edit.doCreate(true, this.multipleSelection)
+      } else {
+        this.$refs.app.doCreate(true, this.multipleSelection)
       }
     },
     getList() {

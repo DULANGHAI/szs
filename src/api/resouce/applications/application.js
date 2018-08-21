@@ -33,6 +33,14 @@ export function getAppLanguageList() {
   })
 }
 
+// 通过业务名称 获取组id
+export function getAppRepository(name, type) {
+  return request({
+    url: '/v1/repositories/' + name + '/' + type,
+    method: 'get'
+  })
+}
+
 // 添加应用
 export function addApplication(params) {
   return request({

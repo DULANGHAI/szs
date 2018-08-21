@@ -50,6 +50,15 @@ export function putGroups(id, params) {
   })
 }
 
+// 更新主机
+export function putHosts(id, params) {
+  return request({
+    url: '/v1/hosts/' + id,
+    method: 'put',
+    data: params
+  })
+}
+
 // 删除主机组
 export function delGroups(id) {
   return request({

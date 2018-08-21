@@ -91,7 +91,7 @@ export default {
 .module-nav {
   float: left;
   padding: 0 20px;
-  width: 260px;
+  width: 170px;
   display: flex;
   justify-content: space-between;
 }
