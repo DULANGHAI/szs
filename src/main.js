@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import dayjs from 'dayjs'
+import VCharts from 'v-charts'
 
 import '@/styles/index.scss' // global css
 
@@ -20,6 +21,7 @@ import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
 
 Vue.use(ElementUI, { locale })
+Vue.use(VCharts)
 
 Vue.config.productionTip = false
 Vue.prototype.$dayjs = dayjs

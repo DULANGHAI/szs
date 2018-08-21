@@ -16,7 +16,7 @@
           label-position="right"
         >
           <el-form-item label="用户名" prop="userName">
-            <el-input v-model="form.userName"></el-input>
+            <el-input v-model="form.userName" placeholder="输入用户名"></el-input>
           </el-form-item>
           <el-form-item label="新密码" prop="password">
             <el-input v-model="form.password" placeholder="输入新密码(8位以上包含大小写字母和特殊字符)"></el-input>
@@ -92,7 +92,7 @@ export default {
         }
       ],
       form: {
-        userName: 'root',
+        userName: '',
         password: '',
         rePassword: '',
         name: '',

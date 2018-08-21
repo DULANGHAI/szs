@@ -323,3 +323,26 @@ export function getusername() {
   })
 }
 
+/**
+ * 获取启用停用接口
+ * @param {Object} params
+ */
+export function openclose(params) {
+  return request({
+    url: `/v1/users/${params.identifier}`,
+    method: 'put',
+    params: params
+  })
+}
+
+/**
+ * 删除用户
+ * @param {Object} params
+ */
+export function deleteuser(params) {
+  return request({
+    url: `/v1/users/${params.identifier}`,
+    method: 'delete',
+    params: params
+  })
+}
