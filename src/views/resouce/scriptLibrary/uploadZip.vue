@@ -98,8 +98,12 @@
       },
       // 上传成功后的回调
       uploadSuccess(response, file, fileList) {
-        this.fileList = fileList
-        Message.success('上传成功！')
+        if (response.IsSuccess) {
+          this.fileList = fileList
+          Message.success('上传成功！')
+        } else {
+          Message.error('上传失败，请重试！')
+        }
       },
       // 移除上传文件列表
       handleRemove(file, fileList) {

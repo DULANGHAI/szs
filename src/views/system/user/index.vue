@@ -63,7 +63,7 @@
     <el-dialog :title="!isEdit ? '添加用户' : '编辑用户'" :visible.sync="dialogVisible" width="35%" top="5%">
       <el-form ref="form-user" :model="user" :rules="rules" label-width="80px" size="small">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="user.username" auto-complete="off" placeholder="请输入命令"></el-input>
+          <el-input v-model="user.username" auto-complete="off" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="passward">
           <el-input v-model="user.passward">
@@ -121,7 +121,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import common from '../common'
-import { getAdduserApi, deleteAdduserApi, getAlluserApi, getrolesId } from '@/api/systemManage/system.js'
+import { getAdduserApi, deleteAdduserApi, getAlluserApi, getrolesId ,openclose, deleteuser} from '@/api/systemManage/system.js'
 import { getToken } from '@/utils/auth'
 import { queryUserApi } from '@/api/systemManage/system.js'
 
@@ -291,6 +291,11 @@ export default {
         type: 'error'
       })
         .then(() => {
+          deleteuser({
+            identifier:this.multipleSelection[0].id
+          }).then(res=>{
+            console.log(res)
+          })
           this.users = this.multipleSelectionFilter
           this.messageSuccess()
           this.$refs.multipleTable.clearSelection()
@@ -306,9 +311,20 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.multipleSelection.forEach(item => {
-            item.status = 1
+          this.multipleSelection.forEach(
+          openclose({
+            status:1,
+            identifier:this.multipleSelection[0].id
+          }).then(res=>{
+            console.log(res)
+            // item.status = res.status
+          }).catch(error=>{
+            console.log('22')
           })
+            // item => {
+            // item.status = 1
+          // }
+          )
           this.messageSuccess()
           this.$refs.multipleTable.clearSelection()
         })
@@ -323,9 +339,17 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.multipleSelection.forEach(item => {
-            item.status = 0
+          this.multipleSelection.forEach(
+           openclose({
+            status:0,
+            identifier:this.multipleSelection[0].id
+          }).then(res=>{
+            console.log('333')
           })
+            // item => {
+            // item.status = 0
+          // }
+          )
           this.messageSuccess()
           this.$refs.multipleTable.clearSelection()
         })
@@ -350,6 +374,14 @@ export default {
     },
     submit() {
       this.$refs['form-user'].validate(valid => {
+        // openclose({
+        //   identifier:this.multipleSelection[0].id
+        // }).then(res=>{
+        // this.totalPage = res.per_page
+        // this.currentPage = res.page
+        // this.users = res.items
+          // console.log(res,'修改成功')
+        // })
         if (valid) {
           if (!this.isEdit) {
             // todo create user

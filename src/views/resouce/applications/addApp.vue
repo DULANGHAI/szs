@@ -115,7 +115,7 @@
 
 <script>
 import { getRepositoryYuyan, getBranchList } from '@/api/script'
-import { addApplication, getApplicationDetail, putApplication, getAppTypeList, getAppLanguageList } from '@/api/resouce/applications/application'
+import { addApplication, getApplicationDetail, getAppRepository, putApplication, getAppTypeList, getAppLanguageList } from '@/api/resouce/applications/application'
 import Breadcrumb from '@/components/Breadcrumb'
 import FileModel from './fileModel'
 import RiskLevel from '@/components/RiskLevel'
@@ -191,6 +191,12 @@ export default {
     this.rjbPath = this.$store.state.user.repository + '/scripts'
     this.pzwjPath = this.$store.state.user.repository + '/configurations'
 
+    getAppRepository(this.$store.state.user.repository, 'applications').then(response => {
+      this.getAppList(response.id)
+    }).catch(error => {
+      Message.error(error)
+    })
+
     getAppTypeList().then(response => {
       this.fileTypeList = response.app_types
     }).catch(error => {
@@ -216,9 +222,9 @@ export default {
       })
     },
     // 应用名称
-    getAppList() {
+    getAppList(id) {
       var params = {
-        group_id: 7
+        group_id: id
       }
       getRepositoryYuyan(params).then(response => {
         this.appList = response.map((item, index) => {

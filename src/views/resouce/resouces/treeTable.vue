@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs" @selection-change="handleSelectionChange">
+  <el-table :data="formatData" v-loading.body="loading" :row-style="showRow" v-bind="$attrs" @selection-change="handleSelectionChange">
     <el-table-column type="selection" width="55" label="选择"></el-table-column>
     <el-table-column prop="name" label="名称">
       <template slot-scope="scope">
@@ -39,7 +39,8 @@ export default {
       type: Boolean,
       default: false
     },
-    searchText: String
+    searchText: String,
+    loading: Boolean
   },
   computed: {
     // 格式化数据源
