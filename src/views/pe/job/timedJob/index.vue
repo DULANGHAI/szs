@@ -15,7 +15,7 @@
         </el-tab-pane>
         <el-tab-pane label="执行记录" name="second">
           <div class="tabs-contents">
-            <record-view></record-view>
+            <record-view ref="recordList"></record-view>
           </div>
         </el-tab-pane>
       </el-tabs>
