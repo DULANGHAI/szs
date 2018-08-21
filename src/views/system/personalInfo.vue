@@ -115,11 +115,13 @@ export default {
       }
     }
   },
-  mounted() {
-    getrolesId().then(res=>{
-      console.log(res,'111')
-    })
-  },
+  // mounted() {
+  //   getrolesId().then(res=>{
+  //     console.log(res,'111')
+  //   }).catch(errot=>{
+  //     console.log('22')
+  //   })
+  // },
   created() {
     // submitForm()
   },
