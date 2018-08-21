@@ -34,18 +34,40 @@
           v-loading="loading"
           :data="data"
           tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="start_time" label="执行时间"></el-table-column>
-          <el-table-column prop="target_ip" label="目标IP"></el-table-column>
+          style="width: 100%">
+          <el-table-column prop="created_at" label="执行时间"></el-table-column>
+          <el-table-column prop="target_ip" label="目标IP">
+            <template slot-scope="scope">
+              <div v-if="scope.row.target_ip">
+                <div v-for="(item, index) in scope.row.target_ip.split(',')" :key="index">
+                  {{item}}
+                </div>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
-          <el-table-column prop="" label="下载成功IP"></el-table-column>
-          <el-table-column prop="" label="下载失败IP"></el-table-column>
+          <el-table-column prop="success_ip" label="下载成功IP">
+            <template slot-scope="scope">
+              <div v-if="scope.row.success_ip">
+                <div v-for="(item, index) in scope.row.success_ip.split(',')" :key="index">
+                  {{item}}
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="failed_ip" label="下载失败IP">
+            <template slot-scope="scope">
+              <div v-if="scope.row.failed_ip">
+                <div v-for="(item, index) in scope.row.failed_ip.split(',')" :key="index">
+                  {{item}}
+                </div>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column fixed="right" label="操作" width="70">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="realDownload(scope.row.execution_id)">下载</el-button>
+              <el-button type="text" size="small" @click="realDownload(scope.row.execution_id)" :disabled="scope.row.status !== '下载完成'">下载</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -82,12 +104,10 @@ export default {
       options: [],
       form2: {
         page: 1,
-        per_page: 10,
-        system_type: 'linux'
+        per_page: 10
       },
       data: [],
-      total: 0,
-      multipleSelection: []
+      total: 0
     }
   },
   created() {
@@ -102,18 +122,13 @@ export default {
       })
   },
   methods: {
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
     // 创建一个下载
     download() {
-      const target_ip = []
       const path = []
-      target_ip.push(this.form.target_ip)
       path.push(this.form.path)
 
       const data = {
-        target_ip: target_ip,
+        target_ip: this.form.target_ip,
         path: path,
         system_type: 'linux'
       }
@@ -129,7 +144,6 @@ export default {
         path: '',
         system_type: 'linux'
       }
-      this.getListData(1)
     },
     // 下载历史记录
     getListData(index) {
@@ -153,6 +167,9 @@ export default {
     // 真正的下载
     realDownload(id) {
       window.open(`/v1/buckets/mul-download/${id}`)
+    },
+    formatterTarget(row) {
+
     }
   }
 }
