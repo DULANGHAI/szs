@@ -51,13 +51,13 @@
     <!-- 弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
       <el-form v-show="dialogRole" ref="form-role" :model="role" :rules="rulesRole" label-width="80px" size="small">
-        <el-form-item label="用户名" prop="remark">
+        <el-form-item label="用户名" prop="name">
           <el-input v-model="role.name"></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="rolename">
           <el-input v-model="role.rolename" auto-complete="off" placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="备注" prop="passward">
           <el-input v-model="role.passward"></el-input>
         </el-form-item>
         
@@ -68,7 +68,7 @@
             <el-option
               v-for="item in options"
               :key="item.id"
-              :label="item.id"
+              :label="item.operator"
               :value="item.id">
             </el-option>
           </el-select>
@@ -89,7 +89,7 @@ import common from '../common'
 // import {getAdduserApi} from '@/api/pe/systemManage/system.js'
 import { getAdduserApi, deleteAdduserApi, getAlluserApi, getrolesId, createdrolesId, deleterolesId } from '@/api/systemManage/system.js'
 import { getToken } from '@/utils/auth'
-import { getpermissions } from '@/api/systemManage/system.js'
+import { getpermissions ,deleterole} from '@/api/systemManage/system.js'
 
 //  import {createUserApi,deleteUserApi,queryUserApi,updateidUserApi,deleteidUserApi,getidUserApi,updatepassUserApi,jumppassUserApi,getAdduserApi,deleteAdduserApi,getAlluserApi} from '@/api/pe/systemManage/system.js'
 
@@ -131,6 +131,20 @@ export default {
           {
             required: true,
             message: '角色不能为空',
+            trigger: 'blur'
+          }
+        ],
+        passward: [
+          {
+            required: true,
+            message: '备注不能为空',
+            trigger: 'blur'
+          }
+        ],
+        name: [
+          {
+            required: true,
+            message: '用户名不能为空',
             trigger: 'blur'
           }
         ]
@@ -416,18 +430,20 @@ export default {
           type: 'error'
         })
         .then(() => {
-          // 删除角色
-          // deleterolesId({
-          //   identifier:this.id1[0]
-          // }).then(res=>{
-
-          // })
+          deleterole({
+            identifier:this.multipleSelection[0].id
+          }).then(res=>{
+            console.log('666')
+          })
+ 
           this.users = this.multipleSelectionFilter
           this.messageSuccess()
           this.$refs.multipleTable.clearSelection()
         })
         .catch(() => {
+         
           this.messageCancel()
+          console.log('777')
         })
     },
     // 选择展示页数

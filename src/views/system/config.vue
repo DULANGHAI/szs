@@ -17,8 +17,9 @@
           <h3>审批配置</h3>
           <el-form-item label="任务审批最低等级">
             <el-select v-model="form.rate" placeholder="请选择脚本">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
+              <el-option label="高" value="1"></el-option>
+              <el-option label="中" value="2"></el-option>
+              <el-option label="低" value="3"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="脚本提交审批">
@@ -38,12 +39,12 @@
               <h3>业务集群配置</h3>
             </el-col>
             <el-col :span="6" :offset="15">
-              <el-button>添加</el-button>
+             <el-button size="small" @click.native="createRole">添加</el-button>              
               <el-button>删除</el-button>
               <el-button>编辑</el-button>
             </el-col>
           </el-row>
-
+        
           <el-table
             ref="table"
             :data="tableData"
@@ -76,9 +77,13 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="告警人">
-                <el-select v-model="form.person">
-                  <el-option label="1" value="1"></el-option>
-                  <el-option label="2" value="2"></el-option>
+                <el-select v-model="form.val">
+                  <el-option
+                    v-for="item in form.person"
+                    :key="item.id"
+                    :label="item.realname"
+                    :value="item.id">
+                </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -95,9 +100,13 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="告警人">
-                <el-select v-model="form.person">
-                  <el-option label="1" value="1"></el-option>
-                  <el-option label="2" value="2"></el-option>
+                <el-select v-model="form.val1">
+                  <el-option
+                    v-for="item in form.person1"
+                    :key="item.id"
+                    :label="item.realname"
+                    :value="item.id">
+                </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -117,6 +126,18 @@
                   <el-checkbox label="微信" name="warnType"></el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="告警人">
+                  <el-select v-model="form.val2">
+                    <el-option
+                      v-for="item in form.person2"
+                      :key="item.id"
+                      :label="item.realname"
+                      :value="item.id">
+                  </el-option>
+                  </el-select>
+                </el-form-item>
             </el-col>
           </el-row>
           <div class="line"></div>
@@ -146,13 +167,33 @@
       <el-button type="primary" @click="submitForm('form')">保存</el-button>
       <el-button @click="resetForm('form')">重置</el-button>
     </div>
+
+    <!-- 弹窗 -->
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
+      <el-form v-show="dialogRole" ref="form-role" :model="role" label-width="80px" size="small">
+        <el-form-item label="集群名称" prop="name">
+          <el-input v-model="role.name" auto-complete="off" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="role.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button v-show="dialogRole" type="primary" @click="submit('form-role')">确 定</el-button>
+        <el-button v-show="dialogPermission" type="primary" @click="submit('form-permission')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
-import { cpostsysconfigs, getsysconfigs } from '@/api/systemManage/system.js'
-
+import { cpostsysconfigs, getsysconfigs, getusername} from '@/api/systemManage/system.js'
+const defaultRole = {
+  name: '',
+  description: ''
+}
 export default {
   name: 'config',
   components: {
@@ -160,10 +201,16 @@ export default {
   },
   data() {
     return {
+      role: {
+        name: '',
+        description: '',
+      },
+      dialogVisible: false,
       tableData: [],
       name: '',
       description: '',
       tableLoading: false,
+      dialogType: 'roleCreate',      
       form: {
         rate: '',
         switch1: false,
@@ -175,28 +222,49 @@ export default {
         exceptionEvent: [],
         riskEvent: [],
         warnType: [],
-        person: '',
+        person: [],
+        val:'',
+        person1: [],
+        val1:'',
+        person2: [],
+        val2:'',
         value4: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)]
       }
     }
   },
   mounted() {
+    getusername().then(res=>{
+      console.log(res,'1111')
+      this.form.person = res;
+      this.form.person1 = res;
+      this.form.person2 = res;
+
+    }).catch(error=>{
+  
+    })
     getsysconfigs().then(res => {
       // 渲染业务集群配置
-      // console.log(res.business_config,'业务集群配置')
+      console.log(res.business_config,'业务集群配置')
       this.tableData = res.business_config
       // 渲染审批配置
-      console.log(res.approve_config, '审批配置')
-      this.form.switch1 = res.script_on
-      this.form.switch2 = res.software_on
-      this.form.switch3 = res.config_on
+      // console.log(res.approve_config, '审批配置')
+      this.form.switch1 = this.boolena1(res.approve_config.script_on)
+      this.form.switch2 = this.boolena1(res.approve_config.software_on)
+      this.form.switch3 = this.boolena1(res.approve_config.config_on)
+      this.form.rate = this.low1(res.approve_config.level)
+      this.form.switch6 = this.boolena1(res.exchange_config.is_on)
+      // this.form.value4[0] = res.exchange_config.start_time
+      // this.form.value4[1] = res.exchange_config.end_time
+      this.form.switch4 = this.boolena1(res.alarm_config[0].alarm_on)
+      this.form.switch5 = this.boolena1(res.alarm_config[2].alarm_on)
 
-      console.log(res, '成功')
+      // console.log(res, '成功')
     }).catch(res => {
       console.log('失败', '2')
     })
   },
   created() {
+    
     this.tableData = [
       // {
       //   name: "上证云",
@@ -222,65 +290,140 @@ export default {
     // name =  this.tableData[i].name;
     // description = this.tableData[i].description;
   },
+
+  computed: {
+    dialogTitle() {
+      switch (this.dialogType) {
+        case 'roleCreate':
+          return '添加'
+      }
+    },
+    dialogRole() {
+      return this.dialogType === 'roleCreate' 
+    },
+   dialogPermission() {
+      return this.dialogType === 'permissionEdit'
+    }
+  },
+  watch: {
+    dialogVisible(value) {
+      if (value) {
+        this.$nextTick(() => {
+          this.$refs['form-role'].clearValidate()
+          this.$refs['form-permission'].clearValidate()
+        })
+      }
+    }
+  },
   methods: {
+    submit(fromName) {
+      this.$refs[fromName].validate((valid) => {
+        // console.log(this.rolesid)
+
+        if (valid) {
+
+          // this.messageSuccess()
+          this.dialogVisible = false
+        }
+      })
+    },
+    
     // for(let i=0;i<this.tableData.length;i++){
     //   return this.tableData[i].name
     // },
+     createRole() {
+      this.role = { ...defaultRole }
+      this.dialogType = 'roleCreate'
+      this.dialogVisible = true
+      // this.tableData = this.role
+    },
     handleSelectionChange(val) {
       console.log(val)
     },
+    formatterTime(row) {
+      return this.$dayjs(row).format('HH:mm:ss')
+    },
+    //判断布尔值
+    boolena(val) {
+      return val === false ? 0 : 1
+    },
+    boolena1(val){
+      return val === 1? true : false
+    },
+    //判断低中搞
+    low(val1){
+      if(val1 == '1'){
+        return 'high'
+      } else {
+        if(val1 == '2'){
+          return 'middle'
+        } else {
+          return 'low'
+        }
+      }
+    },
+    low1(val1){
+      if(val1 == 'high'){
+        return '1'
+      } else {
+        if(val1 == 'middle'){
+          return '2'
+        } else {
+          return '3'
+        }
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          cpostsysconfigs({
+        if (valid) {   
+          cpostsysconfigs(
+            {
+              
             business_config: [
               {
-                name: 'LDD',
-                description: 'lDDsedfsfs'
+                name:this.role.name,
+                description:this.role.description
               }
             ],
             approve_config: {
-              level: this.form.rate,
-              script_on: this.form.switch1,
-              software_on: this.form.switch2,
-              config_on: this.form.switch3
+              level: this.low(this.form.rate),
+              script_on: this.boolena(this.form.switch1),
+              software_on:this.boolena(this.form.switch2),
+              config_on: this.boolena(this.form.switch3)
             },
             alarm_config: [
               {
-                alarm_to: '张三',
+                alarm_to: this.form.person,
                 type: '日常检查',
-                alarm_by: 'wechat, email',
-                alarm_on: this.form.switch4,
+                alarm_by: this.form.riskEvent,
+                alarm_on: this.boolena(this.form.switch4),
                 name: '风险事件'
               },
               {
-                alarm_to: '张三',
+                alarm_to: this.form.person1,
                 type: '日常检查',
-                alarm_by: 'wechat, email',
-                alarm_on: 1,
+                alarm_by: this.form.exceptionEvent,
+                alarm_on: this.boolena(this.form.switch4),
                 name: '异常事件'
               },
               {
-                alarm_to: '张三',
+                alarm_to:  this.form.person2,
                 type: '定时作业',
-                alarm_by: 'wechat, email',
-                alarm_on: 0,
+                alarm_by: this.form.warnType,
+                alarm_on: this.boolena(this.form.switch5),
                 name: null
               }
 
             ],
             exchange_config: {
-              start_time: '08:40:00',
-              is_on: 0,
-              end_time: '09:00:00'
+              start_time: this.formatterTime(this.form.value4[0]),
+              // start_time: this.form.value4[0].substring(1,9),
+              is_on:  this.boolena(this.form.switch6),
+              end_time: this.formatterTime(this.form.value4[1])
             }
           }).then(res => {
-            this.form.switch1 === false ? this.from.switch1 = '0' : this.from.switch1 = '1'
-            this.form.switch2 === false ? this.from.switch2 = '0' : this.from.switch2 = '1'
-            this.form.switch3 === false ? this.from.switch3 = '0' : this.from.switch3 = '1'
-            this.form.switch4 === false ? this.from.switch4 = '0' : this.from.switch4 = '1'
-            this.form.switch5 === false ? this.from.switch5 = '0' : this.from.switch5 = '1'
-            this.form.switch6 === false ? this.from.switch6 = '0' : this.from.switch6 = '1'
+
+          this.tableData = res.business_config
             console.log(res, '1')
           }).catch(() => {
             console.log('失败', '2')

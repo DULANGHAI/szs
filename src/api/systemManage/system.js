@@ -253,8 +253,6 @@ export function getNum(params) {
     params: params
   })
 }
-
-
 /**
  * 创建系统配置
  * @param {Object} params
@@ -299,5 +297,52 @@ export function getonepermissions(params) {
     url: `/v1/roles/role-permission/${params.role_id}`,
     method: 'get'
     // params: params
+  })
+}
+/**
+ * 查看单个用户权限
+ * @param {Object} params
+ */
+export function getOnepermissions(params) {
+  return request({
+    url: `/v1/roles/role-permission/${params.role_id}`,
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 获取用户名字
+ * @param {Object} params
+ */
+export function getusername() {
+  return request({
+    url: '/v1/users/names',
+    method: 'get'
+    // params: params
+  })
+}
+
+/**
+ * 获取启用停用接口
+ * @param {Object} params
+ */
+export function openclose(params) {
+  return request({
+    url: `/v1/users/${params.identifier}`,
+    method: 'put',
+    params: params
+  })
+}
+
+/**
+ * 删除用户
+ * @param {Object} params
+ */
+export function deleteuser(params) {
+  return request({
+    url: `/v1/users/${params.identifier}`,
+    method: 'delete',
+    params: params
   })
 }
