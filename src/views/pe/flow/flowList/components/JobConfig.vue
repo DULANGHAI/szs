@@ -70,9 +70,10 @@ export default {
       this.show = false
     },
     handleOpen() {
+      debugger
       this.form = {
         execution_account: this.data.execution_account,
-        target_ip: JSON.parse(this.data.target_ip).host,
+        target_ip: this.data.target_ip.split(','),
         frequency: this.data.frequency,
         handleFailed: this.data.handleFailed
       }
@@ -91,7 +92,7 @@ export default {
         const result = this.data
 
         result.execution_account = this.form.execution_account
-        result.target_ip = JSON.stringify({ host: this.form.target_ip })
+        result.target_ip = this.form.target_ip.join(',')
         result.frequency = this.form.frequency
         result.handleFailed = this.form.handleFailed
 

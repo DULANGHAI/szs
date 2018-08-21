@@ -177,6 +177,7 @@ export default {
         {
           type: 'bar',
           label: {
+            show: false,
             rotate: 45
           },
           barWidth: 20

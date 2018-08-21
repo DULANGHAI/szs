@@ -40,9 +40,8 @@
         <el-table-column fixed="right" label="操作" width="140">
           <template slot-scope="scope">
             <div v-if="scope.row._level === 1">
-              <el-button type="text" size="small" @click="startFlow(scope.row.execution_id)">执行</el-button>
-              <el-button type="text" size="small" @click="stopFlow(scope.row.execution_id)">停止</el-button>
-              <el-button type="text" size="small" >暂停</el-button>
+              <el-button type="text" size="small" @click="startFlow(scope.row.execution_id)" :disabled="scope.row.execution_status !== 2">执行</el-button>
+              <el-button type="text" size="small" @click="stopFlow(scope.row.execution_id)" :disabled="scope.row.execution_status !== 1">停止</el-button>
             </div>
             
           </template>
