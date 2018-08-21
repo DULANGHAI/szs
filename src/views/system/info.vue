@@ -106,7 +106,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
-import { createsystemMessage, getsystemMessage } from '@/api/systemManage/system.js'
+import { getsystemMessage } from '@/api/systemManage/system.js'
 
 export default {
   name: 'info',
@@ -159,7 +159,7 @@ export default {
       //   status: "已确认"
       // }
     ]
-    this.total = 2
+    // this.total = 2
   },
   mounted() {
   // createsystemMessage({
@@ -189,17 +189,18 @@ export default {
       })
         .then(res => {
           this.tableData = res.items
+          this.total = res.items.length
           for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].classify == '0') this.tableData[i].classify = '通知'
-            if (this.tableData[i].classify == '1') this.tableData[i].classify = '确认'
+            if (this.tableData[i].classify === '0') this.tableData[i].classify = '通知'
+            if (this.tableData[i].classify === '1') this.tableData[i].classify = '确认'
 
-            if (this.tableData[i].status == '0') this.tableData[i].status = '已确认'
-            if (this.tableData[i].status == '1') this.tableData[i].status = '无需确认'
-            if (this.tableData[i].status == '2') this.tableData[i].status = '没有确认'
+            if (this.tableData[i].status === '0') this.tableData[i].status = '已确认'
+            if (this.tableData[i].status === '1') this.tableData[i].status = '无需确认'
+            if (this.tableData[i].status === '2') this.tableData[i].status = '没有确认'
 
-            if (this.tableData[i].risk_level == '0') this.tableData[i].risk_level = '1'
-            if (this.tableData[i].risk_level == '1') this.tableData[i].risk_level = '2'
-            if (this.tableData[i].risk_level == '2') this.tableData[i].risk_level = '3'
+            if (this.tableData[i].risk_level === '0') this.tableData[i].risk_level = '1'
+            if (this.tableData[i].risk_level === '1') this.tableData[i].risk_level = '2'
+            if (this.tableData[i].risk_level === '2') this.tableData[i].risk_level = '3'
           }
           // this.queryForm.type=res.classify
           // this.queryForm.riskLevel=res.risk_level
@@ -207,7 +208,7 @@ export default {
           console.log(res, '1')
         })
         .catch(error => {
-          console.log('2')
+          console.log(error)
         })
     },
     handleConfirmBtn() {

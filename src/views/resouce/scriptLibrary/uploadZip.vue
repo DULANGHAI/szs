@@ -99,6 +99,7 @@
       // 上传成功后的回调
       uploadSuccess(response, file, fileList) {
         this.fileList = fileList
+        Message.success('上传成功！')
       },
       // 移除上传文件列表
       handleRemove(file, fileList) {
@@ -130,7 +131,7 @@
         console.log('上传失败，请重试！')
       },
       uploadAction() {
-        return '/v1/repository/project/' + this.$props.project_id + '/files/upload?unzip=true'
+        return '/v1/repositories/project/' + this.$props.project_id + '/files/upload?unzip=true'
       },
       // 提交
       doSubmit() {
