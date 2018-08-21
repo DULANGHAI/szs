@@ -96,8 +96,12 @@
       // 上传成功后的回调
       uploadSuccess(response, file, fileList) {
         // console.log('上传文件', response, file, fileList)
-        this.fileList = fileList
-        Message.success('上传成功！')
+        if (response.IsSuccess) {
+          this.fileList = fileList
+          Message.success('上传成功！')
+        } else {
+          Message.error('上传失败，请重试！')
+        }
       },
       // 移除上传文件列表
       handleRemove(file, fileList) {
@@ -152,7 +156,7 @@
               'comment': this.form.comment,
               'risk_level': this.form.risk_level,
               'branch': this.$props.branch,
-              'repository_type': 'applications'
+              'repository_type': 'configurations'
             }
 
             uploadAppFile(this.$props.project_id, params).then(response => {

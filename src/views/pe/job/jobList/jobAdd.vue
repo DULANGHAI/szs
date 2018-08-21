@@ -62,7 +62,7 @@
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item v-if="form.job_type === 'update' || form.job_type === 'quit'" label="应用实例" prop="applications" label-width="84px">
-                    <el-select v-model="form.applications" placeholder="请选择">
+                    <el-select v-model="form.applications" value-key="id" placeholder="请选择">
                       <el-option v-for="item in applications_arr" :key="item.id" :label="item.name" :value="item"></el-option>
                     </el-select>
                   </el-form-item>
@@ -275,6 +275,7 @@ export default {
         .then(res => {
           this.systemAndLang = res[0]
           res[1].target_ip = res[1].target_ip.split(',')
+          res[1].applications = JSON.parse(res[1].applications)
           this.form = res[1]
           this.scheduling = JSON.parse(res[1].scheduling)
           this.options = res[2]
@@ -459,7 +460,7 @@ export default {
             frequency: this.form.frequency,
             system_type: this.form.system_type,
             job_type: this.form.job_type,
-            applications: this.form.applications,
+            applications: JSON.stringify(this.form.applications),
             status: this.form.status,
             scheduling: JSON.stringify(this.scheduling),
             task_id_list: task_id_list
@@ -504,7 +505,7 @@ export default {
             frequency: this.form.frequency,
             system_type: this.form.system_type,
             job_type: this.form.job_type,
-            applications: this.form.applications,
+            applications: JSON.stringify(this.form.applications),
             status: this.form.status,
             scheduling: JSON.stringify(this.scheduling),
             task_id_list: task_id_list,

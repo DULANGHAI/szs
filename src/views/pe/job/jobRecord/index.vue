@@ -50,21 +50,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="目标IP">
-              <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
             <el-form-item label="执行人">
               <el-select v-model="form.creator">
                 <el-option v-for="item in creator_arr" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <!-- 第三行 -->
-        <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="创建时间">
               <el-date-picker
@@ -78,7 +69,13 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="6" :offset="12">
+          
+        </el-row>
+
+        <!-- 第三行 -->
+        <el-row :gutter="20">
+          
+          <el-col :span="6" :offset="18">
             <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="search">查询</el-button>
             <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
@@ -148,30 +145,6 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [
-        {
-          id: 'a',
-          label: 'a',
-          children: [
-            {
-              id: 'aa',
-              label: 'aa'
-            },
-            {
-              id: 'ab',
-              label: 'ab'
-            }
-          ]
-        },
-        {
-          id: 'b',
-          label: 'b'
-        },
-        {
-          id: '10.111.2.40',
-          label: '10.111.2.40'
-        }
-      ],
       loading: false,
       daterange: '',
       form: {
@@ -180,7 +153,6 @@ export default {
         system_type: '',
         name: '',
         execution_type: '',
-        target_ip: [],
         creator: '',
         start_time: '',
         end_time: '',

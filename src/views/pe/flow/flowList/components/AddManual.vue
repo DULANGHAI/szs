@@ -1,23 +1,21 @@
 <template>
   <el-dialog title="人工流程" :visible="show" :show-close="false" :width="'600px'"
     @open="handleOpen" @close="handleClose">
-    <el-form :label-position="'left'" label-width="100px" size="small">
-      <el-form-item label="节点名称">
+    <el-form :model="form" :rules="rules" ref="form" :label-position="'left'" label-width="100px" size="small">
+      <el-form-item label="节点名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入" :disabled="view === '1'"></el-input>
       </el-form-item>
-      <el-form-item label="描述">
+      <el-form-item label="描述" prop="description">
         <el-input v-model="form.description" placeholder="描述"></el-input>
       </el-form-item>
-      <el-form-item label="通知人">
+      <el-form-item label="通知人" prop="notifier">
         <el-select v-model="form.notifier" placeholder="请选择" :disabled="view === '1'">
-          <el-option value="假数据1"></el-option>
-          <el-option value="假数据2"></el-option>
+          <el-option v-for="item in notifier_arr" :key="item.id" :label="item.username" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="通知方式">
+      <el-form-item label="通知方式" prop="notify_type">
         <el-radio-group v-model="form.notify_type" :disabled="view === '1'">
-          <el-radio label="message">message</el-radio>
-          <el-radio label="mail">mail</el-radio>
+          <el-radio v-for="(item, index) in Object.keys(notify_type_map)" :key="index" :label="item">{{notify_type_map[item]}}</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -30,7 +28,7 @@
 </template>
 
 <script>
-
+import { getUserApi } from '@/api/pe/common/index'
 export default {
   props: {
     view: String,
@@ -39,6 +37,11 @@ export default {
     addManualData: Function
   },
   data() {
+    this.notify_type_map = {
+      'email': '邮件',
+      'sms': '短信',
+      'wechat': '微信'
+    }
     return {
       show: false,
       form: {
@@ -46,10 +49,30 @@ export default {
         name: '',
         description: '',
         notifier: '',
-        notify_type: 'message',
+        notify_type: 'email',
         timestr: ''
-      }
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '请输入描述', trigger: 'blur' }
+        ],
+        notifier: [
+          { required: true, message: '请输入选择通知人', trigger: ['blur', 'change'] }
+        ],
+        notify_type: [
+          { required: true, message: '请输入选择通方式', trigger: ['change'] }
+        ]
+      },
+      notifier_arr: []
     }
+  },
+  created() {
+    getUserApi().then(res => {
+      this.notifier_arr = res
+    })
   },
   methods: {
     showMoel() {
@@ -81,22 +104,26 @@ export default {
      * 提交
      */
     submit() {
-      if (!this.view) {
-        if (this.data && this.data.job_type === 'manual') {
-          const result = this.data
-          result.name = this.form.name
-          result.description = this.form.description
-          result.notifier = this.form.notifier
-          result.notify_type = this.form.notify_type
-          this.$emit('update:data', result)
+      this.$refs.form.validate((valide) => {
+        if (valide) {
+          if (!this.view) {
+            if (this.data && this.data.job_type === 'manual') {
+              const result = this.data
+              result.name = this.form.name
+              result.description = this.form.description
+              result.notifier = this.form.notifier
+              result.notify_type = this.form.notify_type
+              this.$emit('update:data', result)
 
-          this.refresh()
-        } else {
-          this.addManualData(this.form)
+              this.refresh()
+            } else {
+              this.addManualData(this.form)
+            }
+          }
+
+          this.cancel()
         }
-      }
-
-      this.cancel()
+      })
     },
     cancel() {
       this.show = false
@@ -105,9 +132,10 @@ export default {
         name: '',
         description: '',
         notifier: '',
-        notify_type: 'message',
+        notify_type: 'email',
         timestr: ''
       }
+      this.$refs.form.resetFields()
     }
   }
 }
