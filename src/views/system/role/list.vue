@@ -67,7 +67,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import common from '../common'
-import { getAdduserApi, getrolesId, getonepermissions } from '@/api/systemManage/system.js'
+import { getAdduserApi, getrolesId, getonepermissions, getOnepermissions} from '@/api/systemManage/system.js'
 
 export default {
   mixins: [common],
@@ -78,7 +78,7 @@ export default {
     return {
       currentPage: 1,
       pageSizesArray: [10, 20, 30, 40, 50],
-      pageSize: 0,
+      pageSize: 5,
       totalPage: 0,
       keyword: '',
       tableLoading: true,
@@ -87,35 +87,44 @@ export default {
     }
   },
   mounted() {
+    getOnepermissions({
+      permission_ids:'1',
+      permission_id:1,
+      role_id:1
+    }).then(res=>{
+      console.log(res,'1')
+      this.totalPage = res.length;
+      this.tableData = res
+    }).catch(error=>{
 
+    })
   },
   created() {
+
     // getrolesId().then(res=>{
     //       this.id=res.
     //         console.log(res)
     //         }).catch(error=>{
     //         })
-    setTimeout(() => {
       this.tableLoading = false
       this.tableData = [
-        {
-          permission: ['1', '2'],
-          resource_type: 'rt1',
-          resource_action: 'ra1',
-          created_at: '2018-07-25T04:31:00.499Z',
-          desc: 'desc1'
-        },
-        {
-          permission: ['2', '3'],
-          resource_type: 'rt2',
-          resource_action: 'ra2',
-          created_at: '2018-07-25T04:31:00.499Z',
-          desc: 'desc2'
-        }
+        // {
+        //   permission: ['1', '2'],
+        //   resource_type: 'rt1',
+        //   resource_action: 'ra1',
+        //   created_at: '2018-07-25T04:31:00.499Z',
+        //   desc: 'desc1'
+        // },
+        // {
+        //   permission: ['2', '3'],
+        //   resource_type: 'rt2',
+        //   resource_action: 'ra2',
+        //   created_at: '2018-07-25T04:31:00.499Z',
+        //   desc: 'desc2'
+        // }
       ]
       this.currentPage = 1
-      this.totalPage = 2
-    }, 2000)
+      // this.totalPage = 2
   },
   methods: {
     formatterTime(row, column, cellValue) {
