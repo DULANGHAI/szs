@@ -403,8 +403,7 @@ export default {
     mainValide() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (this.form.type === 'file' ||
-              this.form.type !== 'file' && this.form.risk_level === 0) {
+          if (this.form.type !== 'file' && this.form.risk_level === 0) {
             this.$message.info('等待风险等级返回，稍后提交')
             return
           }

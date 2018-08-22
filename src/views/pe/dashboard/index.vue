@@ -75,6 +75,7 @@
           <ve-line
             :data="chartData1"
             :colors="colors"
+            :grid="grid"
             :extend="extend1"></ve-line>
         </div>
         <div class="width-20"></div>
@@ -83,6 +84,7 @@
           <ve-line
             :data="chartData2"
             :colors="colors"
+            :grid="grid"
             :extend="extend2"></ve-line>
         </div>
       </div>
@@ -101,6 +103,7 @@
         <div class="v-top top5-container">
           <ve-ring
             :data="chartData4"
+            :grid="grid"
             :settings="chartSettings4"
             :extend="extend4"></ve-ring>
         </div>
@@ -120,13 +123,14 @@ export default {
   },
   data() {
     this.colors = ['#874DA2', '#09BBFF']
+    this.grid = {
+      show: false,
+      bottom: 20,
+      containLabel: true
+    }
     this.extend1 = {
       title: {
         text: '作业量统计'
-      },
-      grid: {
-        // bottom: 0,
-        containLabel: true
       },
       legend: {
         data: [
@@ -145,10 +149,6 @@ export default {
       title: {
         text: '流程执行统计'
       },
-      grid: {
-        // bottom: 0,
-        containLabel: true
-      },
       legend: {
         data: [
           {
@@ -166,28 +166,28 @@ export default {
       title: {
         text: 'TOP10异常主机'
       },
-      grid: {
-        bottom: 20,
-        containLabel: true
-      },
       legend: {
         show: false
       },
-      series: [
-        {
-          type: 'bar',
-          label: {
-            show: false,
-            rotate: 45
-          },
-          barWidth: 20
+      series: {
+        barWidth: 20
+      },
+      grid: {
+        show: false,
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: {
+        axisLabel: {
+          rotate: 45
         }
-      ]
+      }
     }
     this.chartSettings3 = {
-      label: {
-        rotate: 45
-      },
+      // label: {
+      //   show: true,
+      //   rotate: 45
+      // },
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: '#2A89FF' },
@@ -200,10 +200,6 @@ export default {
         text: 'TOP5作业'
       },
       colors: ['#2A89FF', '#11AD68', '#444753', '#5F72BD', '#C79081'],
-      grid: {
-        bottom: 20,
-        containLabel: true
-      },
       legend: {
         bottom: 20
       }
@@ -362,7 +358,7 @@ export default {
   }
   .width-20 {
     width: 20px;
-    height: 366px;
+    height: 1px;
   }
   .line-chart {
     margin-top: 21px;
@@ -371,7 +367,6 @@ export default {
     align-items: center;
     .v-line {
       flex: 1;
-      height: 366px;
       background: #FFFFFF;
       box-shadow: 0 4px 9px 0 rgba(0,0,0,0.02);
       border-radius: 5px;
@@ -383,7 +378,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     .v-top {
-      height: 465px;
       background: #FFFFFF;
       box-shadow: 0 4px 9px 0 rgba(0,0,0,0.02);
       border-radius: 5px;

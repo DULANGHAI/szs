@@ -54,12 +54,19 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)// for debug
-    Message({
-      message: error.response.data.message,
-      type: 'error',
-      duration: 5 * 1000,
-      showClose: true
-    })
+    if (error.response.status === 401) { // 登陆失效
+      store.dispatch('LogOut').then(() => {
+        location.reload()// 为了重新实例化vue-router对象 避免bug
+      })
+    } else {
+      Message({
+        message: error.response.data.message,
+        type: 'error',
+        duration: 5 * 1000,
+        showClose: true
+      })
+    }
+
     return Promise.reject(error)
   }
 )
