@@ -6,7 +6,7 @@
     class="pb-dialog">
     <el-form :model="form" :rules="rules" ref="ruleForm">
       <el-form-item label="角色" prop="name">
-        <el-input v-model="form.name" auto-complete="off" placeholder="请输入命令白名单"></el-input>
+        <el-input v-model="form.name" auto-complete="off" placeholder="请输入角色"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="description">
         <el-input type="textarea" v-model="form.description" placeholder="请输入备注"></el-input>
