@@ -96,7 +96,7 @@ export function deleteUserApi(params) {
   return request({
     url: '/v1/users/',
     method: 'delete',
-    data: data
+    data: params
   })
 }
 
@@ -208,17 +208,17 @@ export function getAlluserApi(params, user_id) {
   })
 }
 
-/**
- * 获取列表roles
- * @param {Object} params
- */
-export function getrolesId(params) {
-  return request({
-    url: '/v1/roles/',
-    method: 'get',
-    params: params
-  })
-}
+// /**
+//  * 获取列表roles
+//  * @param {Object} params
+//  */
+// export function getrolesId(params) {
+//   return request({
+//     url: '/v1/roles/',
+//     method: 'get',
+//     params: params
+//   })
+// }
 /**
  * 创建列表roles
  * @param {Object} params
@@ -344,5 +344,28 @@ export function deleteuser(params) {
     url: `/v1/users/${params.identifier}`,
     method: 'delete',
     params: params
+  })
+}
+
+/**
+ * 删除角色
+ * @param {Object} params
+ */
+export function deleterole(params) {
+  return request({
+    url: `/v1/roles/${params.identifier}`,
+    method: 'delete',
+    params: params
+  })
+}
+
+/**
+ * 获取所有角色信息
+ * @param {Object} params
+ */
+export function getalluse() {
+  return request({
+    url: '/v1/roles/',
+    method: 'get'
   })
 }

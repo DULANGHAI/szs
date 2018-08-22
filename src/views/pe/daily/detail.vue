@@ -27,13 +27,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="目标IP">
-              <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
+            <el-form-item label="执行时间">
+              <el-date-picker
+                size="small"
+                v-model="daterange"
+                type="daterange"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
             </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="search">查询</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -49,18 +53,9 @@
               <el-input v-model="form.execution_id" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="执行时间">
-              <el-date-picker
-                size="small"
-                v-model="daterange"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
-              </el-date-picker>
-            </el-form-item>
+          <el-col :span="6" :offset="6">
+            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="search">查询</el-button>
+            <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>
           
         </el-row>
@@ -109,7 +104,6 @@ import LogView from './components/LogView'
 import { getLanguageApi } from '@/api/pe/jobManage/timedJob'
 import { getJobListApi } from '@/api/pe/daily/index'
 import { getLogDetailApi } from '@/api/pe/jobManage/jobRecord'
-import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   props: ['id'],
@@ -126,7 +120,6 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [],
       loading: false,
       form: {
         name: '',
@@ -154,7 +147,7 @@ export default {
     }
   },
   created() {
-    if (this.id) {
+    if (this.id && this.id !== ':id') {
       this.form.execution_id = this.id
     }
     this.init()
@@ -162,11 +155,10 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getLanguageApi(), getJobListApi(this.form), getIpApi()]).then(res => {
+      Promise.all([getLanguageApi(), getJobListApi(this.form)]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
-        this.options = res[2]
       }).finally(() => {
         this.loading = false
       })

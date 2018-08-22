@@ -26,19 +26,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="目标IP">
-            <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="6">
           <el-form-item label="创建人">
             <el-select v-model="form.creator">
               <el-option v-for="item in creator_arr" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item label="创建时间">
             <el-date-picker
@@ -122,7 +117,6 @@ import AddTimed from './components/AddTimed'
 import TaskConfig from './components/TaskConfig'
 
 import { getLanguageApi, getJobListApi, getCreatorApi, deleteJobApi } from '@/api/pe/jobManage/timedJob'
-import { getIpApi } from '@/api/pe/common/index'
 
 export default {
   components: {
@@ -139,13 +133,11 @@ export default {
       inspection: '日常检查'
     }
     return {
-      options: [],
       loading: false,
       form: {
         name: '',
         system_type: '',
         job_type: '',
-        target_ip: [],
         creator: '',
         start_time: '',
         end_time: '',
@@ -205,12 +197,11 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getLanguageApi(), getJobListApi(this.form), getCreatorApi(), getIpApi()]).then(res => {
+      Promise.all([getLanguageApi(), getJobListApi(this.form), getCreatorApi()]).then(res => {
         this.systemAndLang = res[0]
         this.data = res[1].items
         this.total = res[1].total
         this.creator_arr = res[2].creator
-        this.options = res[3]
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -256,7 +247,6 @@ export default {
         name: '',
         system_type: '',
         job_type: '',
-        target_ip: [],
         creator: '',
         start_time: '',
         end_time: '',

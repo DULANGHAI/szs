@@ -89,7 +89,7 @@ export function getRecordListApi(params) {
  */
 export function startFlowApi(data) {
   return request({
-    url: '',
+    url: '/v1/instant-processes/continue-execution',
     method: 'post',
     data: data
   })
@@ -101,7 +101,7 @@ export function startFlowApi(data) {
  */
 export function stopFlowApi(data) {
   return request({
-    url: '',
+    url: '/v1/instant-processes/stop',
     method: 'post',
     data: data
   })

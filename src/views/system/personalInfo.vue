@@ -47,7 +47,7 @@
             <el-input v-model="form.weixin" placeholder="输入微信号"></el-input>
           </el-form-item>
           <el-form-item label="角色">
-            <el-input v-model="form.role" disabled></el-input>
+            <el-input v-model="form.role"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -61,7 +61,7 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
-import { createUserApi } from '@/api/systemManage/system.js'
+import { createUserApi ,getrolesId} from '@/api/systemManage/system.js'
 // import {mapActions,mapGetters} from 'vuex'
 // import {mapGetters} from 'vuex'
 
@@ -115,7 +115,13 @@ export default {
       }
     }
   },
-  mounted() {},
+  // mounted() {
+  //   getrolesId().then(res=>{
+  //     console.log(res,'111')
+  //   }).catch(errot=>{
+  //     console.log('22')
+  //   })
+  // },
   created() {
     // submitForm()
   },
