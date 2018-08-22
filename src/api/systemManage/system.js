@@ -222,10 +222,11 @@ export function getPermission(params) {
  * 角色权限列表
  * @param {Object} params
  */
-export function getRolePermission(id) {
+export function getRolePermission(id, params) {
   return request({
     url: '/v1/roles/role-permission/' + id,
-    method: 'get'
+    method: 'get',
+    data: params
   })
 }
 /**

@@ -25,6 +25,18 @@
         <el-table-column prop="created_at" :formatter="formatterTime" label="创建时间"></el-table-column>
       </el-table>
     </div>
+    <div class="list-paging">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="this.pageSizesArray"
+        :page-size="this.pageSize"
+        layout="prev, pager, next, sizes, jumper"
+        :total="this.totalPage">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -42,6 +54,11 @@ export default {
   data() {
     return {
       listData: [],
+      currentPage: 1, // 当前页面
+      pageSizesArray: [10, 20, 30, 40], // 可选每页数量
+      pageSizes: '',
+      pageSize: 0, // list长度
+      totalPage: 0, // list总数
       tableLoading: false
     }
   },
@@ -51,7 +68,11 @@ export default {
   methods: {
     getList() {
       this.tableLoading = true
-      getRolePermission(this.$route.params.id).then(response => {
+      var params = {
+        'page': this.currentPage,
+        'per_page': this.pageSizes || 10
+      }
+      getRolePermission(this.$route.params.id, params).then(response => {
         this.listData = response
         this.tableLoading = false
       }).catch(error => {
@@ -60,6 +81,19 @@ export default {
     },
     formatterTime(row, column, cellValue) {
       return this.formatterDate(cellValue)
+    },
+    // 选择展示页数
+    handleSizeChange(val) {
+      this.currentPage = 1
+      this.pageSizes = val
+      this.getList()
+      // console.log(`每页 ${val} 条`)
+    },
+    // 选择当前页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getList()
+      // console.log(`当前页: ${val}`)
     }
   }
 }

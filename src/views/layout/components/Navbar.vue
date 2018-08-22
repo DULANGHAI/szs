@@ -10,11 +10,11 @@
         <svg-icon icon-class="wenti" />
       </span>
       <span class="tooltip-icon">
-        <router-link to="/system/dashboard/info">
-        <el-badge v-model="num" :max="99" class="item">
-          <svg-icon icon-class="notice" />
-        </el-badge>
-        </router-link>
+        <span @click="setting2">
+          <el-badge v-model="num" :max="99" class="item">
+            <svg-icon icon-class="notice" />
+          </el-badge>
+        </span>
       </span>
       <span class="tooltip-icon">
         <el-dropdown trigger="click">
@@ -63,16 +63,19 @@ export default {
     ])
   },
   mounted() {
-    // setInterval(() => {
-    //   this.id = getToken()
-    //   getNum({ user_id: this.id }).then(res => {
-    //     this.num = res.count
-    //   })
-    // }, 10000)
+    setInterval(() => {
+      this.id = getToken()
+      getNum({ user_id: this.id }).then(res => {
+        this.num = res.count
+      })
+    }, 10000)
   },
   methods: {
     setting1() {
       this.$router.push('/system/sysconfig/setting')
+    },
+    setting2() {
+      this.$router.push('/system/auditnotice/info')
     },
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
