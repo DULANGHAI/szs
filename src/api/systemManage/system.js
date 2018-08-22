@@ -207,18 +207,70 @@ export function getAlluserApi(params, user_id) {
     params: params
   })
 }
-
-// /**
-//  * 获取列表roles
-//  * @param {Object} params
-//  */
-// export function getrolesId(params) {
-//   return request({
-//     url: '/v1/roles/',
-//     method: 'get',
-//     params: params
-//   })
-// }
+/**
+ * 权限列表
+ * @param {Object} params
+ */
+export function getPermission(params) {
+  return request({
+    url: '/v1/permissions/pagination',
+    method: 'get',
+    params
+  })
+}
+/**
+ * 角色权限列表
+ * @param {Object} params
+ */
+export function getRolePermission(id) {
+  return request({
+    url: '/v1/roles/role-permission/' + id,
+    method: 'get'
+  })
+}
+/**
+ * 角色列表
+ * @param {Object} params
+ */
+export function getRoles(params) {
+  return request({
+    url: '/v1/roles/',
+    method: 'get',
+    params
+  })
+}
+/**
+ * 创建角色
+ * @param {Object} params
+ */
+export function createRoles(parasm) {
+  return request({
+    url: '/v1/roles/',
+    method: 'post',
+    data: parasm
+  })
+}
+/**
+ * 更新角色
+ * @param {Object} params
+ */
+export function putRoles(id, parasm) {
+  return request({
+    url: '/v1/roles/' + id,
+    method: 'put',
+    data: parasm
+  })
+}
+/**
+ * 删除角色
+ * @param {Object} params
+ */
+export function deleteRoles(id) {
+  return request({
+    url: '/v1/roles/' + id,
+    method: 'delete'
+  })
+}
 /**
  * 创建列表roles
  * @param {Object} params

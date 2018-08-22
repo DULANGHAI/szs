@@ -91,7 +91,7 @@ export function putAppFile(project_id, params) {
 // 删除文件
 export function deleteAppFile(project_id, ids) {
   return request({
-    url: '/v1/repositories/project/' + project_id + '/file',
+    url: '/v1/repositories/project/' + project_id + '/files',
     method: 'delete',
     data: {
       ids: ids

@@ -145,34 +145,7 @@ export default {
     RiskLevel
   },
   created() {
-    this.tableData = [
-      // {
-      //   time: "2018-02-02",
-      //   type: "通知",
-      //   info: "XSS系统异常,访问查看详情",
-      //   status: "已确认"
-      // },
-      // {
-      //   time: "2018-02-02",
-      //   type: "通知",
-      //   info: "XSS系统异常,访问查看详情",
-      //   status: "已确认"
-      // }
-    ]
-    // this.total = 2
-  },
-  mounted() {
-  // createsystemMessage({
-  //   content:'1',
-  //   status:'200',
-  //   usernames:['111'],
-  //   risk_level:'1',
-  //   classify:'1'
-  // }).then(res=>{
-  //   console.log(res,'33')
-  // }).catch(res=>{
-
-  // })
+    this.tableData = []
   },
   methods: {
     handleSizeChange(val) {
@@ -185,7 +158,7 @@ export default {
     handleSearchBtn() {
       getsystemMessage({
         page: this.currentPage,
-        per_page: this.total
+        per_page: 10
       })
         .then(res => {
           this.tableData = res.items

@@ -16,7 +16,7 @@
         <div class="module">
           <h3>审批配置</h3>
           <el-form-item label="任务审批最低等级">
-            <el-select v-model="form.approve_config.level" placeholder="请选择脚本">
+            <el-select v-model="form.approve_config.level" size="small" placeholder="请选择脚本">
               <el-option label="高" value="high"></el-option>
               <el-option label="中" value="middle"></el-option>
               <el-option label="低" value="low"></el-option>
@@ -40,8 +40,8 @@
             </el-col>
             <el-col :span="6" :offset="15">
               <el-button size="small" @click.native="createRole">添加</el-button>              
-              <el-button size="small">删除</el-button>
-              <el-button size="small">编辑</el-button>
+              <el-button size="small" :disabled="multipleSelection.length >0 ? false : true " @click.native="removeDomain">删除</el-button>
+              <el-button size="small" :disabled="multipleSelection.length === 1 ? false : true " @click.native="editRole">编辑</el-button>
             </el-col>
           </el-row>
         
@@ -66,7 +66,7 @@
             <el-switch v-model="form.alarm_config.daily_check.alarm_on"></el-switch>
           </el-form-item>
           <el-row>
-            <el-col :span="7">
+            <el-col :span="8">
               <el-form-item label="异常事件">
                 <el-checkbox-group v-model="form.alarm_config.daily_check.except_alarm_by">
                   <el-checkbox label="sms">短信</el-checkbox>
@@ -75,11 +75,11 @@
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="10">
               <el-form-item label="告警人">
                 <el-select 
                   multiple
-                  collapse-tags
+                  size="small"
                   v-model="form.alarm_config.daily_check.except_alarm_to">
                   <el-option
                     v-for="item in personList"
@@ -92,7 +92,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="7">
+            <el-col :span="8">
               <el-form-item label="风险事件">
                 <el-checkbox-group v-model="form.alarm_config.daily_check.risk_alarm_by">
                   <el-checkbox label="sms">短信</el-checkbox>
@@ -101,11 +101,11 @@
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="10">
               <el-form-item label="告警人">
                 <el-select 
                   multiple
-                  collapse-tags
+                  size="small"
                   v-model="form.alarm_config.daily_check.risk_alarm_to">
                   <el-option
                     v-for="item in personList"
@@ -124,7 +124,9 @@
                 <el-switch v-model="form.alarm_config.timed_job.alarm_on"></el-switch>
               </el-form-item>
             </el-col>
-            <el-col :span="7">
+          </el-row>
+          <el-row>
+            <el-col :span="8">
               <el-form-item label="告警方式">
                 <el-checkbox-group v-model="form.alarm_config.timed_job.alarm_by">
                   <el-checkbox label="sms">短信</el-checkbox>
@@ -133,11 +135,11 @@
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="10">
               <el-form-item label="告警人">
                   <el-select 
                     multiple
-                    collapse-tags
+                    size="small"
                     v-model="form.alarm_config.timed_job.alarm_to">
                     <el-option
                       v-for="item in personList"
@@ -161,7 +163,9 @@
             <span style="display:inline-block;margin-right:50px;">交易时段</span>
              <el-time-picker
               is-range
+              size="small"
               v-model="tranDateTime"
+              value-format="hh:mm:ss"
               range-separator="-"
               start-placeholder="开始时间"
               end-placeholder="结束时间"
@@ -174,7 +178,7 @@
 
     <div class="btn-group">
       <el-button type="primary" @click="submitForm('form')">保存</el-button>
-      <el-button @click="resetForm('form')">重置</el-button>
+      <el-button @click="resetForm">重置</el-button>
     </div>
 
     <!-- 弹窗 -->
@@ -184,12 +188,13 @@
           <el-input v-model="role.name" auto-complete="off" placeholder="请输入"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="role.description"></el-input>
+          <el-input v-model="role.description" placeholder="请输入"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addRole">确 定</el-button>
+        <el-button v-if="dialogType === 'roleCreate'" type="primary" @click="addRole">确 定</el-button>
+        <el-button v-else type="primary" @click="xgRole">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -197,17 +202,19 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
-import { cpostsysconfigs, getsysconfigs, getusername} from '@/api/systemManage/system.js'
+import { cpostsysconfigs, getsysconfigs, getusername } from '@/api/systemManage/system.js'
+import { Message } from 'element-ui'
+
 const defaultRole = {
   name: '',
   description: ''
 }
-const formData ={
+const formData = {
   'approve_config': {
     'config_on': false,
     'software_on': false,
     'script_on': false,
-    'level':'low'
+    'level': 'low'
   },
   'alarm_config': {
     'daily_check': {
@@ -227,7 +234,7 @@ const formData ={
   'exchange_config': {
     'start_time': '',
     'is_on': false,
-    'end_time': '',
+    'end_time': ''
   }
 }
 export default {
@@ -239,185 +246,124 @@ export default {
     return {
       role: {
         name: '',
-        description: '',
+        description: ''
       },
       dialogVisible: false,
       tableData: [],
       personList: [],
+      multipleSelection: [],
       tranDateTime: '',
       name: '',
       description: '',
       tableLoading: false,
-      dialogType: 'roleCreate',   
-      form: JSON.parse(JSON.stringify(formData))    
-      // form: {
-      //   rate: '',
-      //   switch1: false,
-      //   switch2: false,
-      //   switch3: false,
-      //   switch4: false,
-      //   switch5: false,
-      //   switch6: false,
-      //   exceptionEvent: [],
-      //   riskEvent: [],
-      //   warnType: [],
-      //   person: [],
-      //   val:'',
-      //   person1: [],
-      //   val1:'',
-      //   person2: [],
-      //   val2:'',
-      //   value4: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)]
-      // }
+      dialogType: 'roleCreate',
+      form: JSON.parse(JSON.stringify(formData))
     }
   },
   mounted() {
-    getusername().then(res=>{
-      console.log(res,'1111')
-      this.personList = res
-    }).catch(error=>{
-  
-    })
     getsysconfigs().then(res => {
-      // 渲染业务集群配置
-      // console.log(res.business_config,'业务集群配置')
-      this.form.business_config = res.business_config
-      // 渲染审批配置
-      // console.log(res.approve_config, '审批配置')
-      this.form.approve_config.script_on = this.boolena1(res.approve_config.script_on)
-      this.form.approve_config.software_on = this.boolena1(res.approve_config.software_on)
-      this.form.approve_config.config_on = this.boolena1(res.approve_config.config_on)
-      this.form.approve_config.level = res.approve_config.level
-      //日常检查
-      this.form.alarm_config.daily_check.alarm_on =  this.boolena1(res.alarm_config.daily_check.alarm_on)
-      // this.form.alarm_config.daily_check.except_alarm_by = res.alarm_config.daily_check.except_alarm_by
-      // this.form.alarm_config.daily_check.except_alarm_to = res.alarm_config.daily_check.except_alarm_to
-      // this.form.alarm_config.daily_check.risk_alarm_by = res.alarm_config.daily_check.risk_alarm_by
-      //  this.form.alarm_config.daily_check.risk_alarm_to = res.alarm_config.daily_check.risk_alarm_to
-      //定时作业
-      // this.form.alarm_config.timed_job.alarm_to = res.alarm_config.timed_job.alarm_to
-      this.form.alarm_config.timed_job.alarm_on = this.boolena1(res.alarm_config.timed_job.alarm_on)
-      // this.form.alarm_config.timed_job.alarm_by = res.alarm_config.timed_job.alarm_by
-      //交易时段配置
-      this.form.exchange_config.is_on = this.boolena1(res.exchange_config.is_on)
-      this.tranDateTime[0] = res.exchange_config.start_time
-      this.tranDateTime[1] = res.exchange_config.end_time
-
-      // console.log(res, '成功')
+      this.form = {
+        'business_config': res.business_config,
+        'approve_config': {
+          'level': res.approve_config.level,
+          'script_on': this.boolena1(res.approve_config.script_on),
+          'software_on': this.boolena1(res.approve_config.software_on),
+          'config_on': this.boolena1(res.approve_config.config_on)
+        },
+        'alarm_config': {
+          'daily_check': {
+            'alarm_on': this.boolena1(res.alarm_config.daily_check.alarm_on),
+            'risk_alarm_to': res.alarm_config.daily_check.risk_alarm_to,
+            'risk_alarm_by': res.alarm_config.daily_check.risk_alarm_by,
+            'except_alarm_to': res.alarm_config.daily_check.except_alarm_to,
+            'except_alarm_by': res.alarm_config.daily_check.except_alarm_by
+          },
+          'timed_job': {
+            'alarm_to': res.alarm_config.timed_job.alarm_to,
+            'alarm_on': this.boolena1(res.alarm_config.timed_job.alarm_on),
+            'alarm_by': res.alarm_config.timed_job.alarm_by
+          }
+        },
+        'exchange_config': {
+          'start_time': res.exchange_config.start_time,
+          'is_on': this.boolena1(res.exchange_config.is_on),
+          'end_time': res.exchange_config.end_time
+        }
+      }
+      this.tranDateTime = [res.exchange_config.start_time, res.exchange_config.end_time]
     }).catch(res => {
       console.log('失败', '2')
     })
   },
   created() {
-    
-    this.tableData = [
-      // {
-      //   name: "上证云",
-      //   describe:
-      //     "这是一段很长的文案很长很长的文案很长的很长很长很长很长的很长很长很长很长的很长很长很长很长的很上证云计算集群"
-      // },
-      // {
-      //   name: "LDDS",
-      //   describe: "LDDS计算集群"
-      // },
-      // {
-      //   name: "LDDS",
-      //   describe: "LDDS计算集群"
-      // },
-      // {
-      //   name: "LDDS",
-      //   describe: "LDDS计算集群"
-      // }
-    ]
-    // for(let i=0;i<this.tableData.length;i++){
-    //   return this.tableData[i].name; this.tableData[i].description
-    // }
-    // name =  this.tableData[i].name;
-    // description = this.tableData[i].description;
+    getusername().then(res => {
+      this.personList = res
+    }).catch(error => {
+      Message.error(error)
+    })
   },
-
   computed: {
     dialogTitle() {
       switch (this.dialogType) {
         case 'roleCreate':
           return '添加'
+        case 'roleEdit':
+          return '编辑'
       }
-    },
-    dialogRole() {
-      return this.dialogType === 'roleCreate' 
-    },
-   dialogPermission() {
-      return this.dialogType === 'permissionEdit'
     }
   },
-  // watch: {
-  //   dialogVisible(value) {
-  //     if (value) {
-  //       this.$nextTick(() => {
-  //         this.$refs['form-role'].clearValidate()
-  //         this.$refs['form-permission'].clearValidate()
-  //       })
-  //     }
-  //   }
-  // },
   methods: {
     submit(fromName) {
       this.$refs[fromName].validate((valid) => {
         // console.log(this.rolesid)
 
         if (valid) {
-
           // this.messageSuccess()
           this.dialogVisible = false
         }
       })
     },
-    
-    // for(let i=0;i<this.tableData.length;i++){
-    //   return this.tableData[i].name
-    // },
     createRole() {
       this.role = { ...defaultRole }
       this.dialogType = 'roleCreate'
       this.dialogVisible = true
-      // this.tableData = this.role
+    },
+    editRole() {
+      this.role = this.multipleSelection[0]
+      this.dialogType = 'roleEdit'
+      this.dialogVisible = true
     },
     handleSelectionChange(val) {
-      console.log(val)
+      this.multipleSelection = val
+    },
+    removeDomain() {
+      for (var cvc in this.multipleSelection) {
+        var index = this.form.business_config.indexOf(this.multipleSelection[cvc])
+        if (index !== -1) {
+          this.form.business_config.splice(index, 1)
+        }
+      }
     },
     formatterTime(row) {
       return this.$dayjs(row).format('HH:mm:ss')
     },
-    //判断布尔值
     boolena(val) {
       return val === false ? 0 : 1
     },
-    boolena1(val){
-      return val === 1? true : false
+    boolena1(val) {
+      return val === 1 ? true : false
     },
-    //判断低中搞
-    low(val1){
-      if(val1 == '1'){
+    low(val1) {
+      if (val1 === '1') {
         return 'high'
       } else {
-        if(val1 == '2'){
+        if (val1 === '2') {
           return 'middle'
         } else {
           return 'low'
         }
       }
     },
-    // low1(val1){
-    //   if(val1 === 'high'){
-    //     return '1'
-    //   } else {
-    //     if(val1 === 'middle'){
-    //       return '2'
-    //     } else {
-    //       return '3'
-    //     }
-    //   }
-    // },
     addRole() {
       this.form.business_config.push({
         'name': this.role.name,
@@ -425,10 +371,16 @@ export default {
       })
       this.dialogVisible = false
     },
+    xgRole() {
+      this.dialogVisible = false
+    },
+    resetForm() {
+      this.form = JSON.parse(JSON.stringify(formData))
+    },
     submitForm(formName) {
       // alert( this.tranDateTime)
       this.$refs[formName].validate(valid => {
-        if (valid) {   
+        if (valid) {
           const params = {
             'business_config': this.form.business_config,
             'approve_config': {
@@ -452,25 +404,22 @@ export default {
               }
             },
             'exchange_config': {
-              'start_time': this.formatterTime(this.tranDateTime[0]),
+              'start_time': this.tranDateTime[0],
               'is_on': this.boolena(this.form.exchange_config.is_on),
-              'end_time': this.formatterTime(this.tranDateTime[1]),
+              'end_time': this.tranDateTime[1]
             }
           }
           cpostsysconfigs(params).then(res => {
-          this.tableData = res.business_config
-            console.log(res, '1')
-          }).catch(() => {
-            console.log('失败', '2')
+            this.tableData = res.business_config
+            Message.success('编辑成功！')
+          }).catch((error) => {
+            Message.error(error)
           })
         } else {
           console.log('error submit!!')
           return false
         }
       })
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
     }
   }
 }
