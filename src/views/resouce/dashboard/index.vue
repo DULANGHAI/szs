@@ -3,12 +3,12 @@
     <div>
       <breadcrumb></breadcrumb>
     </div>
-    <div class="dash-body">
+    <div class="dash-body" v-loading="loading">
       <div class="dash-header">
         <div class="dash-title">运维作业仪表盘</div>
         <div class="header-flex">
           <div class="dash-desc">{{`早上好，${name}，欢迎来到上证信息运维自动化平台`}}</div>
-          <el-form :inline="true" :model="form">
+          <el-form :inline="true">
             <el-form-item label="时间">
               <el-date-picker
                 size="small"
@@ -91,6 +91,31 @@
         </div>
       </div>
 
+      <!-- top -->
+      <div class="top-chart">
+        <!-- 作业队列 -->
+        <div class="v-top top10-container">
+          <div class="table-title">作业队列监控</div>
+          <div class="table">
+            <el-table :data="chartData3" height="372" style="width: 100%">
+              <el-table-column prop="name" label="worker"></el-table-column>
+              <el-table-column prop="scheduled" label="计划任务数"></el-table-column>
+              <el-table-column prop="reserved" label="堆积量"></el-table-column>
+              <el-table-column prop="finished" label="完成数"></el-table-column>
+              <el-table-column prop="active" label="活跃数"></el-table-column>
+              <el-table-column prop="memory_usage" label="内存使用量"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div class="width-20"></div>
+        <!-- top5作业 -->
+        <div class="v-top top5-container">
+          <ve-histogram
+            :data="chartData4"
+            :extend="extend4"></ve-histogram>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -100,9 +125,8 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 
-const formData = {
-  'datatime': []
-}
+import { getWorkersDataApi } from '@/api/resouce/dashboard/index'
+
 export default {
   components: {
     Breadcrumb,
@@ -113,11 +137,18 @@ export default {
       'name'
     ])
   },
+  watch: {
+    datetimerange(val) {
+      this.form.start_time = val[0]
+      this.form.end_time = val[1]
+    }
+  },
   data() {
     this.extend1 = {
       title: {
         text: '文件提交统计'
       },
+      color: ['#874DA2', '#09BBFF', '#868F96'],
       grid: {
         show: false,
         bottom: 20,
@@ -126,44 +157,42 @@ export default {
       legend: {
         data: [
           {
-            name: '失败数',
+            name: '脚本库',
             icon: 'circle'
           },
           {
-            name: '成功数',
+            name: '软件包库',
+            icon: 'circle'
+          },
+          {
+            name: '配置文件库',
             icon: 'circle'
           }
         ]
       }
     }
-    this.chartSettings1 = {
-      // color:
-    }
     this.extend2 = {
       title: {
         text: 'TOP10主机作业执行次数'
       },
-      grid: {
-        bottom: 20,
-        containLabel: true
-      },
       legend: {
         show: false
       },
-      series: [
-        {
-          type: 'bar',
-          label: {
-            rotate: 45
-          },
-          barWidth: 20
+      series: {
+        barWidth: 20
+      },
+      grid: {
+        show: false,
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: {
+        axisLabel: {
+          rotate: 45
         }
-      ]
+      }
     }
     this.chartSettings2 = {
-      label: {
-        rotate: 45
-      },
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: '#2A89FF' },
@@ -171,21 +200,46 @@ export default {
         ])
       }
     }
+    this.extend4 = {
+      title: {
+        text: '执行节点监控'
+      },
+      color: ['#C43A30', '#005BEA'],
+      legend: {
+        show: true,
+        right: 20
+      },
+      series: {
+        barWidth: 20
+      },
+      grid: {
+        show: false,
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: {
+        axisLabel: {
+          rotate: 45
+        }
+      }
+    }
     return {
-      multipleSelection: [],
+      loading: false,
       datetimerange: '',
+      form: {
+        start_time: '',
+        end_time: ''
+      },
       timed: false,
-      listLoading: false,
-      form: JSON.parse(JSON.stringify(formData)),
       chartData1: {
-        columns: ['日期', '失败数', '成功数'],
+        columns: ['日期', '脚本库', '软件包库', '配置文件库'],
         rows: [
-          { '日期': '05/09', '失败数': 1393, '成功数': 1093 },
-          { '日期': '05/10', '失败数': 3530, '成功数': 3230 },
-          { '日期': '05/11', '失败数': 2923, '成功数': 2623 },
-          { '日期': '05/12', '失败数': 1723, '成功数': 1423 },
-          { '日期': '05/13', '失败数': 3792, '成功数': 3492 },
-          { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
+          { '日期': '05/09', '脚本库': 1393, '软件包库': 1093, '配置文件库': 0 },
+          { '日期': '05/10', '脚本库': 3530, '软件包库': 3230, '配置文件库': 1000 },
+          { '日期': '05/11', '脚本库': 2923, '软件包库': 2623, '配置文件库': 2000 },
+          { '日期': '05/12', '脚本库': 1723, '软件包库': 1423, '配置文件库': 3000 },
+          { '日期': '05/13', '脚本库': 3792, '软件包库': 3492, '配置文件库': 4000 },
+          { '日期': '05/14', '脚本库': 4593, '软件包库': 4293, '配置文件库': 5000 }
         ]
       },
       chartData2: {
@@ -202,15 +256,32 @@ export default {
           { 'IP': '205.205.205.209', '异常次数': 1723 },
           { 'IP': '205.205.205.210', '异常次数': 3792 }
         ]
+      },
+      chartData3: [],
+      chartData4: {
+        columns: ['group', '状态异常', '状态正常'],
+        rows: [
+          { 'group': 'LDDS1', '状态异常': 0, '状态正常': 0 },
+          { 'group': 'LDDS2', '状态异常': 0, '状态正常': 0 },
+          { 'group': 'LDDS3', '状态异常': 0, '状态正常': 0 }
+        ]
       }
     }
   },
   created() {
-    this.getList()
+    this.loading = true
+    Promise.all([getWorkersDataApi()])
+      .then(res => {
+        this.chartData3 = res[0]
+      }).finally(() => {
+        this.loading = false
+      })
   },
   methods: {
-    getList() {
-      console.log(123)
+    getWorkersData() {
+      getWorkersDataApi().then(res => {
+        this.chartData3 = res
+      })
     }
   }
 }
@@ -295,6 +366,36 @@ export default {
       /* Mask: */
       background-image: linear-gradient(-225deg, #3D4E81 0%, #5753C9 48%, #6E7FF3 100%);
       border-radius: 10.68px;
+    }
+  }
+  .top-chart {
+    margin-top: 21px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v-top {
+      background: #FFFFFF;
+      box-shadow: 0 4px 9px 0 rgba(0,0,0,0.02);
+      border-radius: 5px;
+    }
+    .top10-container {
+      flex: 1;
+      height: 400px;
+    }
+    .table-title {
+      color: #333;
+      font-size: 18px;
+      line-height: 1.6;
+      font-weight: bold;
+      padding-left: 10px;
+    }
+    .table {
+      width: 100%;
+      height: calc(100% - 28px);
+      overflow-y: auto;
+    }
+    .top5-container {
+      width: 368px;
     }
   }
 }

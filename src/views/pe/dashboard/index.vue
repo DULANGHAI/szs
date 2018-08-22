@@ -184,10 +184,6 @@ export default {
       }
     }
     this.chartSettings3 = {
-      // label: {
-      //   show: true,
-      //   rotate: 45
-      // },
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: '#2A89FF' },
@@ -210,12 +206,9 @@ export default {
       }
     }
     return {
-      multipleSelection: [],
-      listLoading: false,
       form: {
         start_time: '',
         end_time: ''
-
       },
       datetimerange: '',
       timed: false,
