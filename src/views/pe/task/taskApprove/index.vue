@@ -96,7 +96,7 @@
           <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="updated_at" label="修改时间" width="160px" :formatter="formatterTime"></el-table-column>
           <el-table-column prop="type" label="任务类型" :formatter="formatterTaskType"></el-table-column>
-          <el-table-column prop="task_description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
               <risk-level :level="scope.row.risk_level"></risk-level>

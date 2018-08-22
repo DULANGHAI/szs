@@ -75,7 +75,10 @@
           <ve-line
             :data="chartData1"
             :colors="colors"
-            :extend="extend1"></ve-line>
+            :grid="grid"
+            :extend="extend1">
+            <div v-show="!chartData1.rows.length" class="data-empty">暂无数据</div>
+            </ve-line>
         </div>
         <div class="width-20"></div>
         <!-- 流程执行统计 -->
@@ -83,7 +86,10 @@
           <ve-line
             :data="chartData2"
             :colors="colors"
-            :extend="extend2"></ve-line>
+            :grid="grid"
+            :extend="extend2">
+            <div v-show="!chartData2.rows.length" class="data-empty">暂无数据</div>
+            </ve-line>
         </div>
       </div>
 
@@ -94,15 +100,20 @@
           <ve-histogram
             :data="chartData3"
             :settings="chartSettings3"
-            :extend="extend3"></ve-histogram>
+            :extend="extend3">
+            <div v-show="!chartData3.rows.length" class="data-empty">暂无数据</div>
+            </ve-histogram>
         </div>
         <div class="width-20"></div>
         <!-- top5作业 -->
         <div class="v-top top5-container">
           <ve-ring
             :data="chartData4"
+            :grid="grid"
             :settings="chartSettings4"
-            :extend="extend4"></ve-ring>
+            :extend="extend4">
+            <div v-show="!chartData4.rows.length" class="data-empty">暂无数据</div>
+            </ve-ring>
         </div>
       </div>
     </div>
@@ -120,13 +131,14 @@ export default {
   },
   data() {
     this.colors = ['#874DA2', '#09BBFF']
+    this.grid = {
+      show: false,
+      bottom: 20,
+      containLabel: true
+    }
     this.extend1 = {
       title: {
         text: '作业量统计'
-      },
-      grid: {
-        // bottom: 0,
-        containLabel: true
       },
       legend: {
         data: [
@@ -145,10 +157,6 @@ export default {
       title: {
         text: '流程执行统计'
       },
-      grid: {
-        // bottom: 0,
-        containLabel: true
-      },
       legend: {
         data: [
           {
@@ -166,28 +174,24 @@ export default {
       title: {
         text: 'TOP10异常主机'
       },
-      grid: {
-        bottom: 20,
-        containLabel: true
-      },
       legend: {
         show: false
       },
-      series: [
-        {
-          type: 'bar',
-          label: {
-            show: false,
-            rotate: 45
-          },
-          barWidth: 20
+      series: {
+        barWidth: 20
+      },
+      grid: {
+        show: false,
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: {
+        axisLabel: {
+          rotate: 45
         }
-      ]
+      }
     }
     this.chartSettings3 = {
-      label: {
-        rotate: 45
-      },
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: '#2A89FF' },
@@ -200,10 +204,6 @@ export default {
         text: 'TOP5作业'
       },
       colors: ['#2A89FF', '#11AD68', '#444753', '#5F72BD', '#C79081'],
-      grid: {
-        bottom: 20,
-        containLabel: true
-      },
       legend: {
         bottom: 20
       }
@@ -214,12 +214,9 @@ export default {
       }
     }
     return {
-      multipleSelection: [],
-      listLoading: false,
       form: {
         start_time: '',
         end_time: ''
-
       },
       datetimerange: '',
       timed: false,
@@ -362,7 +359,7 @@ export default {
   }
   .width-20 {
     width: 20px;
-    height: 366px;
+    height: 1px;
   }
   .line-chart {
     margin-top: 21px;
@@ -371,7 +368,6 @@ export default {
     align-items: center;
     .v-line {
       flex: 1;
-      height: 366px;
       background: #FFFFFF;
       box-shadow: 0 4px 9px 0 rgba(0,0,0,0.02);
       border-radius: 5px;
@@ -383,7 +379,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     .v-top {
-      height: 465px;
       background: #FFFFFF;
       box-shadow: 0 4px 9px 0 rgba(0,0,0,0.02);
       border-radius: 5px;
@@ -395,5 +390,18 @@ export default {
       width: 368px;
     }
   }
+}
+.data-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, .7);
+  color: #888;
+  font-size: 14px;
 }
 </style>

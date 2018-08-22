@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div class="dashboard">
     <div>
       <breadcrumb></breadcrumb>
     </div>
-    <div class="dash-body">
+    <div class="dash-body" v-loading="loading">
       <div class="dash-header">
         <div class="dash-title">运维作业仪表盘</div>
         <div class="header-flex">
           <div class="dash-desc">{{`早上好，${name}，欢迎来到上证信息运维自动化平台`}}</div>
-          <el-form :inline="true" :model="form">
+          <el-form :inline="true">
             <el-form-item label="时间">
               <el-date-picker
                 size="small"
@@ -79,16 +79,46 @@
         <div class="v-line">
           <ve-line
             :data="chartData1"
-            :colors="colors"
-            :extend="extend1"></ve-line>
+            :extend="extend1">
+            <div v-show="!chartData1.rows.length" class="data-empty">暂无数据</div>
+            </ve-line>
         </div>
         <div class="width-20"></div>
         <!-- 流程执行统计 -->
         <div class="v-line">
           <ve-histogram
-            :data="chartData3"
-            :settings="chartSettings3"
-            :extend="extend3"></ve-histogram>
+            :data="chartData2"
+            :settings="chartSettings2"
+            :extend="extend2">
+            <div v-show="!chartData2.rows.length" class="data-empty">暂无数据</div>
+            </ve-histogram>
+        </div>
+      </div>
+
+      <!-- top -->
+      <div class="top-chart">
+        <!-- 作业队列 -->
+        <div class="v-top top10-container">
+          <div class="table-title">作业队列监控</div>
+          <div class="table">
+            <el-table :data="chartData3" height="372" style="width: 100%">
+              <el-table-column prop="name" label="worker"></el-table-column>
+              <el-table-column prop="scheduled" label="计划任务数"></el-table-column>
+              <el-table-column prop="reserved" label="堆积量"></el-table-column>
+              <el-table-column prop="finished" label="完成数"></el-table-column>
+              <el-table-column prop="active" label="活跃数"></el-table-column>
+              <el-table-column prop="memory_usage" label="内存使用量"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div class="width-20"></div>
+        <!-- top5作业 -->
+        <div class="v-top top5-container">
+          <ve-histogram
+            :data="chartData4"
+            :extend="extend4">
+            <div v-show="!chartData4.rows.length" class="data-empty">暂无数据</div>
+            </ve-histogram>
         </div>
       </div>
 
@@ -101,9 +131,8 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 
-const formData = {
-  'datatime': []
-}
+import { getWorkersDataApi, getHealthDataApi } from '@/api/resouce/dashboard/index'
+
 export default {
   components: {
     Breadcrumb,
@@ -114,54 +143,62 @@ export default {
       'name'
     ])
   },
+  watch: {
+    datetimerange(val) {
+      this.form.start_time = val[0]
+      this.form.end_time = val[1]
+    }
+  },
   data() {
-    this.colors = ['#874DA2', '#09BBFF']
     this.extend1 = {
       title: {
-        text: '作业量统计'
+        text: '文件提交统计'
       },
+      color: ['#874DA2', '#09BBFF', '#868F96'],
       grid: {
-        // bottom: 0,
+        show: false,
+        bottom: 20,
         containLabel: true
       },
       legend: {
         data: [
           {
-            name: '失败数',
+            name: '脚本库',
             icon: 'circle'
           },
           {
-            name: '成功数',
+            name: '软件包库',
+            icon: 'circle'
+          },
+          {
+            name: '配置文件库',
             icon: 'circle'
           }
         ]
       }
     }
-    this.extend3 = {
+    this.extend2 = {
       title: {
         text: 'TOP10主机作业执行次数'
-      },
-      grid: {
-        bottom: 20,
-        containLabel: true
       },
       legend: {
         show: false
       },
-      series: [
-        {
-          type: 'bar',
-          label: {
-            rotate: 45
-          },
-          barWidth: 20
-        }
-      ]
-    }
-    this.chartSettings3 = {
-      label: {
-        rotate: 45
+      series: {
+        barWidth: 20
       },
+      grid: {
+        show: false,
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: {
+        axisLabel: {
+          rotate: 45
+        }
+      }
+    }
+    this.chartSettings2 = {
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
           { offset: 0, color: '#2A89FF' },
@@ -169,24 +206,48 @@ export default {
         ])
       }
     }
+    this.extend4 = {
+      title: {
+        text: '执行节点监控'
+      },
+      color: ['#00C6FB'],
+      legend: {
+        show: false
+      },
+      series: {
+        barWidth: 20
+      },
+      grid: {
+        show: false,
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: {
+        axisLabel: {
+          rotate: 45
+        }
+      }
+    }
     return {
-      multipleSelection: [],
+      loading: false,
       datetimerange: '',
+      form: {
+        start_time: '',
+        end_time: ''
+      },
       timed: false,
-      listLoading: false,
-      form: JSON.parse(JSON.stringify(formData)),
       chartData1: {
-        columns: ['日期', '失败数', '成功数'],
+        columns: ['日期', '脚本库', '软件包库', '配置文件库'],
         rows: [
-          { '日期': '05/09', '失败数': 1393, '成功数': 1093 },
-          { '日期': '05/10', '失败数': 3530, '成功数': 3230 },
-          { '日期': '05/11', '失败数': 2923, '成功数': 2623 },
-          { '日期': '05/12', '失败数': 1723, '成功数': 1423 },
-          { '日期': '05/13', '失败数': 3792, '成功数': 3492 },
-          { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
+          { '日期': '05/09', '脚本库': 1393, '软件包库': 1093, '配置文件库': 0 },
+          { '日期': '05/10', '脚本库': 3530, '软件包库': 3230, '配置文件库': 1000 },
+          { '日期': '05/11', '脚本库': 2923, '软件包库': 2623, '配置文件库': 2000 },
+          { '日期': '05/12', '脚本库': 1723, '软件包库': 1423, '配置文件库': 3000 },
+          { '日期': '05/13', '脚本库': 3792, '软件包库': 3492, '配置文件库': 4000 },
+          { '日期': '05/14', '脚本库': 4593, '软件包库': 4293, '配置文件库': 5000 }
         ]
       },
-      chartData3: {
+      chartData2: {
         columns: ['IP', '异常次数'],
         rows: [
           { 'IP': '205.205.205.201', '异常次数': 1393 },
@@ -200,21 +261,61 @@ export default {
           { 'IP': '205.205.205.209', '异常次数': 1723 },
           { 'IP': '205.205.205.210', '异常次数': 3792 }
         ]
+      },
+      chartData3: [],
+      chartData4: {
+        columns: ['group', '执行节点数'],
+        rows: []
       }
     }
   },
   created() {
-    this.getList()
+    this.loading = true
+    Promise.all([getWorkersDataApi(), getHealthDataApi()])
+      .then(res => {
+        this.chartData3 = res[0]
+        this.chartData4.rows = this.handleData4(res[1])
+      }).finally(() => {
+        this.loading = false
+      })
   },
   methods: {
-    getList() {
-      console.log(123)
+    /**
+     * 单独的接口请求
+     */
+    getWorkersData() {
+      getWorkersDataApi().then(res => {
+        this.chartData3 = res
+      })
+    },
+    getHealthData() {
+      getHealthDataApi().then(res => {
+        this.chartData4.rows = this.handleData4(res)
+      })
+    },
+    /**
+     * 数据处理函数
+     */
+    handleData4(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'group': item.cluster_name,
+          '执行节点数': item.workers_number
+        })
+      })
+      return result
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.dashboard {
+  & /deep/ .page-bar {
+    background-color: transparent;
+  }
+}
 .dash-body{
   padding: 25px 25px;
   .dash-header{
@@ -232,7 +333,7 @@ export default {
   }
   .width-20 {
     width: 20px;
-    height: 366px;
+    height: 1px;
   }
   .line-chart {
     margin-top: 21px;
@@ -290,5 +391,48 @@ export default {
       border-radius: 10.68px;
     }
   }
+  .top-chart {
+    margin-top: 21px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v-top {
+      background: #FFFFFF;
+      box-shadow: 0 4px 9px 0 rgba(0,0,0,0.02);
+      border-radius: 5px;
+    }
+    .top10-container {
+      flex: 1;
+      height: 400px;
+    }
+    .table-title {
+      color: #333;
+      font-size: 18px;
+      line-height: 1.6;
+      font-weight: bold;
+      padding-left: 10px;
+    }
+    .table {
+      width: 100%;
+      height: calc(100% - 28px);
+      overflow-y: auto;
+    }
+    .top5-container {
+      width: 368px;
+    }
+  }
+}
+.data-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, .7);
+  color: #888;
+  font-size: 14px;
 }
 </style>

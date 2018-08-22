@@ -128,3 +128,27 @@ export function deleteJobRecordApi(data) {
     data: data
   })
 }
+
+/**
+ * 执行/启用 定时作业
+ * @param {Object} data
+ */
+export function doJobApi(data) {
+  return request({
+    url: '/v1/jobs/timed/enable/',
+    method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 执行/启用 定时作业
+ * @param {Object} data
+ */
+export function stopTimedJobApi(data) {
+  return request({
+    url: '/v1/jobs/timed/disable/',
+    method: 'put',
+    data: data
+  })
+}

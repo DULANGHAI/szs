@@ -57,8 +57,6 @@
     <div class="toolbar">
       <el-button size="small" type="primary" icon="el-icon-plus" plain @click="addTimedJob">添加</el-button>
       <div>
-        <el-button size="small" plain :disabled="multipleStart" >启用</el-button>
-        <el-button size="small" plain :disabled="multipleStop" >停用</el-button>
         <el-button size="small" type="danger" plain :disabled="multipleDelete" @click="handleMultipleDelete">删除</el-button>
       </div>
     </div>
@@ -76,7 +74,7 @@
         <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="created_at" label="创建时间" :formatter="formatterTime1"></el-table-column>
-        <el-table-column prop="timed_type" label="定时类型"></el-table-column>
+        <el-table-column prop="timed_type" label="定时类型" :formatter="formatterTimedType"></el-table-column>
         <el-table-column prop="system_type" label="系统"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column label="风险等级" width="88px">
@@ -86,12 +84,13 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
         <el-table-column prop="frequency" label="执行次数"></el-table-column>
-        <el-table-column prop="last_time" label="上次执行时间" :formatter="formatterTime2"></el-table-column>
-        <el-table-column prop="success_rate" label="成功率"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleJobSet(scope.row)" :disabled="scope.row.status === 1 ? true : false">定时作业配置</el-button>
             <el-button type="text" size="small" @click="handleTaskSet(scope.row)" :disabled="scope.row.status === 1 ? true : false">任务配置</el-button>
+            <el-button v-if="scope.row.timed_type === 'cycle'" type="text" size="small" @click="doJob(scope.row)" :disabled="scope.row.status === 1">启用</el-button>
+            <el-button v-if="scope.row.timed_type === 'cycle'" type="text" size="small" @click="stopTimedJob(scope.row)" :disabled="scope.row.status === 0">停用</el-button>
+            <el-button v-if="scope.row.timed_type === 'timed'" type="text" size="small" @click="doJob(scope.row)">执行</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -116,7 +115,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import AddTimed from './components/AddTimed'
 import TaskConfig from './components/TaskConfig'
 
-import { getLanguageApi, getJobListApi, getCreatorApi, deleteJobApi } from '@/api/pe/jobManage/timedJob'
+import { getLanguageApi, getJobListApi, getCreatorApi, deleteJobApi, doJobApi, stopTimedJobApi } from '@/api/pe/jobManage/timedJob'
 
 export default {
   components: {
@@ -131,6 +130,10 @@ export default {
       update: '应用更新&发布',
       quit: '应用下线',
       inspection: '日常检查'
+    }
+    this.timed_type_map = {
+      'timed': '定时',
+      'cycle': '周期'
     }
     return {
       loading: false,
@@ -150,8 +153,6 @@ export default {
       creator_arr: [],
       daterange: '',
       multipleSelection: [],
-      multipleStart: true,
-      multipleStop: true,
       multipleDelete: true,
       addType: 'add',
       needSetJob: null // 需要配置的作业信息
@@ -172,21 +173,13 @@ export default {
           }
         }
         if (enable === length) {
-          this.multipleStart = true
-          this.multipleStop = false
           this.multipleDelete = true
         } else if (enable === 0) {
-          this.multipleStart = false
-          this.multipleStop = true
           this.multipleDelete = false
         } else {
-          this.multipleStart = true
-          this.multipleStop = true
           this.multipleDelete = true
         }
       } else {
-        this.multipleStart = true
-        this.multipleStop = true
         this.multipleDelete = true
       }
     }
@@ -213,11 +206,8 @@ export default {
     formatterTime1(row) {
       return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
-    formatterTime2(row) {
-      if (row.last_time) {
-        return this.$dayjs(row.last_time).format('YYYY-MM-DD HH:mm:ss')
-      }
-      return '/'
+    formatterTimedType(row) {
+      return this.timed_type_map[row.timed_type]
     },
     formatterStatus(row) {
       return row.status === 1 ? '启用' : '禁用'
@@ -311,6 +301,46 @@ export default {
     handleTaskSet(row) {
       this.needSetJob = row
       this.$refs.taskConfig.showMoel()
+    },
+    // 启用、执行
+    doJob(row) {
+      this.$confirm('确认要开始该任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        doJobApi({
+          job_info: JSON.stringify(row)
+        }).then(res => {
+          this.$message.success('操作成功')
+          this.getListData()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    // 停止周期作业
+    stopTimedJob(row) {
+      this.$confirm('确认要停止该任务吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        stopTimedJobApi({
+          job_info: JSON.stringify(row)
+        }).then(res => {
+          this.$message.success('操作成功')
+          this.getListData()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     }
   }
 }
