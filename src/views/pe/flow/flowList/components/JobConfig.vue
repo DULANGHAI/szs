@@ -70,7 +70,6 @@ export default {
       this.show = false
     },
     handleOpen() {
-      debugger
       this.form = {
         execution_account: this.data.execution_account,
         target_ip: this.data.target_ip.split(','),
