@@ -451,7 +451,7 @@ export const constantRouterMap = [
         path: 'usermanage',
         name: '用户管理',
         component: Layout,
-        meta: { title: '用户管理', icon: 'dashboard' },
+        meta: { title: '用户管理', icon: 'yonghu' },
         noNest: true,
         children: [
           {
@@ -479,7 +479,7 @@ export const constantRouterMap = [
         path: 'rolemanage',
         name: '角色管理',
         component: Layout,
-        meta: { title: '角色管理', icon: 'dashboard' },
+        meta: { title: '角色管理', icon: 'jiaose' },
         noNest: true,
         children: [
           {
@@ -509,7 +509,7 @@ export const constantRouterMap = [
         path: 'auditnotice',
         name: '审计与通知',
         component: Layout,
-        meta: { title: '审计与通知', icon: 'dashboard' },
+        meta: { title: '审计与通知', icon: 'xitong' },
         noNest: true,
         children: [
           {
@@ -531,14 +531,14 @@ export const constantRouterMap = [
         path: 'sysconfig',
         name: '系统配置',
         component: Layout,
-        meta: { title: '系统配置', icon: 'dashboard' },
+        meta: { title: '系统配置', icon: 'peizhi' },
         noNest: true,
         children: [
           {
             path: 'setting',
             component: () => import('@/views/system/config'),
             name: 'setting',
-            meta: { title: '系统配置', icon: 'banben' }
+            meta: { title: '系统配置', icon: 'peizhi' }
           }
         ]
       }

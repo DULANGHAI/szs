@@ -2,9 +2,9 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <module-nav></module-nav>
-    <div class="nav-tooltip"> 
-      <span class="tooltip-icon"  @click="setting1">
-        <svg-icon icon-class="setting"/>
+    <div class="nav-tooltip">
+      <span class="tooltip-icon">
+        <svg-icon icon-class="setting" />
       </span>
       <span class="tooltip-icon">
         <svg-icon icon-class="wenti" />
@@ -23,9 +23,11 @@
             <span class="tooltip-name">{{ name }}</span>
           </div>
           <el-dropdown-menu class="user-dropdown" slot="dropdown">
+            <router-link class="inlineBlock" to="/">
               <el-dropdown-item>
-                <div @click="personalInfo">个人信息</div>
+                <div>个人信息</div>
               </el-dropdown-item>
+            </router-link>
             <el-dropdown-item divided>
               <div @click="logout">退出账号</div>
             </el-dropdown-item>
@@ -63,17 +65,16 @@ export default {
     ])
   },
   mounted() {
-    // setInterval(() => {
-    //   this.id = getToken()
-    //   getNum({ user_id: this.id }).then(res => {
-    //     this.num = res.count
-    //   })
-    // }, 10000)
+    this.interval = setInterval(() => {
+      this.id = getToken()
+      getNum({ user_id: this.id }).then(res => {
+        this.num = res.count
+      }).catch(() => {
+        clearInterval(this.interval)
+      })
+    }, 10000)
   },
   methods: {
-    setting1() {
-      this.$router.push('/system/sysconfig/setting')
-    },
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
     },
@@ -81,9 +82,6 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
-    },
-    personalInfo() {
-      this.$router.push('/system/usermanage/personalInfo')
     }
   }
 }

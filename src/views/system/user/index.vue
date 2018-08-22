@@ -121,8 +121,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import common from '../common'
-import { getAdduserApi, deleteAdduserApi, getAlluserApi, getrolesId ,openclose, deleteuser} from '@/api/systemManage/system.js'
-import { getToken } from '@/utils/auth'
+import { openclose, deleteuser } from '@/api/systemManage/system.js'
 import { queryUserApi } from '@/api/systemManage/system.js'
 
 const defaultUserForm = {
@@ -292,8 +291,8 @@ export default {
       })
         .then(() => {
           deleteuser({
-            identifier:this.multipleSelection[0].id
-          }).then(res=>{
+            identifier: this.multipleSelection[0].id
+          }).then(res => {
             console.log(res)
           })
           this.users = this.multipleSelectionFilter
@@ -312,15 +311,15 @@ export default {
       })
         .then(() => {
           this.multipleSelection.forEach(
-          openclose({
-            status:1,
-            identifier:this.multipleSelection[0].id
-          }).then(res=>{
-            console.log(res)
+            openclose({
+              status: 1,
+              identifier: this.multipleSelection[0].id
+            }).then(res => {
+              console.log(res)
             // item.status = res.status
-          }).catch(error=>{
-            console.log('22')
-          })
+            }).catch(() => {
+              console.log('22')
+            })
             // item => {
             // item.status = 1
           // }
@@ -340,12 +339,12 @@ export default {
       })
         .then(() => {
           this.multipleSelection.forEach(
-           openclose({
-            status:0,
-            identifier:this.multipleSelection[0].id
-          }).then(res=>{
-            console.log('333')
-          })
+            openclose({
+              status: 0,
+              identifier: this.multipleSelection[0].id
+            }).then(res => {
+              console.log('333')
+            })
             // item => {
             // item.status = 0
           // }
@@ -380,7 +379,7 @@ export default {
         // this.totalPage = res.per_page
         // this.currentPage = res.page
         // this.users = res.items
-          // console.log(res,'修改成功')
+        // console.log(res,'修改成功')
         // })
         if (valid) {
           if (!this.isEdit) {
