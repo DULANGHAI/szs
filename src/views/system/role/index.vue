@@ -122,10 +122,10 @@ export default {
   },
   computed: {
     isEdit() {
-      return this.multipleSelection.length === 1 ? false : true
+      return !this.multipleSelection.length === 1
     },
     isDelete() {
-      return this.multipleSelection.length === 1 ? false : true
+      return !this.multipleSelection.length === 1
     }
   },
   created() {

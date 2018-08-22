@@ -291,8 +291,8 @@ export default {
         }
       }
       this.tranDateTime = [res.exchange_config.start_time, res.exchange_config.end_time]
-    }).catch(res => {
-      console.log('失败', '2')
+    }).catch(error => {
+      Message.error(error)
     })
   },
   created() {
@@ -351,7 +351,7 @@ export default {
       return val === false ? 0 : 1
     },
     boolena1(val) {
-      return val === 1 ? true : false
+      return val === 1
     },
     low(val1) {
       if (val1 === '1') {

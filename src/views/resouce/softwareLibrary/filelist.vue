@@ -226,7 +226,6 @@ export default {
   created() {
     this.getBreadcrumb()
     this.getfilelist()
-    console.log(34, this.$route.params)
   },
   methods: {
     handleClick(tab, event) {
@@ -249,7 +248,6 @@ export default {
       }
     },
     handleSelectionChange(val) {
-      console.log(val)
       this.multipleSelection = val
     },
     getBreadcrumb() {
