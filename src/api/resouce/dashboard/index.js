@@ -9,3 +9,13 @@ export function getWorkersDataApi() {
     method: 'get'
   })
 }
+
+/**
+ * 获取执行节点监控的数据
+ */
+export function getHealthDataApi() {
+  return request({
+    url: '/v1/workers/health',
+    method: 'get'
+  })
+}

@@ -76,7 +76,9 @@
             :data="chartData1"
             :colors="colors"
             :grid="grid"
-            :extend="extend1"></ve-line>
+            :extend="extend1">
+            <div v-show="!chartData1.rows.length" class="data-empty">暂无数据</div>
+            </ve-line>
         </div>
         <div class="width-20"></div>
         <!-- 流程执行统计 -->
@@ -85,7 +87,9 @@
             :data="chartData2"
             :colors="colors"
             :grid="grid"
-            :extend="extend2"></ve-line>
+            :extend="extend2">
+            <div v-show="!chartData2.rows.length" class="data-empty">暂无数据</div>
+            </ve-line>
         </div>
       </div>
 
@@ -96,7 +100,9 @@
           <ve-histogram
             :data="chartData3"
             :settings="chartSettings3"
-            :extend="extend3"></ve-histogram>
+            :extend="extend3">
+            <div v-show="!chartData3.rows.length" class="data-empty">暂无数据</div>
+            </ve-histogram>
         </div>
         <div class="width-20"></div>
         <!-- top5作业 -->
@@ -105,7 +111,9 @@
             :data="chartData4"
             :grid="grid"
             :settings="chartSettings4"
-            :extend="extend4"></ve-ring>
+            :extend="extend4">
+            <div v-show="!chartData4.rows.length" class="data-empty">暂无数据</div>
+            </ve-ring>
         </div>
       </div>
     </div>
@@ -382,5 +390,18 @@ export default {
       width: 368px;
     }
   }
+}
+.data-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, .7);
+  color: #888;
+  font-size: 14px;
 }
 </style>

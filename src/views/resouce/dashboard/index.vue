@@ -79,7 +79,9 @@
         <div class="v-line">
           <ve-line
             :data="chartData1"
-            :extend="extend1"></ve-line>
+            :extend="extend1">
+            <div v-show="!chartData1.rows.length" class="data-empty">暂无数据</div>
+            </ve-line>
         </div>
         <div class="width-20"></div>
         <!-- 流程执行统计 -->
@@ -87,7 +89,9 @@
           <ve-histogram
             :data="chartData2"
             :settings="chartSettings2"
-            :extend="extend2"></ve-histogram>
+            :extend="extend2">
+            <div v-show="!chartData2.rows.length" class="data-empty">暂无数据</div>
+            </ve-histogram>
         </div>
       </div>
 
@@ -112,7 +116,9 @@
         <div class="v-top top5-container">
           <ve-histogram
             :data="chartData4"
-            :extend="extend4"></ve-histogram>
+            :extend="extend4">
+            <div v-show="!chartData4.rows.length" class="data-empty">暂无数据</div>
+            </ve-histogram>
         </div>
       </div>
 
@@ -125,7 +131,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 
-import { getWorkersDataApi } from '@/api/resouce/dashboard/index'
+import { getWorkersDataApi, getHealthDataApi } from '@/api/resouce/dashboard/index'
 
 export default {
   components: {
@@ -204,10 +210,9 @@ export default {
       title: {
         text: '执行节点监控'
       },
-      color: ['#C43A30', '#005BEA'],
+      color: ['#00C6FB'],
       legend: {
-        show: true,
-        right: 20
+        show: false
       },
       series: {
         barWidth: 20
@@ -259,29 +264,47 @@ export default {
       },
       chartData3: [],
       chartData4: {
-        columns: ['group', '状态异常', '状态正常'],
-        rows: [
-          { 'group': 'LDDS1', '状态异常': 0, '状态正常': 0 },
-          { 'group': 'LDDS2', '状态异常': 0, '状态正常': 0 },
-          { 'group': 'LDDS3', '状态异常': 0, '状态正常': 0 }
-        ]
+        columns: ['group', '执行节点数'],
+        rows: []
       }
     }
   },
   created() {
     this.loading = true
-    Promise.all([getWorkersDataApi()])
+    Promise.all([getWorkersDataApi(), getHealthDataApi()])
       .then(res => {
         this.chartData3 = res[0]
+        this.chartData4.rows = this.handleData4(res[1])
       }).finally(() => {
         this.loading = false
       })
   },
   methods: {
+    /**
+     * 单独的接口请求
+     */
     getWorkersData() {
       getWorkersDataApi().then(res => {
         this.chartData3 = res
       })
+    },
+    getHealthData() {
+      getHealthDataApi().then(res => {
+        this.chartData4.rows = this.handleData4(res)
+      })
+    },
+    /**
+     * 数据处理函数
+     */
+    handleData4(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'group': item.cluster_name,
+          '执行节点数': item.workers_number
+        })
+      })
+      return result
     }
   }
 }
@@ -398,5 +421,18 @@ export default {
       width: 368px;
     }
   }
+}
+.data-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, .7);
+  color: #888;
+  font-size: 14px;
 }
 </style>
