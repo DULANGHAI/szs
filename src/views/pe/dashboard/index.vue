@@ -358,7 +358,7 @@ export default {
   }
   .width-20 {
     width: 20px;
-    height: 366px;
+    height: 1px;
   }
   .line-chart {
     margin-top: 21px;

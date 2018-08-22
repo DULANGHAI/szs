@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dashboard">
     <div>
       <breadcrumb></breadcrumb>
     </div>
@@ -79,16 +79,15 @@
         <div class="v-line">
           <ve-line
             :data="chartData1"
-            :colors="colors"
             :extend="extend1"></ve-line>
         </div>
         <div class="width-20"></div>
         <!-- 流程执行统计 -->
         <div class="v-line">
           <ve-histogram
-            :data="chartData3"
-            :settings="chartSettings3"
-            :extend="extend3"></ve-histogram>
+            :data="chartData2"
+            :settings="chartSettings2"
+            :extend="extend2"></ve-histogram>
         </div>
       </div>
 
@@ -115,13 +114,13 @@ export default {
     ])
   },
   data() {
-    this.colors = ['#874DA2', '#09BBFF']
     this.extend1 = {
       title: {
-        text: '作业量统计'
+        text: '文件提交统计'
       },
       grid: {
-        // bottom: 0,
+        show: false,
+        bottom: 20,
         containLabel: true
       },
       legend: {
@@ -137,7 +136,10 @@ export default {
         ]
       }
     }
-    this.extend3 = {
+    this.chartSettings1 = {
+      // color:
+    }
+    this.extend2 = {
       title: {
         text: 'TOP10主机作业执行次数'
       },
@@ -158,7 +160,7 @@ export default {
         }
       ]
     }
-    this.chartSettings3 = {
+    this.chartSettings2 = {
       label: {
         rotate: 45
       },
@@ -186,7 +188,7 @@ export default {
           { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
         ]
       },
-      chartData3: {
+      chartData2: {
         columns: ['IP', '异常次数'],
         rows: [
           { 'IP': '205.205.205.201', '异常次数': 1393 },
@@ -215,6 +217,11 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.dashboard {
+  & /deep/ .page-bar {
+    background-color: transparent;
+  }
+}
 .dash-body{
   padding: 25px 25px;
   .dash-header{
@@ -232,7 +239,7 @@ export default {
   }
   .width-20 {
     width: 20px;
-    height: 366px;
+    height: 1px;
   }
   .line-chart {
     margin-top: 21px;
