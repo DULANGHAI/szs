@@ -14,8 +14,8 @@
         :data="listData"
       >
         <el-table-column prop="permission" label="权限"></el-table-column>
-        <el-table-column prop="resource" label="资源类型"></el-table-column>
-        <el-table-column prop="operation" label="资源操作"></el-table-column>
+        <el-table-column prop="resource" label="权限类型"></el-table-column>
+        <el-table-column prop="operation" label="权限操作"></el-table-column>
         <el-table-column prop="description" label="描述"> </el-table-column>
       </el-table>
       <div class="list-paging">
