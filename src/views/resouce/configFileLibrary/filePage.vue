@@ -185,7 +185,7 @@
           <el-form-item label="提交说明：" prop="codeFileComment">
             <el-input type="textarea" placeholder="请填写提交说明" :maxlength="200" v-model="editForm.comment"></el-input>
           </el-form-item>
-          <el-form-item label="风险等级：" prop="codeFileLevel">
+          <!-- <el-form-item label="风险等级：" prop="codeFileLevel">
             <el-select v-model="editForm.risk_level" size="mini" placeholder="请选择">
               <el-option
                 v-for="item in levelOptions"
@@ -194,7 +194,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </div>
       <div class="container-body-wrap" v-if="is_editContent" style="background:#f8f9fe;padding-top:5px;">
@@ -525,7 +525,7 @@ export default {
       const params = {
         'content': this.codeFileContent,
         'comment': this.editForm.comment,
-        'risk_level': this.editForm.risk_level,
+        'risk_level': '', // this.editForm.risk_level,
         'full_path': this.editForm.full_path,
         'branch': this.branch,
         'repository_type': 'configurations'

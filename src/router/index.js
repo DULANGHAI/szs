@@ -448,7 +448,7 @@ export const constantRouterMap = [
     children: [
       //    1.用户管理
       {
-        path: 'dashboard',
+        path: 'usermanage',
         name: '用户管理',
         component: Layout,
         meta: { title: '用户管理', icon: 'dashboard' },
@@ -458,25 +458,25 @@ export const constantRouterMap = [
             path: 'changepassword',
             component: () => import('@/views/system/changepassword'),
             name: 'changepassword',
-            meta: { title: '修改密码', icon: 'banben' }
+            meta: { title: '修改密码' }
           },
           {
             path: 'user',
             component: () => import('@/views/system/user'),
             name: 'user',
-            meta: { title: '用户管理', icon: 'banben' }
+            meta: { title: '用户管理' }
           },
           {
             path: 'personalInfo',
             component: () => import('@/views/system/personalInfo'),
             name: 'personalInfo',
-            meta: { title: '个人信息', icon: 'banben' }
+            meta: { title: '个人信息' }
           }
         ]
       },
       //    2.角色管理
       {
-        path: 'dashboard',
+        path: 'rolemanage',
         name: '角色管理',
         component: Layout,
         meta: { title: '角色管理', icon: 'dashboard' },
@@ -486,19 +486,27 @@ export const constantRouterMap = [
             path: 'role',
             component: () => import('@/views/system/role'),
             name: 'Role',
-            meta: { title: '角色管理', icon: 'banben' }
+            meta: { title: '角色管理' }
           },
           {
-            path: 'role/list',
+            path: 'permission',
+            component: () => import('@/views/system/role/permission'),
+            name: 'PermissionList',
+            meta: { title: '权限浏览' }
+          },
+          {
+            path: 'role/permission/:id',
+            name: 'rolePermission',
             component: () => import('@/views/system/role/list'),
-            name: 'RoleList',
-            meta: { title: '权限浏览', icon: 'banben' }
+            meta: { title: '角色权限' },
+            hidden: true,
+            props: true
           }
         ]
       },
       //    3.审计与通知
       {
-        path: 'dashboard',
+        path: 'auditnotice',
         name: '审计与通知',
         component: Layout,
         meta: { title: '审计与通知', icon: 'dashboard' },
@@ -508,19 +516,19 @@ export const constantRouterMap = [
             path: 'info',
             component: () => import('@/views/system/info'),
             name: 'info',
-            meta: { title: '消息', icon: 'banben' }
+            meta: { title: '消息' }
           },
           {
             path: 'audit',
             component: () => import('@/views/system/audit'),
             name: 'audit',
-            meta: { title: '系统审计', icon: 'banben' }
+            meta: { title: '系统审计' }
           }
         ]
       },
       //    4.系统配置
       {
-        path: 'dashboard',
+        path: 'sysconfig',
         name: '系统配置',
         component: Layout,
         meta: { title: '系统配置', icon: 'dashboard' },

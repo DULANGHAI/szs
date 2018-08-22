@@ -94,6 +94,7 @@
       <div class="list-paging">
         <el-pagination
           background
+          v-if="this.totalPage > 0"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"

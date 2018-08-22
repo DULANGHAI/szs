@@ -71,8 +71,8 @@ export default {
     // }, 10000)
   },
   methods: {
-    setting1(){
-      this.$router.push('/system/dashboard/setting')
+    setting1() {
+      this.$router.push('/system/sysconfig/setting')
     },
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
@@ -82,8 +82,8 @@ export default {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
     },
-    personalInfo(){
-      this.$router.push('/system/dashboard/personalInfo')
+    personalInfo() {
+      this.$router.push('/system/usermanage/personalInfo')
     }
   }
 }
