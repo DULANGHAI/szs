@@ -61,7 +61,7 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
-import { createUserApi ,getrolesId} from '@/api/systemManage/system.js'
+import { createUserApi } from '@/api/systemManage/system.js'
 // import {mapActions,mapGetters} from 'vuex'
 // import {mapGetters} from 'vuex'
 
