@@ -3,7 +3,7 @@
     <div>
       <breadcrumb></breadcrumb>
     </div>
-    <div class="dash-body">
+    <div class="dash-body" v-loading="loading">
       <div class="dash-header">
         <div class="dash-title">运维作业仪表盘</div>
         <div class="header-flex">
@@ -21,7 +21,7 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
-              <el-switch v-model="timed"></el-switch>
+              <el-switch v-model="timed" @change="handleChange"></el-switch>
             </el-form-item>
           </el-form>
         </div>
@@ -33,11 +33,11 @@
           <div class="card-fcount">
             <span>
               <div>作业执行数</div>
-              <div class="ft-sz">124</div>
+              <div class="ft-sz">{{jobCard.count}}</div>
             </span>
             <span>
               <div>成功率</div>
-              <div class="ft-sz">89%</div>
+              <div class="ft-sz">{{jobCard.ratio}}</div>
             </span>
           </div>
         </div>
@@ -46,11 +46,11 @@
           <div class="card-fcount">
             <span>
               <div>流程执行数</div>
-              <div class="ft-sz">263</div>
+              <div class="ft-sz">{{flowCard.count}}</div>
             </span>
             <span>
               <div>成功率</div>
-              <div class="ft-sz">34%</div>
+              <div class="ft-sz">{{flowCard.ratio}}</div>
             </span>
           </div>
         </div>
@@ -124,6 +124,12 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
+import dayjs from 'dayjs'
+
+import { getJobCardDataApi, getFlowCardDataApi } from '@/api/pe/dashboard/index'
+
+const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
+const default_end_time = dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')
 
 export default {
   components: {
@@ -214,13 +220,21 @@ export default {
       }
     }
     return {
+      loading: false,
       form: {
-        start_time: '',
-        end_time: ''
+        start_time: default_start_time,
+        end_time: default_end_time
       },
-      datetimerange: '',
+      datetimerange: [default_start_time, default_end_time],
       timed: false,
-      listData: [],
+      jobCard: {
+        count: 0,
+        ratio: '0%'
+      },
+      flowCard: {
+        count: 0,
+        ratio: '0%'
+      },
       chartData1: {
         columns: ['日期', '失败数', '成功数'],
         rows: [
@@ -276,7 +290,14 @@ export default {
     ])
   },
   created() {
-    this.getList()
+    this.loading = true
+    Promise.all([getJobCardDataApi(this.form), getFlowCardDataApi(this.form)])
+      .then(res => {
+        this.jobCard = res[0]
+        this.flowCard = res[1]
+      }).finally(() => {
+        this.loading = false
+      })
   },
   watch: {
     datetimerange(val) {
@@ -284,9 +305,43 @@ export default {
       this.form.end_time = val[1]
     }
   },
+  beforeDestory() {
+    this.stopInterval()
+  },
   methods: {
-    getList() {
-
+    handleChange(val) {
+      if (val) {
+        this.startInterval()
+      } else {
+        this.stopInterval()
+      }
+    },
+    startInterval() {
+      this.interval = setInterval(() => {
+        Promise.all([getJobCardDataApi(this.form), getFlowCardDataApi(this.form)])
+          .then(res => {
+            this.jobCard = res[0]
+            this.flowCard = res[1]
+          }).catch(() => {
+            clearInterval(this.interval)
+          })
+      }, 10000)
+    },
+    stopInterval() {
+      clearInterval(this.interval)
+    },
+    /**
+     * 单独的接口请求
+     */
+    getJobCardData() {
+      getJobCardDataApi(this.form).then(res => {
+        this.jobCard = res
+      })
+    },
+    getFlowCardData() {
+      getFlowCardDataApi(this.form).then(res => {
+        this.flowCard = res
+      })
     }
   }
 }

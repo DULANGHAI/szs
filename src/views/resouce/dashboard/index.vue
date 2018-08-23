@@ -17,7 +17,8 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始时间"
-                end-placeholder="结束时间">
+                end-placeholder="结束时间"
+                :picker-options="pickerOptions">
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
@@ -33,11 +34,11 @@
           <div class="card-fcount">
             <span>
               <div>主机数</div>
-              <div class="ft-sz">2344</div>
+              <div class="ft-sz">{{hostNum}}</div>
             </span>
             <span>
               <div>应用实例数</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{applicationNum}}</div>
             </span>
           </div>
         </div>
@@ -130,8 +131,12 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
+import dayjs from 'dayjs'
 
-import { getWorkersDataApi, getHealthDataApi } from '@/api/resouce/dashboard/index'
+import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi } from '@/api/resouce/dashboard/index'
+
+const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
+const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss')
 
 export default {
   components: {
@@ -142,12 +147,6 @@ export default {
     ...mapGetters([
       'name'
     ])
-  },
-  watch: {
-    datetimerange(val) {
-      this.form.start_time = val[0]
-      this.form.end_time = val[1]
-    }
   },
   data() {
     this.extend1 = {
@@ -230,12 +229,14 @@ export default {
     }
     return {
       loading: false,
-      datetimerange: '',
+      datetimerange: [default_start_time, default_end_time],
       form: {
-        start_time: '',
-        end_time: ''
+        start_time: default_start_time,
+        end_time: default_end_time
       },
       timed: false,
+      hostNum: 0,
+      applicationNum: 0,
       chartData1: {
         columns: ['日期', '脚本库', '软件包库', '配置文件库'],
         rows: [
@@ -266,23 +267,71 @@ export default {
       chartData4: {
         columns: ['group', '执行节点数'],
         rows: []
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          debugger
+          return time.getTime() > +new Date(default_end_time)
+        }
       }
     }
   },
   created() {
     this.loading = true
-    Promise.all([getWorkersDataApi(), getHealthDataApi()])
+    Promise.all([getWorkersDataApi(), getHealthDataApi(), getHostsDataApi(this.form), getApplicationDataApi(this.form)])
       .then(res => {
         this.chartData3 = res[0]
         this.chartData4.rows = this.handleData4(res[1])
+        this.hostNum = res[3].count
+        this.applicationNum = res[4].count
       }).finally(() => {
         this.loading = false
       })
   },
+  watch: {
+    datetimerange(val) {
+      this.form.start_time = val[0]
+      this.form.end_time = val[1]
+    }
+  },
+  beforeDestory() {
+    this.stopInterval()
+  },
   methods: {
+    handleChange(val) {
+      if (val) {
+        this.startInterval()
+      } else {
+        this.stopInterval()
+      }
+    },
+    startInterval() {
+      this.interval = setInterval(() => {
+        Promise.all([getHostsDataApi(this.form), getApplicationDataApi(this.form)])
+          .then(res => {
+            this.hostNum = res[0].count
+            this.applicationNum = res[1].count
+          }).catch(() => {
+            clearInterval(this.interval)
+          })
+      }, 10000)
+    },
+    stopInterval() {
+      clearInterval(this.interval)
+    },
     /**
      * 单独的接口请求
      */
+    getHostsData() {
+      getHostsDataApi(this.form).then(res => {
+        this.hostNum = res.count
+      })
+    },
+    getApplicationData() {
+      getApplicationDataApi(this.form).then(res => {
+        this.applicationNum = res.count
+      })
+    },
     getWorkersData() {
       getWorkersDataApi().then(res => {
         this.chartData3 = res
