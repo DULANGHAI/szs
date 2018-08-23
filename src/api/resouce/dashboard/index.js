@@ -46,6 +46,21 @@ export function getRepositoriesDataApi(params) {
 }
 
 /**
+ * 获取黑白名单 card数据
+ * @param {*} params
+ */
+export function getWhiteBlackDataApi(params) {
+  return request({
+    url: '/v1/statistics/risk_commands',
+    method: 'get',
+    params: {
+      start_time: dayjs(params.start_time).toJSON(),
+      end_time: dayjs(params.end_time).toJSON()
+    }
+  })
+}
+
+/**
  * 获取文件提交统计
  * @param {*} params
  */

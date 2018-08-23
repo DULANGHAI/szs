@@ -67,11 +67,11 @@
           <div class="card-fcount">
             <span>
               <div>白名单数</div>
-              <div class="ft-sz">2344</div>
+              <div class="ft-sz">{{white_black.commands_count}}</div>
             </span>
             <span>
               <div>风险命令数</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{white_black.risks_count}}</div>
             </span>
           </div>
         </div>
@@ -136,7 +136,7 @@ import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 import dayjs from 'dayjs'
 
-import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi } from '@/api/resouce/dashboard/index'
+import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi } from '@/api/resouce/dashboard/index'
 
 const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
 const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss')
@@ -245,6 +245,10 @@ export default {
         'configurations_count': 0,
         'applications_count': 0
       },
+      white_black: {
+        'commands_count': 0,
+        'risks_count': 0
+      },
       chartData1: {
         columns: ['日期', '脚本库', '软件包库', '配置文件库'],
         rows: []
@@ -297,7 +301,8 @@ export default {
         getHostsDataApi(this.form),
         getApplicationDataApi(this.form),
         getFileChartDataApi(this.form),
-        getRepositoriesDataApi(this.form)
+        getRepositoriesDataApi(this.form),
+        getWhiteBlackDataApi(this.form)
       ])
         .then(res => {
           this.chartData3 = res[0]
@@ -306,6 +311,7 @@ export default {
           this.applicationNum = res[3].count
           this.chartData1.rows = this.handleData1(res[4])
           this.repositories = res[5]
+          this.white_black = res[6]
         }).finally(() => {
           this.loading = false
         })
@@ -326,13 +332,15 @@ export default {
           getHostsDataApi(this.form),
           getApplicationDataApi(this.form),
           getFileChartDataApi(this.form),
-          getRepositoriesDataApi(this.form)
+          getRepositoriesDataApi(this.form),
+          getWhiteBlackDataApi(this.form)
         ])
           .then(res => {
             this.hostNum = res[0].count
             this.applicationNum = res[1].count
             this.chartData1.rows = this.handleData1(res[2])
             this.repositories = res[3]
+            this.white_black = res[4]
           }).catch(() => {
             clearInterval(this.interval)
           })
