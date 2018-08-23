@@ -11,7 +11,7 @@
       </span>
       <span class="tooltip-icon">
         <router-link to="/system/auditnotice/info">
-        <el-badge v-model="num" :max="99" class="item">
+        <el-badge :hidden="!num" v-model="num" :max="99" class="item">
           <svg-icon icon-class="notice" />
         </el-badge>
         </router-link>
