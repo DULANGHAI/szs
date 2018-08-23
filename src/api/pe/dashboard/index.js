@@ -28,3 +28,31 @@ export function getFlowCardDataApi(params) {
     }
   })
 }
+
+/**
+ * 获取作业量统计chart data
+ */
+export function getJobChartDataApi(params) {
+  return request({
+    url: '/v1/statistics/job-numbers',
+    method: 'get',
+    params: {
+      start_time: dayjs(params.start_time).toJSON(),
+      end_time: dayjs(params.end_time).toJSON()
+    }
+  })
+}
+
+/**
+ * 获取流程执行统计chart data
+ */
+export function getFlowChartDataApi(params) {
+  return request({
+    url: '/v1/statistics/flow-numbers',
+    method: 'get',
+    params: {
+      start_time: dayjs(params.start_time).toJSON(),
+      end_time: dayjs(params.end_time).toJSON()
+    }
+  })
+}

@@ -330,6 +330,7 @@ export default {
         type: 'error'
       }).then(() => {
         stopTimedJobApi({
+          id: row.id,
           execution_id: row.execution_id
         }).then(res => {
           this.$message.success('操作成功')

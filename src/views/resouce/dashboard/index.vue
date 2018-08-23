@@ -50,15 +50,15 @@
           <div class="card-fcount">
             <span>
               <div>脚本文件库</div>
-              <div class="ft-sz">2344</div>
+              <div class="ft-sz">{{repositories.scripts_count}}</div>
             </span>
             <span>
               <div>软件包库</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{repositories.applications_count}}</div>
             </span>
             <span>
               <div>配置文件库</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{repositories.configurations_count}}</div>
             </span>
           </div>
         </div>
@@ -136,7 +136,7 @@ import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 import dayjs from 'dayjs'
 
-import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi } from '@/api/resouce/dashboard/index'
+import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi } from '@/api/resouce/dashboard/index'
 
 const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
 const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss')
@@ -240,16 +240,14 @@ export default {
       timed: false,
       hostNum: 0,
       applicationNum: 0,
+      repositories: {
+        'scripts_count': 0,
+        'configurations_count': 0,
+        'applications_count': 0
+      },
       chartData1: {
         columns: ['日期', '脚本库', '软件包库', '配置文件库'],
-        rows: [
-          { '日期': '05/09', '脚本库': 1393, '软件包库': 1093, '配置文件库': 0 },
-          { '日期': '05/10', '脚本库': 3530, '软件包库': 3230, '配置文件库': 1000 },
-          { '日期': '05/11', '脚本库': 2923, '软件包库': 2623, '配置文件库': 2000 },
-          { '日期': '05/12', '脚本库': 1723, '软件包库': 1423, '配置文件库': 3000 },
-          { '日期': '05/13', '脚本库': 3792, '软件包库': 3492, '配置文件库': 4000 },
-          { '日期': '05/14', '脚本库': 4593, '软件包库': 4293, '配置文件库': 5000 }
-        ]
+        rows: []
       },
       chartData2: {
         columns: ['IP', '异常次数'],
@@ -293,12 +291,21 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getWorkersDataApi(), getHealthDataApi(), getHostsDataApi(this.form), getApplicationDataApi(this.form)])
+      Promise.all([
+        getWorkersDataApi(),
+        getHealthDataApi(),
+        getHostsDataApi(this.form),
+        getApplicationDataApi(this.form),
+        getFileChartDataApi(this.form),
+        getRepositoriesDataApi(this.form)
+      ])
         .then(res => {
           this.chartData3 = res[0]
           this.chartData4.rows = this.handleData4(res[1])
-          this.hostNum = res[3].count
-          this.applicationNum = res[4].count
+          this.hostNum = res[2].count
+          this.applicationNum = res[3].count
+          this.chartData1.rows = this.handleData1(res[4])
+          this.repositories = res[5]
         }).finally(() => {
           this.loading = false
         })
@@ -315,10 +322,17 @@ export default {
     },
     startInterval() {
       this.interval = setInterval(() => {
-        Promise.all([getHostsDataApi(this.form), getApplicationDataApi(this.form)])
+        Promise.all([
+          getHostsDataApi(this.form),
+          getApplicationDataApi(this.form),
+          getFileChartDataApi(this.form),
+          getRepositoriesDataApi(this.form)
+        ])
           .then(res => {
             this.hostNum = res[0].count
             this.applicationNum = res[1].count
+            this.chartData1.rows = this.handleData1(res[2])
+            this.repositories = res[3]
           }).catch(() => {
             clearInterval(this.interval)
           })
@@ -328,31 +342,20 @@ export default {
       clearInterval(this.interval)
     },
     /**
-     * 单独的接口请求
-     */
-    getHostsData() {
-      getHostsDataApi(this.form).then(res => {
-        this.hostNum = res.count
-      })
-    },
-    getApplicationData() {
-      getApplicationDataApi(this.form).then(res => {
-        this.applicationNum = res.count
-      })
-    },
-    getWorkersData() {
-      getWorkersDataApi().then(res => {
-        this.chartData3 = res
-      })
-    },
-    getHealthData() {
-      getHealthDataApi().then(res => {
-        this.chartData4.rows = this.handleData4(res)
-      })
-    },
-    /**
      * 数据处理函数
      */
+    handleData1(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          '日期': item.date,
+          '脚本库': item.scripts_count,
+          '软件包库': item.applications_count,
+          '配置文件库': item.configurations_count
+        })
+      })
+      return result
+    },
     handleData4(data) {
       const result = []
       data.forEach((item) => {

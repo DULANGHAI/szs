@@ -31,6 +31,36 @@ export function getApplicationDataApi(params) {
 }
 
 /**
+ * 获取版本库card数据
+ * @param {*} params
+ */
+export function getRepositoriesDataApi(params) {
+  return request({
+    url: '/v1/statistics/repositories',
+    method: 'get',
+    params: {
+      start_time: dayjs(params.start_time).toJSON(),
+      end_time: dayjs(params.end_time).toJSON()
+    }
+  })
+}
+
+/**
+ * 获取文件提交统计
+ * @param {*} params
+ */
+export function getFileChartDataApi(params) {
+  return request({
+    url: '/v1/statistics/file-commits',
+    method: 'get',
+    params: {
+      start_time: dayjs(params.start_time).toJSON(),
+      end_time: dayjs(params.end_time).toJSON()
+    }
+  })
+}
+
+/**
  * 获取作业队列监控的数据
  */
 export function getWorkersDataApi() {

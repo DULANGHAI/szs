@@ -130,7 +130,7 @@ import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 import dayjs from 'dayjs'
 
-import { getJobCardDataApi, getFlowCardDataApi } from '@/api/pe/dashboard/index'
+import { getJobCardDataApi, getFlowCardDataApi, getFlowChartDataApi, getJobChartDataApi } from '@/api/pe/dashboard/index'
 
 const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
 const default_end_time = dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')
@@ -241,25 +241,11 @@ export default {
       },
       chartData1: {
         columns: ['日期', '失败数', '成功数'],
-        rows: [
-          { '日期': '05/09', '失败数': 1393, '成功数': 1093 },
-          { '日期': '05/10', '失败数': 3530, '成功数': 3230 },
-          { '日期': '05/11', '失败数': 2923, '成功数': 2623 },
-          { '日期': '05/12', '失败数': 1723, '成功数': 1423 },
-          { '日期': '05/13', '失败数': 3792, '成功数': 3492 },
-          { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
-        ]
+        rows: []
       },
       chartData2: {
         columns: ['日期', '失败数', '成功数'],
-        rows: [
-          { '日期': '05/09', '失败数': 1393, '成功数': 1093 },
-          { '日期': '05/10', '失败数': 3530, '成功数': 3230 },
-          { '日期': '05/11', '失败数': 2923, '成功数': 2623 },
-          { '日期': '05/12', '失败数': 1723, '成功数': 1423 },
-          { '日期': '05/13', '失败数': 3792, '成功数': 3492 },
-          { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
-        ]
+        rows: []
       },
       chartData3: {
         columns: ['IP', '异常次数'],
@@ -313,10 +299,17 @@ export default {
   methods: {
     init() {
       this.loading = true
-      Promise.all([getJobCardDataApi(this.form), getFlowCardDataApi(this.form)])
+      Promise.all([
+        getJobCardDataApi(this.form),
+        getFlowCardDataApi(this.form),
+        getFlowChartDataApi(this.form),
+        getJobChartDataApi(this.form)
+      ])
         .then(res => {
           this.jobCard = res[0]
           this.flowCard = res[1]
+          this.chartData2.rows = this.handleChartData1(res[2])
+          this.chartData1.rows = this.handleChartData1(res[3])
         }).finally(() => {
           this.loading = false
         })
@@ -333,10 +326,17 @@ export default {
     },
     startInterval() {
       this.interval = setInterval(() => {
-        Promise.all([getJobCardDataApi(this.form), getFlowCardDataApi(this.form)])
+        Promise.all([
+          getJobCardDataApi(this.form),
+          getFlowCardDataApi(this.form),
+          getFlowChartDataApi(this.form),
+          getJobChartDataApi(this.form)
+        ])
           .then(res => {
             this.jobCard = res[0]
             this.flowCard = res[1]
+            this.chartData2.rows = this.handleChartData1(res[2])
+            this.chartData1.rows = this.handleChartData1(res[3])
           }).catch(() => {
             clearInterval(this.interval)
           })
@@ -346,17 +346,18 @@ export default {
       clearInterval(this.interval)
     },
     /**
-     * 单独的接口请求
+     * 接口数据处理
      */
-    getJobCardData() {
-      getJobCardDataApi(this.form).then(res => {
-        this.jobCard = res
+    handleChartData1(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          '日期': item.date,
+          '失败数': item.failed,
+          '成功数': item.success
+        })
       })
-    },
-    getFlowCardData() {
-      getFlowCardDataApi(this.form).then(res => {
-        this.flowCard = res
-      })
+      return result
     }
   }
 }
