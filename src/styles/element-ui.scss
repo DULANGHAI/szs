@@ -38,3 +38,7 @@
 .el-tabs__nav-wrap::after{
   height: 1px;
 }
+// datepicker 设置clearable为false还是有“清空”按钮，这是element的bug，先通过样式解决
+.no-clear .el-picker-panel__footer > .el-button:first-child {
+  display: none;
+}

@@ -17,7 +17,11 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始时间"
-                end-placeholder="结束时间">
+                end-placeholder="结束时间"
+                :clearable="false"
+                popper-class="no-clear"
+                @change="handleTimeChange"
+                :picker-options="pickerOptions">
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
@@ -281,6 +285,11 @@ export default {
           { 'name': '重启Nginx', 'num': 1723 },
           { 'name': '修改Tomcat配置', 'num': 3792 }
         ]
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > +new Date(default_end_time)
+        }
       }
     }
   },
@@ -290,14 +299,7 @@ export default {
     ])
   },
   created() {
-    this.loading = true
-    Promise.all([getJobCardDataApi(this.form), getFlowCardDataApi(this.form)])
-      .then(res => {
-        this.jobCard = res[0]
-        this.flowCard = res[1]
-      }).finally(() => {
-        this.loading = false
-      })
+    this.init()
   },
   watch: {
     datetimerange(val) {
@@ -309,6 +311,19 @@ export default {
     this.stopInterval()
   },
   methods: {
+    init() {
+      this.loading = true
+      Promise.all([getJobCardDataApi(this.form), getFlowCardDataApi(this.form)])
+        .then(res => {
+          this.jobCard = res[0]
+          this.flowCard = res[1]
+        }).finally(() => {
+          this.loading = false
+        })
+    },
+    handleTimeChange() {
+      this.init()
+    },
     handleChange(val) {
       if (val) {
         this.startInterval()

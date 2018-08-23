@@ -18,6 +18,9 @@
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
+                :clearable="false"
+                popper-class="no-clear"
+                @change="handleTimeChange"
                 :picker-options="pickerOptions">
               </el-date-picker>
             </el-form-item>
@@ -270,23 +273,13 @@ export default {
       },
       pickerOptions: {
         disabledDate(time) {
-          debugger
           return time.getTime() > +new Date(default_end_time)
         }
       }
     }
   },
   created() {
-    this.loading = true
-    Promise.all([getWorkersDataApi(), getHealthDataApi(), getHostsDataApi(this.form), getApplicationDataApi(this.form)])
-      .then(res => {
-        this.chartData3 = res[0]
-        this.chartData4.rows = this.handleData4(res[1])
-        this.hostNum = res[3].count
-        this.applicationNum = res[4].count
-      }).finally(() => {
-        this.loading = false
-      })
+    this.init()
   },
   watch: {
     datetimerange(val) {
@@ -298,6 +291,21 @@ export default {
     this.stopInterval()
   },
   methods: {
+    init() {
+      this.loading = true
+      Promise.all([getWorkersDataApi(), getHealthDataApi(), getHostsDataApi(this.form), getApplicationDataApi(this.form)])
+        .then(res => {
+          this.chartData3 = res[0]
+          this.chartData4.rows = this.handleData4(res[1])
+          this.hostNum = res[3].count
+          this.applicationNum = res[4].count
+        }).finally(() => {
+          this.loading = false
+        })
+    },
+    handleTimeChange() {
+      this.init()
+    },
     handleChange(val) {
       if (val) {
         this.startInterval()
