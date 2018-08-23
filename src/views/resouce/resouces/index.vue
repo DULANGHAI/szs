@@ -41,7 +41,7 @@
                     <el-button size="small" >导入CSV</el-button>
                   </el-upload>
                 </span>
-                <el-button size="small" >同步CMBD</el-button>
+                <el-button size="small" @click.native="onCMDB">同步CMBD</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="dappAdd">添加主机组</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="dappEdit">编辑</el-button>
               </div>
@@ -79,19 +79,15 @@
             width="100px"
             label="操作">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.type === 'group'" type="text">
-                <el-tooltip class="item" effect="dark" content="查看主机组" placement="top" style="margin-right:10px;">
-                  <i @click.prevent="$refs.see.doCreate(true, scope.row)" class="el-icon-view"></i>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="删除主机组" placement="top" style="margin-right:10px;">
-                  <i @click.prevent="delGroupsDlg(scope.row.id)" class="el-icon-delete"></i>
-                </el-tooltip>
-              </el-button>
-              <el-button v-if="scope.row.type === 'host'" type="text">
-                <el-tooltip class="item" effect="dark" content="查看主机" placement="top" style="margin-right:10px;">
-                  <i @click.prevent="$refs.see.doCreate(false, scope.row)" class="el-icon-view"></i>
-                </el-tooltip>
-              </el-button>
+              <el-tooltip v-if="scope.row.type === 'group'" class="item" effect="dark" content="查看主机组" placement="top" style="margin-right:10px;">
+                <el-button type="text"><i @click.prevent="$refs.see.doCreate(true, scope.row)" class="el-icon-view"></i></el-button>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.type === 'group'" class="item" effect="dark" content="删除主机组" placement="top" style="margin-right:10px;">
+                <el-button type="text"><i @click.prevent="delGroupsDlg(scope.row.id)" class="el-icon-delete"></i></el-button>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.type === 'host'" class="item" effect="dark" content="查看主机" placement="top" style="margin-right:10px;">
+                <el-button type="text"><i @click.prevent="$refs.see.doCreate(false, scope.row)" class="el-icon-view"></i></el-button>
+              </el-tooltip>
             </template>
           </el-table-column>
         </tree-table>
@@ -104,7 +100,7 @@
 </template>
 
 <script>
-import { getHostList, delGroups } from '@/api/resouce/resouces/host'
+import { getHostList, delGroups, postCMDB } from '@/api/resouce/resouces/host'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message, MessageBox } from 'element-ui'
@@ -155,15 +151,6 @@ export default {
       if (newTableData.length > 0 && this.tableDataClone.length === 0) {
         this.tableDataClone = newTableData
       }
-    },
-    nodeList(data) {
-      console.log(data)
-    }
-  },
-  filters: {
-    listData: function(val) {
-      // const searchRegex = new RegExp(this.filtervalue, 'i')
-      console.log(val)
     }
   },
   methods: {
@@ -303,6 +290,14 @@ export default {
         this.listLoading = false
         this.nodeList = response
         this.listData = response
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    onCMDB() {
+      postCMDB().then(response => {
+        this.getList()
+        Message.success('同步成功！')
       }).catch(error => {
         Message.error(error)
       })

@@ -17,9 +17,12 @@
           <h3>审批配置</h3>
           <el-form-item label="任务审批最低等级">
             <el-select v-model="form.approve_config.level" size="small" placeholder="请选择脚本">
-              <el-option label="高" value="high"></el-option>
-              <el-option label="中" value="middle"></el-option>
-              <el-option label="低" value="low"></el-option>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="脚本提交审批">
@@ -86,7 +89,7 @@
                     :key="item.id"
                     :label="item.realname"
                     :value="item.id">
-                </el-option>
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -112,7 +115,7 @@
                     :key="item.id"
                     :label="item.realname"
                     :value="item.id">
-                </el-option>
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -146,7 +149,7 @@
                       :key="item.id"
                       :label="item.realname"
                       :value="item.id">
-                  </el-option>
+                    </el-option>
                   </el-select>
                 </el-form-item>
             </el-col>
@@ -214,7 +217,7 @@ const formData = {
     'config_on': false,
     'software_on': false,
     'script_on': false,
-    'level': 'low'
+    'level': 1
   },
   'alarm_config': {
     'daily_check': {
@@ -252,6 +255,16 @@ export default {
       tableData: [],
       personList: [],
       multipleSelection: [],
+      options: [{
+        value: 3,
+        label: '高级'
+      }, {
+        value: 2,
+        label: '中级'
+      }, {
+        value: 1,
+        label: '低级'
+      }],
       tranDateTime: '',
       name: '',
       description: '',
@@ -260,47 +273,13 @@ export default {
       form: JSON.parse(JSON.stringify(formData))
     }
   },
-  mounted() {
-    getsysconfigs().then(res => {
-      this.form = {
-        'business_config': res.business_config,
-        'approve_config': {
-          'level': res.approve_config.level,
-          'script_on': this.boolena1(res.approve_config.script_on),
-          'software_on': this.boolena1(res.approve_config.software_on),
-          'config_on': this.boolena1(res.approve_config.config_on)
-        },
-        'alarm_config': {
-          'daily_check': {
-            'alarm_on': this.boolena1(res.alarm_config.daily_check.alarm_on),
-            'risk_alarm_to': res.alarm_config.daily_check.risk_alarm_to,
-            'risk_alarm_by': res.alarm_config.daily_check.risk_alarm_by,
-            'except_alarm_to': res.alarm_config.daily_check.except_alarm_to,
-            'except_alarm_by': res.alarm_config.daily_check.except_alarm_by
-          },
-          'timed_job': {
-            'alarm_to': res.alarm_config.timed_job.alarm_to,
-            'alarm_on': this.boolena1(res.alarm_config.timed_job.alarm_on),
-            'alarm_by': res.alarm_config.timed_job.alarm_by
-          }
-        },
-        'exchange_config': {
-          'start_time': res.exchange_config.start_time,
-          'is_on': this.boolena1(res.exchange_config.is_on),
-          'end_time': res.exchange_config.end_time
-        }
-      }
-      this.tranDateTime = [res.exchange_config.start_time, res.exchange_config.end_time]
-    }).catch(error => {
-      Message.error(error)
-    })
-  },
   created() {
     getusername().then(res => {
       this.personList = res
     }).catch(error => {
       Message.error(error)
     })
+    this.getInfoDetail()
   },
   computed: {
     dialogTitle() {
@@ -313,6 +292,41 @@ export default {
     }
   },
   methods: {
+    getInfoDetail() {
+      getsysconfigs().then(res => {
+        this.form = {
+          'business_config': res.business_config,
+          'approve_config': {
+            'level': res.approve_config.level,
+            'script_on': this.boolena1(res.approve_config.script_on),
+            'software_on': this.boolena1(res.approve_config.software_on),
+            'config_on': this.boolena1(res.approve_config.config_on)
+          },
+          'alarm_config': {
+            'daily_check': {
+              'alarm_on': this.boolena1(res.alarm_config.daily_check.alarm_on),
+              'risk_alarm_to': res.alarm_config.daily_check.risk_alarm_to,
+              'risk_alarm_by': res.alarm_config.daily_check.risk_alarm_by,
+              'except_alarm_to': res.alarm_config.daily_check.except_alarm_to,
+              'except_alarm_by': res.alarm_config.daily_check.except_alarm_by
+            },
+            'timed_job': {
+              'alarm_to': res.alarm_config.timed_job.alarm_to,
+              'alarm_on': this.boolena1(res.alarm_config.timed_job.alarm_on),
+              'alarm_by': res.alarm_config.timed_job.alarm_by
+            }
+          },
+          'exchange_config': {
+            'start_time': res.exchange_config.start_time,
+            'is_on': this.boolena1(res.exchange_config.is_on),
+            'end_time': res.exchange_config.end_time
+          }
+        }
+        this.tranDateTime = [res.exchange_config.start_time, res.exchange_config.end_time]
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
     submit(fromName) {
       this.$refs[fromName].validate((valid) => {
         // console.log(this.rolesid)

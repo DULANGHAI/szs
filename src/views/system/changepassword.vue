@@ -29,7 +29,6 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary"  @click="submitForm('form')">修改</el-button>
-            <el-button @click="resetForm('ruleForm2')">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -118,9 +117,6 @@ export default {
           return false
         }
       })
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
     }
   }
 }
