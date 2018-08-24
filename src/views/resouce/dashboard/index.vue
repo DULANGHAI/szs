@@ -17,7 +17,11 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始时间"
-                end-placeholder="结束时间">
+                end-placeholder="结束时间"
+                :clearable="false"
+                popper-class="no-clear"
+                @change="handleTimeChange"
+                :picker-options="pickerOptions">
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
@@ -33,11 +37,11 @@
           <div class="card-fcount">
             <span>
               <div>主机数</div>
-              <div class="ft-sz">2344</div>
+              <div class="ft-sz">{{hostNum}}</div>
             </span>
             <span>
               <div>应用实例数</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{applicationNum}}</div>
             </span>
           </div>
         </div>
@@ -46,15 +50,15 @@
           <div class="card-fcount">
             <span>
               <div>脚本文件库</div>
-              <div class="ft-sz">2344</div>
+              <div class="ft-sz">{{repositories.scripts_count}}</div>
             </span>
             <span>
               <div>软件包库</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{repositories.applications_count}}</div>
             </span>
             <span>
               <div>配置文件库</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{repositories.configurations_count}}</div>
             </span>
           </div>
         </div>
@@ -63,11 +67,11 @@
           <div class="card-fcount">
             <span>
               <div>白名单数</div>
-              <div class="ft-sz">2344</div>
+              <div class="ft-sz">{{white_black.commands_count}}</div>
             </span>
             <span>
               <div>风险命令数</div>
-              <div class="ft-sz">122</div>
+              <div class="ft-sz">{{white_black.risks_count}}</div>
             </span>
           </div>
         </div>
@@ -130,8 +134,12 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
+import dayjs from 'dayjs'
 
-import { getWorkersDataApi, getHealthDataApi } from '@/api/resouce/dashboard/index'
+import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi, getJobChartDataApi } from '@/api/resouce/dashboard/index'
+
+const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
+const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss')
 
 export default {
   components: {
@@ -142,12 +150,6 @@ export default {
     ...mapGetters([
       'name'
     ])
-  },
-  watch: {
-    datetimerange(val) {
-      this.form.start_time = val[0]
-      this.form.end_time = val[1]
-    }
   },
   data() {
     this.extend1 = {
@@ -230,72 +232,141 @@ export default {
     }
     return {
       loading: false,
-      datetimerange: '',
+      datetimerange: [default_start_time, default_end_time],
       form: {
-        start_time: '',
-        end_time: ''
+        start_time: default_start_time,
+        end_time: default_end_time
       },
       timed: false,
+      hostNum: 0,
+      applicationNum: 0,
+      repositories: {
+        'scripts_count': 0,
+        'configurations_count': 0,
+        'applications_count': 0
+      },
+      white_black: {
+        'commands_count': 0,
+        'risks_count': 0
+      },
       chartData1: {
         columns: ['日期', '脚本库', '软件包库', '配置文件库'],
-        rows: [
-          { '日期': '05/09', '脚本库': 1393, '软件包库': 1093, '配置文件库': 0 },
-          { '日期': '05/10', '脚本库': 3530, '软件包库': 3230, '配置文件库': 1000 },
-          { '日期': '05/11', '脚本库': 2923, '软件包库': 2623, '配置文件库': 2000 },
-          { '日期': '05/12', '脚本库': 1723, '软件包库': 1423, '配置文件库': 3000 },
-          { '日期': '05/13', '脚本库': 3792, '软件包库': 3492, '配置文件库': 4000 },
-          { '日期': '05/14', '脚本库': 4593, '软件包库': 4293, '配置文件库': 5000 }
-        ]
+        rows: []
       },
       chartData2: {
         columns: ['IP', '异常次数'],
-        rows: [
-          { 'IP': '205.205.205.201', '异常次数': 1393 },
-          { 'IP': '205.205.205.202', '异常次数': 3530 },
-          { 'IP': '205.205.205.203', '异常次数': 2923 },
-          { 'IP': '205.205.205.204', '异常次数': 1723 },
-          { 'IP': '205.205.205.205', '异常次数': 3792 },
-          { 'IP': '205.205.205.206', '异常次数': 4593 },
-          { 'IP': '205.205.205.207', '异常次数': 3530 },
-          { 'IP': '205.205.205.208', '异常次数': 2923 },
-          { 'IP': '205.205.205.209', '异常次数': 1723 },
-          { 'IP': '205.205.205.210', '异常次数': 3792 }
-        ]
+        rows: []
       },
       chartData3: [],
       chartData4: {
         columns: ['group', '执行节点数'],
         rows: []
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > +new Date(default_end_time)
+        }
       }
     }
   },
   created() {
-    this.loading = true
-    Promise.all([getWorkersDataApi(), getHealthDataApi()])
-      .then(res => {
-        this.chartData3 = res[0]
-        this.chartData4.rows = this.handleData4(res[1])
-      }).finally(() => {
-        this.loading = false
-      })
+    this.init()
+  },
+  watch: {
+    datetimerange(val) {
+      this.form.start_time = val[0]
+      this.form.end_time = val[1]
+    }
+  },
+  beforeDestory() {
+    this.stopInterval()
   },
   methods: {
-    /**
-     * 单独的接口请求
-     */
-    getWorkersData() {
-      getWorkersDataApi().then(res => {
-        this.chartData3 = res
-      })
+    init() {
+      this.loading = true
+      Promise.all([
+        getWorkersDataApi(),
+        getHealthDataApi(),
+        getHostsDataApi(this.form),
+        getApplicationDataApi(this.form),
+        getFileChartDataApi(this.form),
+        getRepositoriesDataApi(this.form),
+        getWhiteBlackDataApi(this.form),
+        getJobChartDataApi(this.form)
+      ])
+        .then(res => {
+          this.chartData3 = res[0]
+          this.chartData4.rows = this.handleData4(res[1])
+          this.hostNum = res[2].count
+          this.applicationNum = res[3].count
+          this.chartData1.rows = this.handleData1(res[4])
+          this.repositories = res[5]
+          this.white_black = res[6]
+          this.chartData2.rows = this.handleData2(res)
+        }).finally(() => {
+          this.loading = false
+        })
     },
-    getHealthData() {
-      getHealthDataApi().then(res => {
-        this.chartData4.rows = this.handleData4(res)
-      })
+    handleTimeChange() {
+      this.init()
+    },
+    handleChange(val) {
+      if (val) {
+        this.startInterval()
+      } else {
+        this.stopInterval()
+      }
+    },
+    startInterval() {
+      this.interval = setInterval(() => {
+        Promise.all([
+          getHostsDataApi(this.form),
+          getApplicationDataApi(this.form),
+          getFileChartDataApi(this.form),
+          getRepositoriesDataApi(this.form),
+          getWhiteBlackDataApi(this.form),
+          getJobChartDataApi(this.form)
+        ])
+          .then(res => {
+            this.hostNum = res[0].count
+            this.applicationNum = res[1].count
+            this.chartData1.rows = this.handleData1(res[2])
+            this.repositories = res[3]
+            this.white_black = res[4]
+            this.chartData2.rows = this.handleData2(res)
+          }).catch(() => {
+            clearInterval(this.interval)
+          })
+      }, 10000)
+    },
+    stopInterval() {
+      clearInterval(this.interval)
     },
     /**
      * 数据处理函数
      */
+    handleData1(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          '日期': item.date,
+          '脚本库': item.scripts_count,
+          '软件包库': item.applications_count,
+          '配置文件库': item.configurations_count
+        })
+      })
+      return result
+    },
+    handleData2(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'IP': item.target_ip,
+          '异常次数': item.count
+        })
+      })
+      return result
+    },
     handleData4(data) {
       const result = []
       data.forEach((item) => {

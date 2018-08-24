@@ -10,9 +10,18 @@
       <!-- 筛选 -->
       <div class="toolbar">
         <el-form :model="form" :inline="true" ref="ruleForm" size="small">
-          <el-form-item label="目标IP">
+          <el-form-item label="目标IP" prop="target_ip"
+            :rules="[
+              { required: true, message: '目标IP不能为空' }
+            ]">
             <div style="width: 200px;">
-              <treeselect v-model="form.target_ip" :multiple="false" :options="options" placeholder="请选择" />
+              <treeselect v-model="form.target_ip"
+                :disable-branch-nodes="true"
+                :multiple="false" 
+                :clearable="false"
+                :options="options"
+                @input="ipChange"
+                placeholder="请选择" />
             </div>
           </el-form-item>
           <el-form-item label="路径">
@@ -41,9 +50,14 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="" label="文件名">
             <template slot-scope="scope">
-              <svg-icon v-if="scope.row.type === 'tree'" icon-class="folder-icon"/>
-              <svg-icon v-else icon-class="file-icon"/>
-              <span class="file-name">{{ scope.row.name }}</span>
+              <div v-if="scope.row.isdir">
+                <svg-icon icon-class="folder-icon"/>
+                <span class="file-name" @click="enterDir(scope.row.path)">{{ scope.row.name }}</span>
+              </div>
+              <div v-else>
+                <svg-icon icon-class="file-icon"/>
+                <span class="file-name">{{ scope.row.name }}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="" label="权限"></el-table-column>
@@ -91,7 +105,7 @@ export default {
       if (this.multipleSelection.length !== 1) {
         return true
       }
-      if (this.multipleSelection.length === 1 && this.multipleSelection[0].type === 'tree') {
+      if (this.multipleSelection.length === 1 && this.multipleSelection[0].isdir) {
         return true
       }
       return false
@@ -99,22 +113,30 @@ export default {
   },
   created() {
     this.loading = true
-    Promise.all([getIpApi(), getListApi(this.form)])
+    Promise.all([getIpApi()])
       .then(res => {
         this.options = res[0]
-        this.data = res[1]
       }).finally(() => {
         this.loading = false
       })
   },
   methods: {
-    // 下载历史记录
+    ipChange(value) {
+      this.form.target_ip = value
+      this.form.path = ''
+      this.getListData()
+    },
+    // 文件浏览
     getListData() {
-      this.loading = true
-      getListApi(this.form).then(res => {
-        this.data = res
-      }).finally(() => {
-        this.loading = false
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          this.loading = true
+          getListApi(this.form).then(res => {
+            this.data = res
+          }).finally(() => {
+            this.loading = false
+          })
+        }
       })
     },
     handleSelectionChange(val) {
@@ -143,6 +165,11 @@ export default {
         result.path.push(item.path)
       })
       return result
+    },
+    // 进去文件夹
+    enterDir(path) {
+      this.form.path = path
+      this.getListData()
     }
   }
 }

@@ -3,7 +3,7 @@
     <div>
       <breadcrumb></breadcrumb>
     </div>
-    <div class="dash-body">
+    <div class="dash-body" v-loading="loading">
       <div class="dash-header">
         <div class="dash-title">运维作业仪表盘</div>
         <div class="header-flex">
@@ -17,11 +17,15 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始时间"
-                end-placeholder="结束时间">
+                end-placeholder="结束时间"
+                :clearable="false"
+                popper-class="no-clear"
+                @change="handleTimeChange"
+                :picker-options="pickerOptions">
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
-              <el-switch v-model="timed"></el-switch>
+              <el-switch v-model="timed" @change="handleChange"></el-switch>
             </el-form-item>
           </el-form>
         </div>
@@ -33,11 +37,11 @@
           <div class="card-fcount">
             <span>
               <div>作业执行数</div>
-              <div class="ft-sz">124</div>
+              <div class="ft-sz">{{jobCard.count}}</div>
             </span>
             <span>
               <div>成功率</div>
-              <div class="ft-sz">89%</div>
+              <div class="ft-sz">{{jobCard.ratio}}</div>
             </span>
           </div>
         </div>
@@ -46,11 +50,11 @@
           <div class="card-fcount">
             <span>
               <div>流程执行数</div>
-              <div class="ft-sz">263</div>
+              <div class="ft-sz">{{flowCard.count}}</div>
             </span>
             <span>
               <div>成功率</div>
-              <div class="ft-sz">34%</div>
+              <div class="ft-sz">{{flowCard.ratio}}</div>
             </span>
           </div>
         </div>
@@ -124,6 +128,12 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
+import dayjs from 'dayjs'
+
+import { getJobCardDataApi, getFlowCardDataApi, getFlowChartDataApi, getJobChartDataApi, getHostChartDataApi } from '@/api/pe/dashboard/index'
+
+const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
+const default_end_time = dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')
 
 export default {
   components: {
@@ -214,59 +224,41 @@ export default {
       }
     }
     return {
+      loading: false,
       form: {
-        start_time: '',
-        end_time: ''
+        start_time: default_start_time,
+        end_time: default_end_time
       },
-      datetimerange: '',
+      datetimerange: [default_start_time, default_end_time],
       timed: false,
-      listData: [],
+      jobCard: {
+        count: 0,
+        ratio: '0%'
+      },
+      flowCard: {
+        count: 0,
+        ratio: '0%'
+      },
       chartData1: {
         columns: ['日期', '失败数', '成功数'],
-        rows: [
-          { '日期': '05/09', '失败数': 1393, '成功数': 1093 },
-          { '日期': '05/10', '失败数': 3530, '成功数': 3230 },
-          { '日期': '05/11', '失败数': 2923, '成功数': 2623 },
-          { '日期': '05/12', '失败数': 1723, '成功数': 1423 },
-          { '日期': '05/13', '失败数': 3792, '成功数': 3492 },
-          { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
-        ]
+        rows: []
       },
       chartData2: {
         columns: ['日期', '失败数', '成功数'],
-        rows: [
-          { '日期': '05/09', '失败数': 1393, '成功数': 1093 },
-          { '日期': '05/10', '失败数': 3530, '成功数': 3230 },
-          { '日期': '05/11', '失败数': 2923, '成功数': 2623 },
-          { '日期': '05/12', '失败数': 1723, '成功数': 1423 },
-          { '日期': '05/13', '失败数': 3792, '成功数': 3492 },
-          { '日期': '05/14', '失败数': 4593, '成功数': 4293 }
-        ]
+        rows: []
       },
       chartData3: {
         columns: ['IP', '异常次数'],
-        rows: [
-          { 'IP': '205.205.205.201', '异常次数': 1393 },
-          { 'IP': '205.205.205.202', '异常次数': 3530 },
-          { 'IP': '205.205.205.203', '异常次数': 2923 },
-          { 'IP': '205.205.205.204', '异常次数': 1723 },
-          { 'IP': '205.205.205.205', '异常次数': 3792 },
-          { 'IP': '205.205.205.206', '异常次数': 4593 },
-          { 'IP': '205.205.205.207', '异常次数': 3530 },
-          { 'IP': '205.205.205.208', '异常次数': 2923 },
-          { 'IP': '205.205.205.209', '异常次数': 1723 },
-          { 'IP': '205.205.205.210', '异常次数': 3792 }
-        ]
+        rows: []
       },
       chartData4: {
         columns: ['name', 'num'],
-        rows: [
-          { 'name': '安装Tomcat', 'num': 1393 },
-          { 'name': '重启Nfs', 'num': 3530 },
-          { 'name': '安装核心系统', 'num': 2923 },
-          { 'name': '重启Nginx', 'num': 1723 },
-          { 'name': '修改Tomcat配置', 'num': 3792 }
-        ]
+        rows: []
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > +new Date(default_end_time)
+        }
       }
     }
   },
@@ -276,7 +268,7 @@ export default {
     ])
   },
   created() {
-    this.getList()
+    this.init()
   },
   watch: {
     datetimerange(val) {
@@ -284,9 +276,97 @@ export default {
       this.form.end_time = val[1]
     }
   },
+  beforeDestory() {
+    this.stopInterval()
+  },
   methods: {
-    getList() {
-
+    init() {
+      this.loading = true
+      Promise.all([
+        getJobCardDataApi(this.form),
+        getFlowCardDataApi(this.form),
+        getFlowChartDataApi(this.form),
+        getJobChartDataApi(this.form),
+        getHostChartDataApi(this.form)
+      ])
+        .then(res => {
+          this.jobCard = res[0]
+          this.chartData4.rows = this.handleData2(res[0].top5)
+          this.flowCard = res[1]
+          this.chartData2.rows = this.handleChartData1(res[2])
+          this.chartData1.rows = this.handleChartData1(res[3])
+          this.chartData3.rows = this.handleChartData3(res[4])
+        }).finally(() => {
+          this.loading = false
+        })
+    },
+    handleTimeChange() {
+      this.init()
+    },
+    handleChange(val) {
+      if (val) {
+        this.startInterval()
+      } else {
+        this.stopInterval()
+      }
+    },
+    startInterval() {
+      this.interval = setInterval(() => {
+        Promise.all([
+          getJobCardDataApi(this.form),
+          getFlowCardDataApi(this.form),
+          getFlowChartDataApi(this.form),
+          getJobChartDataApi(this.form),
+          getHostChartDataApi(this.form)
+        ])
+          .then(res => {
+            this.jobCard = res[0]
+            this.chartData4.rows = this.handleData2(res[0].top5)
+            this.flowCard = res[1]
+            this.chartData2.rows = this.handleChartData1(res[2])
+            this.chartData1.rows = this.handleChartData1(res[3])
+            this.chartData3.rows = this.handleChartData3(res[4])
+          }).catch(() => {
+            clearInterval(this.interval)
+          })
+      }, 10000)
+    },
+    stopInterval() {
+      clearInterval(this.interval)
+    },
+    /**
+     * 接口数据处理
+     */
+    handleChartData1(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          '日期': item.date,
+          '失败数': item.failed,
+          '成功数': item.success
+        })
+      })
+      return result
+    },
+    handleChartData2(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'name': item.name,
+          'num': item.count
+        })
+      })
+      return result
+    },
+    handleChartData3(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'IP': item.target_ip,
+          '异常次数': item.count
+        })
+      })
+      return result
     }
   }
 }

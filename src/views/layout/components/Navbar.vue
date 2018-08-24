@@ -10,11 +10,11 @@
         <svg-icon icon-class="wenti" />
       </span>
       <span class="tooltip-icon">
-        <span @click="setting2">
-          <el-badge v-model="num" :max="99" class="item">
-            <svg-icon icon-class="notice" />
-          </el-badge>
-        </span>
+        <router-link to="/system/auditnotice/info">
+        <el-badge :hidden="!num" v-model="num" :max="99" class="item">
+          <svg-icon icon-class="notice" />
+        </el-badge>
+        </router-link>
       </span>
       <span class="tooltip-icon">
         <el-dropdown trigger="click">
@@ -75,9 +75,6 @@ export default {
   methods: {
     setting1() {
       this.$router.push('/system/sysconfig/setting')
-    },
-    setting2() {
-      this.$router.push('/system/auditnotice/info')
     },
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')

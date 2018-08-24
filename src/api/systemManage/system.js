@@ -22,6 +22,16 @@ export function getsystemMessage(params) {
   })
 }
 /**
+ * 确认消息
+ */
+export function confirmMessage(id, params) {
+  return request({
+    url: `/v1/messages/${id}`,
+    method: 'put',
+    params: params
+  })
+}
+/**
  * 用户
  * @param {Object} params
  */

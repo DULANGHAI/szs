@@ -330,7 +330,8 @@ export default {
         type: 'error'
       }).then(() => {
         stopTimedJobApi({
-          job_info: JSON.stringify(row)
+          id: row.id,
+          execution_id: row.execution_id
         }).then(res => {
           this.$message.success('操作成功')
           this.getListData()
