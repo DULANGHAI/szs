@@ -195,7 +195,7 @@ export default {
       this.getAppDetail()
     }
     getAppRepository(this.$store.state.user.repository, 'applications').then(response => {
-      this.getAppList(response.id)
+      this.getAppList(response[0].id)
     }).catch(error => {
       Message.error(error)
     })
