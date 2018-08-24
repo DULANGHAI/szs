@@ -138,7 +138,16 @@ import { UserSearch, Resources, getAudit, searchStatus } from '@/api/systemManag
 import { Message } from 'element-ui'
 
 var queryFormData = {
-  'datatime': []
+  'datatime': [],
+  'end_time': '',
+  'start_time': '',
+  'user': '',
+  'source_ip': '',
+  'resource_type': '',
+  'resource_id': '',
+  'operation': '',
+  'status': '',
+  'message': ''
 }
 export default {
   name: 'audit',
@@ -236,7 +245,7 @@ export default {
         'status': this.queryForm.status,
         'message': this.queryForm.message
       }
-      window.open('/v1/audit/download' + params)
+      window.open('/v1/audit/download?end_time=' + (params.end_time || '') + '&start_time=' + (params.start_time || '') + '&user=' + params.user + '&source_ip=' + params.source_ip + '&resource_type=' + params.resource_type + '&resource_id=' + params.resource_id + '&operation=' + params.operation + '&status=' + params.status + '&message=' + params.message)
     },
     formatterTime(row, column, cellValue) {
       return this.formatterDate(cellValue)
