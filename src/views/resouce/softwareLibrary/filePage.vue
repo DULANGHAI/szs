@@ -525,7 +525,7 @@ export default {
       const params = {
         'content': this.codeFileContent,
         'comment': this.editForm.comment,
-        'risk_level': '', // this.editForm.risk_level,
+        // 'risk_level': '', this.editForm.risk_level,
         'full_path': this.editForm.full_path,
         'branch': this.branch,
         'repository_type': 'applications'
