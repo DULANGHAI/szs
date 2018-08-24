@@ -3,7 +3,7 @@
       <Breadcrumb></Breadcrumb>
 
       <div class="container-title">
-        系统配置
+        个人信息
       </div>
 
       <div class="container-body-wrap">

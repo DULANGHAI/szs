@@ -22,7 +22,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="主机" prop="hosts">
-            <el-select size="small" multiple v-model="form.hosts" placeholder="请选择主机">
+            <el-select size="small" multiple filterable v-model="form.hosts" placeholder="请选择主机">
               <el-option
                 v-for="(item, index) in hostList"
                 :key="index"

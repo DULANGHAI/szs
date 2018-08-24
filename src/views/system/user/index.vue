@@ -8,8 +8,8 @@
     <div class="container-body-wrap">
       <el-row class="table-buttons">
         <el-button size="small" @click.native="$refs.app.doCreate(false)">添加用户</el-button>
-        <el-button size="small" @click.native="openUser" :disabled="!selected">启用</el-button>
-        <el-button size="small" @click.native="closeUser" :disabled="!selected">停用</el-button>
+        <el-button size="small" @click.native="openUser" :disabled="!selectedOne">启用</el-button>
+        <el-button size="small" @click.native="closeUser" :disabled="!selectedOne">停用</el-button>
         <el-button size="small" :disabled="!selectedOne" @click.native="$refs.app.doCreate(true, multipleSelection[0])">修改</el-button>
         <el-button size="small" @click.native="usersDelete(SelectionArray)" :disabled="!selected">删除</el-button>
       </el-row>
@@ -27,10 +27,18 @@
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="realname" label="姓名"></el-table-column>
         <el-table-column prop="created_at" label="创建时间" :formatter="formatterTime" width="160"></el-table-column>
-        <el-table-column prop="business" label="所属业务"></el-table-column>
+        <el-table-column prop="business" label="所属业务">
+          <template slot-scope="scope">
+            <el-tag v-for="df in scope.row.business_names">{{ df }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column prop="telephone" label="手机"></el-table-column>
-        <el-table-column prop="role_ids" label="角色"></el-table-column>
+        <el-table-column label="角色">
+          <template slot-scope="scope">
+            <el-tag v-for="vr in scope.row.role_names">{{ vr }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           prop="status"
@@ -64,7 +72,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import common from '../common'
-import { openclose, deleteuser, delUsers } from '@/api/systemManage/system.js'
+import { openclose, delUsers } from '@/api/systemManage/system.js'
 import { queryUserApi } from '@/api/systemManage/system.js'
 import AddUser from './addUser'
 import { Message, MessageBox } from 'element-ui'
@@ -129,8 +137,7 @@ export default {
         this.listLoading = false
         this.totalPage = res.total
       }).catch(error => {
-        // console.log('2')
-        console.error(error)
+        Message.error(error)
       })
     },
     formatterTime(row, column, cellValue) {
@@ -160,26 +167,6 @@ export default {
         })
       }).catch(() => { })
     },
-    removeUser() {
-      this.$confirm('此操作将永久删除该用户, 是否继续?', '删除用户', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'error'
-      })
-        .then(() => {
-          deleteuser({
-            identifier: this.multipleSelection[0].id
-          }).then(res => {
-            console.log(res)
-          })
-          this.users = this.multipleSelectionFilter
-          this.messageSuccess()
-          this.$refs.multipleTable.clearSelection()
-        })
-        .catch(() => {
-          this.messageCance()
-        })
-    },
     openUser() {
       this.$confirm('是否启用该用户?', '启用用户', {
         confirmButtonText: '确定',
@@ -192,17 +179,12 @@ export default {
               status: 1,
               identifier: this.multipleSelection[0].id
             }).then(res => {
-              console.log(res)
-            // item.status = res.status
-            }).catch(() => {
-              console.log('22')
+              this.getList()
+              Message.success('启用成功！')
+            }).catch((error) => {
+              Message.error(error)
             })
-            // item => {
-            // item.status = 1
-          // }
           )
-          this.messageSuccess()
-          this.$refs.multipleTable.clearSelection()
         })
         .catch(() => {
           this.messageCance()
@@ -220,11 +202,11 @@ export default {
               status: 0,
               identifier: this.multipleSelection[0].id
             }).then(res => {
-              console.log('333')
+              this.getList()
+              Message.success('停用成功！')
+            }).catch((error) => {
+              Message.error(error)
             })
-            // item => {
-            // item.status = 0
-          // }
           )
           this.messageSuccess()
           this.$refs.multipleTable.clearSelection()

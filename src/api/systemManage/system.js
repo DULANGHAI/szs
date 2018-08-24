@@ -456,7 +456,7 @@ export function openclose(params) {
   return request({
     url: `/v1/users/${params.identifier}`,
     method: 'put',
-    params: params
+    data: params
   })
 }
 

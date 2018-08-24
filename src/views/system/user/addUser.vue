@@ -9,16 +9,16 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" auto-complete="off" placeholder="请输入用户名"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="passward">
-        <el-input v-model="form.passward" placeholder="请输入密码">
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" placeholder="请输入密码">
           <template slot="append"><el-button @click.native="createPassword(8)">随机生成</el-button></template>
         </el-input>
       </el-form-item>
       <el-form-item label="姓名" prop="realname">
         <el-input v-model="form.realname" placeholder="请输入姓名"></el-input>
       </el-form-item>
-      <el-form-item label="所属业务" prop="business">
-        <el-select v-model="form.business" multiple :style="{width: '100%'}" placeholder="请选择">
+      <el-form-item label="所属业务" prop="business_ids">
+        <el-select v-model="form.business_ids" multiple :style="{width: '100%'}" placeholder="请选择">
           <el-option
             v-for="item in businessOptions"
             :key="item.id"
@@ -48,9 +48,7 @@
       </el-form-item>
       <el-form-item label="启用" prop="status">
         <el-switch
-          v-model="form.status"
-          :active-value="1"
-          :inactive-value="0">
+          v-model="form.status">
         </el-switch>
       </el-form-item>
     </el-form>
@@ -67,9 +65,9 @@
 
   const formData = {
     'username': '',
-    'passward': '',
+    'password': '',
     'realname': '',
-    'business': [],
+    'business_ids': [],
     'email': '',
     'telephone': '',
     'wechat': '',
@@ -95,7 +93,7 @@
           realname: [
             { required: true, message: '姓名不能为空', trigger: 'blur' }
           ],
-          business: [
+          business_ids: [
             { required: true, message: '所属业务不能为空', trigger: 'blur' }
           ],
           email: [
@@ -121,9 +119,9 @@
         if (flag) {
           this.form = {
             'username': item.username,
-            'passward': item.password,
+            'password': item.password,
             'realname': item.realname,
-            'business': item.business || [],
+            'business_ids': item.business_ids || [],
             'email': item.email,
             'telephone': item.telephone,
             'wechat': item.wechat,
@@ -150,7 +148,7 @@
       createPassword(len) {
         var pwd = ''
         var numArr = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-        var zfArr = ['/', '!', '@', '#', '%', '_', '+']
+        var zfArr = ['/', '!', '@', '#', '%', '_', '+', '~']
         var dxArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         var arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         pwd += numArr[Math.round(Math.random() * (numArr.length - 1))]
@@ -160,7 +158,7 @@
           pwd += arr[pos]
         }
         pwd += dxArr[Math.round(Math.random() * (dxArr.length - 1))]
-        this.form.passward = pwd
+        this.form.password = pwd
       },
       doSubmit() {
         this.$refs.ruleForm.validate((valid) => {
@@ -172,10 +170,10 @@
             }
             if (!this.isEdit) {
               const params = {
-                'username': this.form.name,
-                'passward': this.form.password,
+                'username': this.form.username,
+                'password': this.form.password,
                 'realname': this.form.realname,
-                'business': this.form.business,
+                'business_ids': this.form.business_ids,
                 'email': this.form.email,
                 'telephone': this.form.telephone,
                 'wechat': this.form.wechat,
@@ -189,10 +187,10 @@
               })
             } else {
               const params = {
-                'username': this.form.name,
-                'passward': this.form.password,
+                'username': this.form.username,
+                'password': this.form.password,
                 'realname': this.form.realname,
-                'business': this.form.business,
+                'business_ids': this.form.business_ids,
                 'email': this.form.email,
                 'telephone': this.form.telephone,
                 'wechat': this.form.wechat,
