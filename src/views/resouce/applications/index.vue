@@ -274,8 +274,11 @@ export default {
     },
     // 删除文件
     FileDelete(id) {
+      var params = {
+        app_ids: id
+      }
       MessageBox.confirm('此操作将永久删除该命令，是否继续', '删除风险命令', { type: 'error' }).then(() => {
-        deleteApp(id).then(response => {
+        deleteApp(params).then(response => {
           this.getList()
           Message.success('删除成功')
         }).catch(error => {
