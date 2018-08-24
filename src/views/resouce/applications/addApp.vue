@@ -4,7 +4,7 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      添加应用实例
+      {{ isEdit ? '添加应用实例' : '编辑应用实例' }}
     </div>
     <div class="container-body-wrap add-app-body">
       <template>
@@ -191,6 +191,9 @@ export default {
     this.rjbPath = this.$store.state.user.repository + '/scripts'
     this.pzwjPath = this.$store.state.user.repository + '/configurations'
 
+    if (this.$route.params.id) {
+      this.getAppDetail()
+    }
     getAppRepository(this.$store.state.user.repository, 'applications').then(response => {
       this.getAppList(response.id)
     }).catch(error => {

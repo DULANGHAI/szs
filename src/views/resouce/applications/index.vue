@@ -94,7 +94,7 @@
                 <div class="file-nav-left">
                   <el-button size="small" @click="goCreate()">添加应用实例</el-button>
                   <el-button size="small" @click.native="FileEdit(SelectionArray)" :disabled="is_sltmount" >编辑</el-button>
-                  <el-button size="small" @click.native="FileDelete(SelectionArray)">删除</el-button>
+                  <el-button size="small" @click.native="FileDelete(SelectionArray)" :disabled="is_dltmount">删除</el-button>
                 </div>
                 <div class="file-nav-right">
                   <el-button size="small" type="primary" @click.native="getList">查询</el-button>
@@ -176,10 +176,10 @@
             label="状态"
             fixed="right">
             <template slot-scope="scope">
-              <span v-if="scope.row.instance_status === 0">新建</span>
-              <span v-else-if="scope.row.instance_status === 1" style="color:#FAAD14">已修改</span>
-              <span v-else-if="scope.row.instance_status === 2" style="color:#52C41A">已发布</span>
-              <span v-else-if="scope.row.instance_status === 3" style="color:#F5222D">已下线</span>
+              <span v-if="scope.row.instance_status === 1">新建</span>
+              <span v-else-if="scope.row.instance_status === 2" style="color:#FAAD14">已修改</span>
+              <span v-else-if="scope.row.instance_status === 3" style="color:#52C41A">已发布</span>
+              <span v-else-if="scope.row.instance_status === 4" style="color:#F5222D">已下线</span>
             </template>
           </el-table-column>
         </el-table>
