@@ -3,7 +3,7 @@
       <Breadcrumb></Breadcrumb>
 
       <div class="container-title">
-        系统配置
+        个人信息
       </div>
 
       <div class="container-body-wrap">
@@ -16,7 +16,7 @@
           label-position="right"
         >
           <el-form-item label="用户名" prop="userName">
-            <el-input v-model="form.userName" placeholder="输入用户名"></el-input>
+            <el-input v-model="form.userName" disabled placeholder="输入用户名"></el-input>
           </el-form-item>
           <el-form-item label="新密码" prop="password">
             <el-input v-model="form.password" placeholder="输入新密码(8位以上包含大小写字母和特殊字符)"></el-input>
@@ -47,7 +47,7 @@
             <el-input v-model="form.weixin" placeholder="输入微信号"></el-input>
           </el-form-item>
           <el-form-item label="角色">
-            <el-input v-model="form.role"></el-input>
+            <el-input v-model="form.role" disabled></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -115,13 +115,6 @@ export default {
       }
     }
   },
-  // mounted() {
-  //   getrolesId().then(res=>{
-  //     console.log(res,'111')
-  //   }).catch(errot=>{
-  //     console.log('22')
-  //   })
-  // },
   created() {
     // submitForm()
   },

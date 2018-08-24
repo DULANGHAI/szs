@@ -87,7 +87,17 @@ export function createUserApi(params) {
     data: params
   })
 }
-
+/**
+ * 编辑用户
+ * @param {Object} params
+ */
+export function editUserApi(id, params) {
+  return request({
+    url: '/v1/users/' + id,
+    method: 'put',
+    data: params
+  })
+}
 /**
  * 删除多个用户
  * @param {Object} params
@@ -123,7 +133,27 @@ export function updateidUserApi(data, identifier) {
     data: data
   })
 }
-
+/**
+ * 删除用户
+ * @param {Object} params
+ */
+export function delUsers(parasm) {
+  return request({
+    url: '/v1/users/',
+    method: 'delete',
+    data: parasm
+  })
+}
+/**
+ * 获取用户所属业务
+ * @param {Object} params
+ */
+export function getBusinessesList() {
+  return request({
+    url: '/v1/sysconfigs/businesses/',
+    method: 'get'
+  })
+}
 /**
  * 删除给定标识符的用户
  * @param {Object} params
@@ -208,7 +238,7 @@ export function getAlluserApi(params, user_id) {
   })
 }
 /**
- * 权限列表
+ * 权限列表 - 分页
  * @param {Object} params
  */
 export function getPermission(params) {
@@ -219,13 +249,24 @@ export function getPermission(params) {
   })
 }
 /**
+ * 权限列表 - 所有
+ * @param {Object} params
+ */
+export function getPermissionList() {
+  return request({
+    url: '/v1/permissions/',
+    method: 'get'
+  })
+}
+/**
  * 角色权限列表
  * @param {Object} params
  */
-export function getRolePermission(id) {
+export function getRolePermission(id, params) {
   return request({
     url: '/v1/roles/role-permission/' + id,
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 /**
@@ -240,6 +281,16 @@ export function getRoles(params) {
   })
 }
 /**
+ * 所有角色列表
+ * @param {Object} params
+ */
+export function getRolesAll() {
+  return request({
+    url: '/v1/roles/no-pagination',
+    method: 'get'
+  })
+}
+/**
  * 创建角色
  * @param {Object} params
  */
@@ -247,6 +298,28 @@ export function createRoles(parasm) {
   return request({
     url: '/v1/roles/',
     method: 'post',
+    data: parasm
+  })
+}
+/**
+ * 创建角色权限
+ * @param {Object} params
+ */
+export function createRolePermission(id, parasm) {
+  return request({
+    url: '/v1/roles/role-permission/' + id,
+    method: 'post',
+    data: parasm
+  })
+}
+/**
+ * 删除角色权限
+ * @param {Object} params
+ */
+export function delRolePermission(id, parasm) {
+  return request({
+    url: '/v1/roles/role-permission/' + id,
+    method: 'delete',
     data: parasm
   })
 }
@@ -383,7 +456,7 @@ export function openclose(params) {
   return request({
     url: `/v1/users/${params.identifier}`,
     method: 'put',
-    params: params
+    data: params
   })
 }
 

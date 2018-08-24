@@ -67,3 +67,11 @@ export function delGroups(id) {
   })
 }
 
+// cmdb
+export function postCMDB() {
+  return request({
+    url: '/v1/hosts/cmdb',
+    method: 'post'
+  })
+}
+

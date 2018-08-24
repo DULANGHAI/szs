@@ -6,9 +6,14 @@
     class="pb-dialog add-host-dig">
     <el-form :model="form" :rules="rules" ref="ruleForm">
       <el-row v-for="(item, index) in form.accounts">
-        <el-col :span="24">
+        <el-col :span="12">
+          <el-form-item label="用户">
+            <el-input v-model="item.username" :key="index" disabled size="small" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="密码">
-            <el-input :key="index" v-model="item.password" size="small" auto-complete="off" placeholder="请输入密码"></el-input>
+            <el-input v-model="item.password" :key="index" size="small" auto-complete="off" placeholder="请输入密码"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
