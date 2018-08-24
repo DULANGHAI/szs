@@ -3,31 +3,32 @@
     <Breadcrumb></Breadcrumb>
 
     <div class="container-title">
-      系统配置
+      系统审计
     </div>
 
-    <div class="container-body-wrap">
+    <div class="container-body-wrap review-body">
       <el-form
         size="small"
         label-width="70px"
         label-position="right">
         <el-row>
-          <el-col :span="9">
+          <el-col :span="6">
             <el-form-item label="时间">
               <el-date-picker
-                v-model="queryForm.time"
-                type="datetimerange"
+                v-model="queryForm.datatime"
+                type="daterange"
+                style="width:100%"
+                range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
+                end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="用户">
-              <el-select style="width: 200px" v-model="queryForm.val"  placeholder="请选择">
+              <el-select v-model="queryForm.user" style="width: 100%">
                 <el-option
-                  v-for="item in queryForm.user"
+                  v-for="item in userList"
                   :key="item"
                   :label="item"
                   :value="item">
@@ -35,16 +36,16 @@
               </el-select>
             </el-form-item>  
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="源IP">
-              <el-input style="width: 200px" v-model="queryForm.sourceId"></el-input>
+              <el-input v-model="queryForm.source_ip"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="资源类型">
-              <el-select style="width: 200px" v-model="queryForm.val2" placeholder="请选择">
+              <el-select v-model="queryForm.resource_type" style="width: 100%" placeholder="请选择">
                 <el-option
-                  v-for="item in queryForm.resourceType"
+                  v-for="item in typeList"
                   :key="item"
                   :label="item"
                   :value="item">
@@ -54,49 +55,54 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="9">
+          <el-col :span="6">
             <el-form-item label="资源ID">          
-                 <el-input style="width: 200px" v-model="queryForm.resourceId"></el-input>
+                 <el-input v-model="queryForm.resource_id"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="操作">
-               <el-input style="width: 200px" v-model="queryForm.actionType"></el-input>
+              <el-input v-model="queryForm.operation"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="状态">
-               <el-input style="width: 200px" v-model="queryForm.status"></el-input>
+              <el-autocomplete
+                  v-model="queryForm.status"
+                  :fetch-suggestions="statusAutoSearch"
+                  @select="handleSelect"
+                ></el-autocomplete>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="消息">
-              <el-input style="width: 200px" v-model="queryForm.message"></el-input>
+              <el-input v-model="queryForm.message"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="3" :offset="20">
-            <el-button
+      </el-form>
+      <div class="file-nav">
+        <div class="file-nav-right">
+          <el-button
               size="small"
               type="primary"
               icon="el-icon-search"
               class="margl-70"
-              @click="handleSearchBtn">查询
+              @click.native="getList">查询
             </el-button>
-            <el-button size="small" icon="el-icon-printer" @click="handleExportBtn">导出</el-button>
-          </el-col>
-        </el-row>
-      </el-form>
+            <el-button size="small" @click.native="audit" icon="el-icon-printer">导出</el-button>
+            <el-button size="small" @click.native="searchReset">重置</el-button>
+        </div>
+      </div>
 
       <el-table
-        ref="table"
-        :data="tableData"
+        ref="multipleTable"
         tooltip-effect="dark"
-        style="width: 100%; margin-top: 30px"
+        style="width: 100%"
         empty-text="暂无数据"
-        v-loading.body="tableLoading">
-        <el-table-column prop="created_at" label="时间"></el-table-column>
+        v-loading.body="listLoading"
+        :data="tableData">
+        <el-table-column prop="created_at" label="时间" :formatter="formatterTime"></el-table-column>
         <el-table-column prop="source_ip" label="源IP"></el-table-column>
         <el-table-column label="资源ID">
           <template slot-scope="scope">
@@ -108,222 +114,157 @@
         <el-table-column prop="status" label="结果"></el-table-column>
         <el-table-column prop="message" label="消息"></el-table-column>
       </el-table>
-      <el-pagination
-        v-if="total > 0"
-        style="text-align: right"
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizesArray"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, sizes, jumper"
-        :total="total">
-      </el-pagination>
+      <div class="list-paging">
+        <el-pagination
+          background
+          v-if="this.totalPage > 0"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="this.pageSizesArray"
+          :page-size="this.pageSize"
+          layout="prev, pager, next, sizes, jumper"
+          :total="this.totalPage">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
-import { UserSearch, Resources, getAudit, getAuditSearch } from '@/api/systemManage/system.js'
+import common from './common'
+import { UserSearch, Resources, getAudit, searchStatus } from '@/api/systemManage/system.js'
+import { Message } from 'element-ui'
 
+var queryFormData = {
+  'datatime': [],
+  'end_time': '',
+  'start_time': '',
+  'user': '',
+  'source_ip': '',
+  'resource_type': '',
+  'resource_id': '',
+  'operation': '',
+  'status': '',
+  'message': ''
+}
 export default {
   name: 'audit',
+  mixins: [common],
   components: {
-    Breadcrumb
+    Breadcrumb,
+    common
   },
   data() {
     return {
-      currentPage: 1, // 当前页数
-      pageSizesArray: [10, 20, 30, 40, 50],
-      pageSize: 0,
-      total: 0, // 总条目数
+      userList: [],
+      typeList: [],
       tableData: [],
-      tableLoading: false,
+      currentPage: 1, // 当前页面
+      pageSizesArray: [10, 20, 30, 40], // 可选每页数量
+      pageSizes: '',
+      pageSize: 0, // list长度
+      totalPage: 0, // list总数
+      listLoading: false,
       jumper1: '',
-      queryForm: {
-        time: '',
-        user: '',
-        val: '',
-        sourceId: '',
-        resourceType: '',
-        val2: '',
-        resourceId: '',
-        actionType: '',
-        status: '',
-        message: ''
-      }
+      queryForm: JSON.parse(JSON.stringify(queryFormData))
     }
   },
   mounted() {
-    getAudit({
-      page: this.currentPage,
-      per_page: this.total
-      // start_time:
-    }).then(res => {
-      // console.log(res.items,'3')
-      this.total = res.items.length
-      //  this.tableData.time="2017-10-31  23:12:00";
-      //   this.tableData.sourceId=res.items.resource_id
-      this.tableData = res.items
-      // this.tableData.message=res.items.message.notes;
-
-      for (let i = 0; i < this.tableData.length; i++) {
-        // console.log(JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args.identifier))
-        // console.log(JSON.stringify(JSON.parse(res.items[i].message).notes))
-        // console.log( JSON.stringify(JSON.parse(res.items[i].message).path_args))
-      //  console.log('/system/dashboard/audit'+JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args))
-        // console.log(JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args.identifier))
-        this.tableData[i].message = JSON.parse(res.items[i].message).notes
-      }
-      for (let i = 0; i < this.tableData.length; i++) {
-        // console.log(res.items[i].resource)
-        if (res.items[i].resource === 'Todo') {
-          this.jumper1 = '/system/dashboard/role'
-          // console.log( this.jumper1)
-        }
-      }
-      //  this.jumper1='/system/dashboard/audit'+JSON.stringify(res.items[i].resource)+JSON.stringify(JSON.parse(res.items[i].message).path_args.identifier)
-    }).catch(() => {
-      // console.log('2')
-    })
-    // handleExportBtn()
     UserSearch().then(res => {
-      // console.log(res,'1')
-      this.queryForm.user = res.creator
+      this.userList = res.creator
     }).catch(error => {
-      console.error(error)
+      Message.error(error)
     })
     Resources().then(res => {
-      this.queryForm.resourceType = res.resource
-      // console.log(res,'1')
+      this.typeList = res.resource
     }).catch(error => {
-      // console.log(res,'2')
-      console.error(error)
+      Message.error(error)
     })
   },
   created() {
-    // getAudit()
-    // createUserApi({
-    //   username:'1',
-    //   status:0,
-    //   role_ids:[3],
-    //   modified_by:'1',
-    //   realname:'1',
-    //   business:'31',
-    //   telephone:'31',
-    //   wechat:'31',
-    //   password:'Spf11111!',
-    //   email:'11321@qq.com'
-    // }).then(res=>{
-    //   console.log(res)
-    // }).catch(res=>{
-    //   console.log('2')
-    // })
-
-    this.total = 6
-    this.tableData = [
-      // {
-      //   time: "2017-10-31  23:12:00",
-      //   application: "root",
-      //   sourceId: "10.193.123.12",
-      //   resourceType: "user",
-      //   resourceId:'1',
-      //   actionType: "login",
-      //   result: "200",
-      //   message: "用户登录成功"
-      // },
-      // {
-      //   time: "2017-10-31  23:12:00",
-      //   application: "root",
-      //   sourceId: "10.193.123.12",
-      //   resourceType: "user",
-      //   resourceId:'1',
-      //   actionType: "login",
-      //   result: "200",
-      //   message: "用户登录成功"
-      // },
-      // {
-      //   time: "2017-10-31  23:12:00",
-      //   application: "root",
-      //   sourceId: "10.193.123.12",
-      //   resourceType: "user",
-      //   resourceId:'1',
-      //   actionType: "login",
-      //   result: "200",
-      //   message: "用户登录成功"
-      // },
-      // {
-      //   time: "2017-10-31  23:12:00",
-      //   application: "root",
-      //   sourceId: "10.193.123.12",
-      //   resourceType: "user",
-      //   resourceId:'1',
-      //   actionType: "login",
-      //   result: "200",
-      //   message: "用户登录成功"
-      // },
-      // {
-      //   time: "2017-10-31  23:12:00",
-      //   application: "root",
-      //   sourceId: "10.193.123.12",
-      //   resourceType: "user",
-      //   resourceId:'1',
-      //   actionType: "login",
-      //   result: "200",
-      //   message: "用户登录成功"
-      // }
-    ]
+    this.getList()
   },
   methods: {
+    searchReset() {
+      this.queryForm = JSON.parse(JSON.stringify(queryFormData))
+      this.getList()
+    },
+    statusAutoSearch(queryString, cb) {
+      const params = {
+        'status': queryString
+      }
+      var list = []
+      searchStatus(params).then(response => {
+        for (const i of response) {
+          list.push({
+            'value': i.status
+          })
+        }
+        cb(this.unique(list))
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    unique(arr) {
+      const res = new Map()
+      return arr.filter((arr) => !res.has(arr.value) && res.set(arr.value, 1))
+    },
+    getList() {
+      var searchParams = {
+        'page': this.currentPage,
+        'per_page': this.pageSizes || 10,
+        'end_time': this.queryForm.datatime && this.queryForm.datatime[1] || null,
+        'start_time': this.queryForm.datatime && this.queryForm.datatime[0] || null,
+        'user': this.queryForm.user,
+        'source_ip': this.queryForm.source_ip,
+        'resource_type': this.queryForm.resource_type,
+        'resource_id': this.queryForm.resource_id,
+        'operation': this.queryForm.operation,
+        'status': this.queryForm.status,
+        'message': this.queryForm.message
+      }
+      this.listLoading = true
+      getAudit(searchParams).then(res => {
+        this.tableData = res.items
+        this.listLoading = false
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    audit() {
+      var params = {
+        'end_time': this.queryForm.datatime && this.queryForm.datatime[1] || null,
+        'start_time': this.queryForm.datatime && this.queryForm.datatime[0] || null,
+        'user': this.queryForm.user,
+        'source_ip': this.queryForm.source_ip,
+        'resource_type': this.queryForm.resource_type,
+        'resource_id': this.queryForm.resource_id,
+        'operation': this.queryForm.operation,
+        'status': this.queryForm.status,
+        'message': this.queryForm.message
+      }
+      window.open('/v1/audit/download?end_time=' + (params.end_time || '') + '&start_time=' + (params.start_time || '') + '&user=' + params.user + '&source_ip=' + params.source_ip + '&resource_type=' + params.resource_type + '&resource_id=' + params.resource_id + '&operation=' + params.operation + '&status=' + params.status + '&message=' + params.message)
+    },
+    formatterTime(row, column, cellValue) {
+      return this.formatterDate(cellValue)
+    },
+    // 选择展示页数
     handleSizeChange(val) {
       this.currentPage = 1
-      this.pageSize = val
+      this.pageSizes = val
+      this.getList()
+      // console.log(`每页 ${val} 条`)
     },
+    // 选择当前页
     handleCurrentChange(val) {
       this.currentPage = val
+      this.getList()
+      // console.log(`当前页: ${val}`)
     },
-    handleSearchBtn() {
-      // console.log('2')
-      getAuditSearch().then(res => {
-        // console.log('1')
-        this.queryForm.time = res.created_at
-        this.queryForm.sourceId = res.id
-        this.queryForm.message = res.message.notes
-        this.queryForm.resourceId = res.source_ip
-        this.queryForm.status = res.status
-        this.queryForm.actionType = res.operation
-
-        console.log(res, '1')
-      }).catch(() => {
-        console.log('2')
-      })
-
-      // console.log("search");
-    },
-    handleExportBtn() {
-      getAudit({
-        page: this.currentPage,
-        per_page: this.total
-      // start_time:
-      }).then(res => {
-        console.log(res.items, '3')
-        this.total = res.items.length
-        //  this.tableData.time="2017-10-31  23:12:00";
-        //   this.tableData.sourceId=res.items.resource_id
-        this.tableData = res.items
-        // this.tableData.message=res.items.message.notes;
-
-        for (let i = 0; i < this.tableData.length; i++) {
-        // console.log(JSON.parse(res.items[i].message))
-        // console.log(res.items[i].message)
-
-          this.tableData[i].message = JSON.parse(res.items[i].message).notes
-        }
-      }).catch(() => {
-      // console.log('2')
-      })
+    handleSelect(item) {
+      console.log(item)
     }
   }
 }

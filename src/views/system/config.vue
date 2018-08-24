@@ -168,7 +168,7 @@
               is-range
               size="small"
               v-model="tranDateTime"
-              value-format="hh:mm:ss"
+              value-format="HH:mm:ss"
               range-separator="-"
               start-placeholder="开始时间"
               end-placeholder="结束时间"
