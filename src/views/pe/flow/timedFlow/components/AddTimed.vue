@@ -70,7 +70,8 @@ import { createTimedApi } from '@/api/pe/flowManage/timedFlow'
 export default {
   props: {
     type: String,
-    data: Object,
+    data1: Object, // 创建
+    data2: Object, // 编辑
     refresh: Function
   },
   components: {
@@ -95,7 +96,8 @@ export default {
         timed_config: 'check',
         timed_date: '',
         timed_expression: ''
-      }
+      },
+      data: null
     }
   },
   computed: {
@@ -116,7 +118,10 @@ export default {
     },
     handleOpen() {
       if (this.type !== 'add') {
+        this.data = this.data2
         this.initEdit()
+      } else {
+        this.data = this.data1
       }
     },
     handleClose() {

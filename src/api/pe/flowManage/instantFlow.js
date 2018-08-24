@@ -106,3 +106,15 @@ export function stopFlowApi(data) {
     data: data
   })
 }
+
+/**
+ * 停止定时流程-记录中
+ * @param {Object} data
+ */
+export function updateFlowApi(id, data) {
+  return request({
+    url: `/v1/instant-processes/${id}`,
+    method: 'put',
+    data: data
+  })
+}

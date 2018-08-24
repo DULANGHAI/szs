@@ -84,7 +84,7 @@
     <!-- 任务配置 -->
     <task-config ref="taskConfig" :data.sync="needSetJob" :refresh="refresh"></task-config>
     <!-- 添加/编辑 定时流程model -->
-    <add-timed ref="addModel" :type="addType" :data="selectedFlow" :refresh="refreshList"></add-timed>
+    <add-timed ref="addModel" :type="addType" :data1="selectedFlow" :data2="needSetJob" :refresh="refreshList"></add-timed>
 
   </div>
 </template>
