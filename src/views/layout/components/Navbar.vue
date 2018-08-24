@@ -70,7 +70,7 @@ export default {
       }).catch(() => {
         clearInterval(this.interval)
       })
-    }, 10000)
+    }, 60000)
   },
   methods: {
     setting1() {

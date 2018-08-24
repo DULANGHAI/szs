@@ -16,7 +16,7 @@
           <el-col :span="9">
             <el-form-item label="时间">
               <el-date-picker
-                v-model="queryForm.date"
+                v-model="daterange"
                 type="daterange"
                 style="width:100%"
                 range-separator="-"
@@ -28,8 +28,8 @@
           <el-col :span="5">
             <el-form-item label="类型">
               <el-select v-model="queryForm.type" placeholder="请选择">
-                <el-option label="通知" value="notification"></el-option>
-                <el-option label="确认" value="confirm"></el-option>
+                <el-option label="通知" value="0"></el-option>
+                <el-option label="确认" value="1"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -48,18 +48,16 @@
           <el-col :span="5">
             <el-form-item label="状态">
               <el-select v-model="queryForm.status" placeholder="请选择">
-                <el-option label="已确认" value="已确认"></el-option>
-                <el-option label="未确认" value="未确认"></el-option>
-                <el-option label="无需确认" value="无需确认"></el-option>
+                <el-option label="已确认" value="0"></el-option>
+                <el-option label="无需确认" value="1"></el-option>
+                <el-option label="未确认" value="2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="2" :offset="22">
-            <el-button type="primary" size="small" @click="handleSearchBtn">查询</el-button>
-          </el-col>
-        </el-row>
+        <div class="flex-end">
+          <el-button type="primary" size="small" @click="handleSearchBtn">查询</el-button>
+        </div>
       </el-form>
 
       <el-table
@@ -68,37 +66,29 @@
         tooltip-effect="dark"
         style="width: 100%; margin-top: 30px"
         empty-text="暂无数据"
-        v-loading.body="tableLoading">
-        <el-table-column prop="created_at" label="时间"></el-table-column>
-        <el-table-column prop="classify" label="类型"></el-table-column>
+        v-loading="loading">
+        <el-table-column prop="created_at" label="时间" width="160px" :formatter="formatterTime"></el-table-column>
+        <el-table-column prop="classify" label="类型" :formatter="formatterType"></el-table-column>
         <el-table-column label="风险等级">
           <template slot-scope="scope">
             <risk-level :level="scope.row.risk_level"></risk-level>
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="消息">
-        </el-table-column>
-        <el-table-column prop="status" label="状态"></el-table-column>
-        <el-table-column
-          label="操作"
-          width="100">
+        <el-table-column prop="content" label="消息" width="200px" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleConfirmBtn">确认</el-button>
+            <el-button type="text" v-if="scope.row.status === '0'" disabled>已确认</el-button>
+            <el-button type="text" v-else-if="scope.row.status === '2'" @click="handleConfirmBtn(scope.row)">确认</el-button>
+            <el-button type="text" v-else disabled>/</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="total > 0"
-        style="text-align: right"
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizesArray"
-        :page-size="pageSize"
-        layout="prev, pager, next, sizes, jumper"
-        :total="total">
-      </el-pagination>
+
+      <!-- 分页 -->
+      <div class="pagination" v-if="total">
+        <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handleCurrentChange"></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -106,18 +96,29 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
-import { getsystemMessage } from '@/api/systemManage/system.js'
+import { getsystemMessage, confirmMessage } from '@/api/systemManage/system.js'
+
+const message_type_map = {
+  '0': '通知',
+  '1': '确认'
+}
+const status_map = {
+  '0': '已确认',
+  '1': '无需确认',
+  '2': '未确认'
+}
 
 export default {
   name: 'info',
+  components: {
+    Breadcrumb,
+    RiskLevel
+  },
   data() {
     return {
-      currentPage: 1, // 当前页数
-      pageSizesArray: [10, 20, 30, 40, 50],
-      pageSize: 0, // 每页显示条目个数
+      loading: false,
       total: 0, // 总条目数
       tableData: [],
-      tableLoading: false,
       levelOptions: [
         {
           label: '低危',
@@ -132,68 +133,70 @@ export default {
           value: 3
         }
       ],
+      daterange: '',
       queryForm: {
-        date: '',
+        start_time: '',
+        end_time: '',
         type: '',
         riskLevel: '',
-        status: ''
+        status: '',
+        page: 1,
+        per_page: 10
       }
     }
   },
-  components: {
-    Breadcrumb,
-    RiskLevel
+  watch: {
+    daterange(val) {
+      this.queryForm.start_time = val[0]
+      this.queryForm.end_time = val[1]
+    }
   },
   created() {
-    this.tableData = []
+    this.getListData(1)
   },
   methods: {
-    handleSizeChange(val) {
-      this.currentPage = 1
-      this.pageSize = val
+    getListData(index) {
+      this.loading = true
+      const params = this.queryForm
+      if (index) {
+        params.page = index
+      }
+      getsystemMessage(params).then(res => {
+        this.tableData = res.items
+        this.total = res.total
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     handleCurrentChange(val) {
-      this.currentPage = val
+      this.getListData(val)
     },
     handleSearchBtn() {
-      getsystemMessage({
-        page: this.currentPage,
-        per_page: 10
-      })
-        .then(res => {
-          this.tableData = res.items
-          this.total = res.items.length
-          for (let i = 0; i < this.tableData.length; i++) {
-            if (this.tableData[i].classify === '0') this.tableData[i].classify = '通知'
-            if (this.tableData[i].classify === '1') this.tableData[i].classify = '确认'
-
-            if (this.tableData[i].status === '0') this.tableData[i].status = '已确认'
-            if (this.tableData[i].status === '1') this.tableData[i].status = '无需确认'
-            if (this.tableData[i].status === '2') this.tableData[i].status = '没有确认'
-
-            if (this.tableData[i].risk_level === '0') this.tableData[i].risk_level = '1'
-            if (this.tableData[i].risk_level === '1') this.tableData[i].risk_level = '2'
-            if (this.tableData[i].risk_level === '2') this.tableData[i].risk_level = '3'
-          }
-          // this.queryForm.type=res.classify
-          // this.queryForm.riskLevel=res.risk_level
-          // this.queryForm.status=res.status
-          console.log(res, '1')
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.getListData(1)
     },
-    handleConfirmBtn() {
+    formatterTime(row) {
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatterType(row) {
+      return message_type_map[row.classify]
+    },
+    formatterStatus(row) {
+      return status_map[row.status]
+    },
+    handleConfirmBtn(row) {
       this.$confirm('是否根据消息中的要求已完成相关操作？', '确认操作', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'success'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '消息已确认!'
+          confirmMessage(row.id, { status: '0' }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '消息已确认!'
+            })
+            this.getListData()
           })
         })
         .catch(() => {
@@ -207,5 +210,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
 </style>
+

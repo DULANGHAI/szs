@@ -69,13 +69,11 @@ export function getApplicationSearch(params) {
 }
 
 // 删除应用
-export function deleteApp(ids) {
+export function deleteApp(params) {
   return request({
-    url: '/v1/repositories/risk',
+    url: '/v1/applications/',
     method: 'delete',
-    data: {
-      app_ids: ids
-    }
+    params
   })
 }
 

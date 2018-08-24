@@ -235,7 +235,7 @@ export default {
       }).catch(() => { })
     },
     formatterTime(row) {
-      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     // 重置
     searchReset() {

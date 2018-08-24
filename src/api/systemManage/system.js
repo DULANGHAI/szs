@@ -22,6 +22,16 @@ export function getsystemMessage(params) {
   })
 }
 /**
+ * 确认消息
+ */
+export function confirmMessage(id, params) {
+  return request({
+    url: `/v1/messages/${id}`,
+    method: 'put',
+    params: params
+  })
+}
+/**
  * 用户
  * @param {Object} params
  */
@@ -165,7 +175,27 @@ export function deleteidUserApi(params, identifier) {
     params: params
   })
 }
-
+/**
+ * 获取用户详情
+ * @param {Object} params
+ */
+export function getUserInfo(id) {
+  return request({
+    url: `/v1/users/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 状态搜索
+ * @param {Object} params
+ */
+export function searchStatus(params) {
+  return request({
+    url: `/v1/audit/search`,
+    method: 'get',
+    params
+  })
+}
 /**
  * 获取具有标识符的给定用户
  * @param {Object} params
@@ -182,9 +212,9 @@ export function getidUserApi(params, identifier) {
  * 更新用户密码
  * @param {Object} params
  */
-export function updatepassUserApi(params, user_id) {
+export function updatepassUserApi(id, params) {
   return request({
-    url: `/v1/users/${params.user_id}/user-password`,
+    url: `/v1/users/${id}/user-password`,
     method: 'post',
     data: params
   })

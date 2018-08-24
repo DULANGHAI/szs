@@ -379,7 +379,7 @@ export default {
       })
     },
     formatterTime(row) {
-      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     doSubmit() {
       this.$refs.ruleForm.validate((valid) => {

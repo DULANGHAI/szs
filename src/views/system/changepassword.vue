@@ -15,8 +15,8 @@
           label-width="100px"
           label-position="right"
         >
-          <el-form-item label="用户名" prop="userName" >
-            <el-input v-model="form.userName" placeholder="请输入用户名" ></el-input>
+          <el-form-item label="用户名" prop="username" >
+            <el-input v-model="form.username" placeholder="请输入用户名" ></el-input>
           </el-form-item>
            <el-form-item label="旧密码" prop="oldpassword">
             <el-input v-model="form.oldpassword" placeholder="输入旧密码"></el-input>
@@ -39,13 +39,22 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { updatepassUserApi } from '@/api/systemManage/system.js'
 // import { createUserApi } from '@/api/systemManage/system.js'
-import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 
 export default {
   name: 'changepassword',
   components: {
     Breadcrumb
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'token'
+    ])
+  },
+  created() {
+    this.form.username = this.name
   },
   data() {
     var validatePass = (rule, value, callback) => {
@@ -59,25 +68,15 @@ export default {
     }
     return {
       id: '',
-      options: [
-        {
-          value: 'LDDS1',
-          label: 'LDDS'
-        },
-        {
-          value: '上证云',
-          label: '上证云'
-        }
-      ],
       form: {
-        userName: '',
+        username: '',
         name: '',
         password: '',
         rePassword: '',
         oldpassword: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         rePassword: [
           // { required: true, message: "请输入确认密码", trigger: "blur" }
@@ -90,21 +89,15 @@ export default {
     }
   },
   methods: {
-
     submitForm(formName) {
-      this.id = getToken()
-      console.log(this.id)
+      var params = {
+        password: this.form.oldpassword,
+        new_pwd: this.form.password,
+        verify_pwd: this.form.rePassword
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          updatepassUserApi({
-            // payload:
-            // user_id:
-            // user_id:this.form.userName,
-            user_id: this.id,
-            password: this.form.oldpassword,
-            new_pwd: this.form.password,
-            verify_pwd: this.form.rePassword
-          }).then(res => {
+          updatepassUserApi(this.token, params).then(res => {
             this.$router.push({
               name: 'pe-dashboard'
             })

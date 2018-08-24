@@ -27,15 +27,12 @@ export function getCreatorApi() {
  */
 export function getJobListApi(params) {
   return request({
-    url: '/v1/jobs/timed/',
+    url: '/v1/jobs/enable/',
     method: 'get',
     params: {
       name: params.name,
       system_type: params.system_type,
       job_type: params.job_type,
-      // target_ip: JSON.stringify({
-      //   host: params.target_ip
-      // }),
       target_ip: '',
       creator: params.creator,
       start_time: params.start_time,

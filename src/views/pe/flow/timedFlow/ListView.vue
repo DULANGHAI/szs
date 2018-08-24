@@ -78,13 +78,13 @@
     </div>
 
     <!-- 添加/编辑 人工流程 -->
-    <add-manual ref="addManual" :data.sync="needSetJob" :refresh="refresh"></add-manual>
+    <add-manual ref="addManual" :data.sync="needSetJob" :refresh="getListData"></add-manual>
     <!-- 编辑作业 -->
-    <job-config ref="jobConfig" :data.sync="needSetJob" :refresh="refresh"></job-config>
+    <job-config ref="jobConfig" :data.sync="needSetJob" :refresh="getListData"></job-config>
     <!-- 任务配置 -->
-    <task-config ref="taskConfig" :data.sync="needSetJob" :refresh="refresh"></task-config>
+    <task-config ref="taskConfig" :data.sync="needSetJob" :refresh="getListData"></task-config>
     <!-- 添加/编辑 定时流程model -->
-    <add-timed ref="addModel" :type="addType" :data="selectedFlow" :refresh="refreshList"></add-timed>
+    <add-timed ref="addModel" :type="addType" :data1="selectedFlow" :data2="needSetJob" :refresh="refreshList"></add-timed>
 
   </div>
 </template>
@@ -93,9 +93,9 @@
 import InfiniteLoading from 'vue-infinite-loading'
 import FlowItem from '../instantFlow/components/FlowItem'
 import TreeTable from '../instantFlow/components/TreeTable'
-import AddManual from '../flowList/components/AddManual'
-import TaskConfig from '../flowList/components/TaskConfig'
-import JobConfig from '../flowList/components/JobConfig'
+import AddManual from './components/AddManual'
+import TaskConfig from './components/TaskConfig'
+import JobConfig from './components/JobConfig'
 import AddTimed from './components/AddTimed'
 
 import { getFlowListApi, getTimedListApi, deleteTimedApi, doFlowApi } from '@/api/pe/flowManage/timedFlow'

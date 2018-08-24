@@ -27,7 +27,7 @@ export function getCreatorApi() {
  */
 export function getJobListApi(params) {
   return request({
-    url: '/v1/jobs/',
+    url: '/v1/jobs/enable/',
     method: 'get',
     params: params
   })

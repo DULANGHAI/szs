@@ -150,7 +150,7 @@
           </div>
           <!-- 查看的按钮组 -->
           <div v-if="view">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="goEdit">编辑</el-button>
+            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="goEdit" :disabled="form.status === 1">>编辑</el-button>
             <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
           </div>
           <!-- 编辑的按钮组 -->
