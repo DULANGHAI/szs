@@ -65,7 +65,7 @@
 import ChooseTimed from '@/views/pe/job/timedJob/components/ChooseTimed'
 import CustomTimed from '@/views/pe/job/timedJob/components/CustomTimed'
 
-import { createTimedApi } from '@/api/pe/flowManage/timedFlow'
+import { createTimedApi, updateFlowApi } from '@/api/pe/flowManage/timedFlow'
 
 export default {
   props: {
@@ -167,7 +167,7 @@ export default {
       } else {
         express = this.$refs.customTimed.getExpress()
       }
-      if (this.type === 'add') {
+      if (this.type === 'add') { // 创建
         const data = {
           process_id: this.data.id,
           name: this.form.name,
@@ -186,7 +186,43 @@ export default {
           this.refresh(1)
           this.cancel()
         })
+      } else { // 更新
+        const temp = this.deleteAttr(this.data.scheduling)
+        const data = {
+          scheduling: JSON.stringify(temp),
+          description: this.form.description,
+          timed_expression: this.form.timed_expression,
+          timed_date: this.form.timed_date,
+          timed_type: this.form.timed_type,
+          timed_config: this.form.timed_config
+        }
+        if (data.timed_type === 'cycle') {
+          data.timed_date = ''
+        } else {
+          data.timed_expression = ''
+        }
+        updateFlowApi(this.data.id, data).then(() => {
+          this.cancel()
+          this.refresh()
+        })
       }
+    },
+    deleteAttr(obj) {
+      const objClone = Array.isArray(obj) ? [] : {}
+      if (obj && typeof obj === 'object') {
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key) && key !== '_expanded' && key !== '_level' && key !== '_show' && key !== 'parent') {
+            // 判断ojb子元素是否为对象，如果是，递归复制
+            if (obj[key] && typeof obj[key] === 'object') {
+              objClone[key] = this.deleteAttr(obj[key])
+            } else {
+              // 如果不是，简单复制
+              objClone[key] = obj[key]
+            }
+          }
+        }
+      }
+      return objClone
     }
   }
 }
