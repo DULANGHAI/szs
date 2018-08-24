@@ -76,6 +76,21 @@ export function getFileChartDataApi(params) {
 }
 
 /**
+ * 获取主机作业执行次数 chart data
+ * @param {*} params
+ */
+export function getJobChartDataApi(params) {
+  return request({
+    url: '/v1/statistics/jobs-top',
+    method: 'get',
+    params: {
+      start_time: dayjs(params.start_time).toJSON(),
+      end_time: dayjs(params.end_time).toJSON()
+    }
+  })
+}
+
+/**
  * 获取作业队列监控的数据
  */
 export function getWorkersDataApi() {

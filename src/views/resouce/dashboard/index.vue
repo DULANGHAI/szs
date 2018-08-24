@@ -136,7 +136,7 @@ import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 import dayjs from 'dayjs'
 
-import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi } from '@/api/resouce/dashboard/index'
+import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi, getJobChartDataApi } from '@/api/resouce/dashboard/index'
 
 const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
 const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss')
@@ -255,18 +255,7 @@ export default {
       },
       chartData2: {
         columns: ['IP', '异常次数'],
-        rows: [
-          { 'IP': '205.205.205.201', '异常次数': 1393 },
-          { 'IP': '205.205.205.202', '异常次数': 3530 },
-          { 'IP': '205.205.205.203', '异常次数': 2923 },
-          { 'IP': '205.205.205.204', '异常次数': 1723 },
-          { 'IP': '205.205.205.205', '异常次数': 3792 },
-          { 'IP': '205.205.205.206', '异常次数': 4593 },
-          { 'IP': '205.205.205.207', '异常次数': 3530 },
-          { 'IP': '205.205.205.208', '异常次数': 2923 },
-          { 'IP': '205.205.205.209', '异常次数': 1723 },
-          { 'IP': '205.205.205.210', '异常次数': 3792 }
-        ]
+        rows: []
       },
       chartData3: [],
       chartData4: {
@@ -302,7 +291,8 @@ export default {
         getApplicationDataApi(this.form),
         getFileChartDataApi(this.form),
         getRepositoriesDataApi(this.form),
-        getWhiteBlackDataApi(this.form)
+        getWhiteBlackDataApi(this.form),
+        getJobChartDataApi(this.form)
       ])
         .then(res => {
           this.chartData3 = res[0]
@@ -312,6 +302,7 @@ export default {
           this.chartData1.rows = this.handleData1(res[4])
           this.repositories = res[5]
           this.white_black = res[6]
+          this.chartData2.rows = this.handleData2(res)
         }).finally(() => {
           this.loading = false
         })
@@ -333,7 +324,8 @@ export default {
           getApplicationDataApi(this.form),
           getFileChartDataApi(this.form),
           getRepositoriesDataApi(this.form),
-          getWhiteBlackDataApi(this.form)
+          getWhiteBlackDataApi(this.form),
+          getJobChartDataApi(this.form)
         ])
           .then(res => {
             this.hostNum = res[0].count
@@ -341,6 +333,7 @@ export default {
             this.chartData1.rows = this.handleData1(res[2])
             this.repositories = res[3]
             this.white_black = res[4]
+            this.chartData2.rows = this.handleData2(res)
           }).catch(() => {
             clearInterval(this.interval)
           })
@@ -360,6 +353,16 @@ export default {
           '脚本库': item.scripts_count,
           '软件包库': item.applications_count,
           '配置文件库': item.configurations_count
+        })
+      })
+      return result
+    },
+    handleData2(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'IP': item.target_ip,
+          '异常次数': item.count
         })
       })
       return result

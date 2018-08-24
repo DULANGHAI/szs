@@ -130,7 +130,7 @@ import { mapGetters } from 'vuex'
 import echarts from 'echarts'
 import dayjs from 'dayjs'
 
-import { getJobCardDataApi, getFlowCardDataApi, getFlowChartDataApi, getJobChartDataApi } from '@/api/pe/dashboard/index'
+import { getJobCardDataApi, getFlowCardDataApi, getFlowChartDataApi, getJobChartDataApi, getHostChartDataApi } from '@/api/pe/dashboard/index'
 
 const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
 const default_end_time = dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss')
@@ -249,28 +249,11 @@ export default {
       },
       chartData3: {
         columns: ['IP', '异常次数'],
-        rows: [
-          { 'IP': '205.205.205.201', '异常次数': 1393 },
-          { 'IP': '205.205.205.202', '异常次数': 3530 },
-          { 'IP': '205.205.205.203', '异常次数': 2923 },
-          { 'IP': '205.205.205.204', '异常次数': 1723 },
-          { 'IP': '205.205.205.205', '异常次数': 3792 },
-          { 'IP': '205.205.205.206', '异常次数': 4593 },
-          { 'IP': '205.205.205.207', '异常次数': 3530 },
-          { 'IP': '205.205.205.208', '异常次数': 2923 },
-          { 'IP': '205.205.205.209', '异常次数': 1723 },
-          { 'IP': '205.205.205.210', '异常次数': 3792 }
-        ]
+        rows: []
       },
       chartData4: {
         columns: ['name', 'num'],
-        rows: [
-          { 'name': '安装Tomcat', 'num': 1393 },
-          { 'name': '重启Nfs', 'num': 3530 },
-          { 'name': '安装核心系统', 'num': 2923 },
-          { 'name': '重启Nginx', 'num': 1723 },
-          { 'name': '修改Tomcat配置', 'num': 3792 }
-        ]
+        rows: []
       },
       pickerOptions: {
         disabledDate(time) {
@@ -303,13 +286,16 @@ export default {
         getJobCardDataApi(this.form),
         getFlowCardDataApi(this.form),
         getFlowChartDataApi(this.form),
-        getJobChartDataApi(this.form)
+        getJobChartDataApi(this.form),
+        getHostChartDataApi(this.form)
       ])
         .then(res => {
           this.jobCard = res[0]
+          this.chartData4.rows = this.handleData2(res[0].top5)
           this.flowCard = res[1]
           this.chartData2.rows = this.handleChartData1(res[2])
           this.chartData1.rows = this.handleChartData1(res[3])
+          this.chartData3.rows = this.handleChartData3(res[4])
         }).finally(() => {
           this.loading = false
         })
@@ -330,13 +316,16 @@ export default {
           getJobCardDataApi(this.form),
           getFlowCardDataApi(this.form),
           getFlowChartDataApi(this.form),
-          getJobChartDataApi(this.form)
+          getJobChartDataApi(this.form),
+          getHostChartDataApi(this.form)
         ])
           .then(res => {
             this.jobCard = res[0]
+            this.chartData4.rows = this.handleData2(res[0].top5)
             this.flowCard = res[1]
             this.chartData2.rows = this.handleChartData1(res[2])
             this.chartData1.rows = this.handleChartData1(res[3])
+            this.chartData3.rows = this.handleChartData3(res[4])
           }).catch(() => {
             clearInterval(this.interval)
           })
@@ -355,6 +344,26 @@ export default {
           '日期': item.date,
           '失败数': item.failed,
           '成功数': item.success
+        })
+      })
+      return result
+    },
+    handleChartData2(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'name': item.name,
+          'num': item.count
+        })
+      })
+      return result
+    },
+    handleChartData3(data) {
+      const result = []
+      data.forEach((item) => {
+        result.push({
+          'IP': item.target_ip,
+          '异常次数': item.count
         })
       })
       return result
