@@ -106,13 +106,19 @@
         <el-table-column prop="source_ip" label="源IP"></el-table-column>
         <el-table-column label="资源ID">
           <template slot-scope="scope">
-            <router-link :to="jumper1"><el-button type="text">{{ scope.row.resource_id }}</el-button></router-link>
+            <router-link v-if="scope.row.resource === 'tasks'" :to="`/pe/taskManage/taskView/${scope.row.resource_id}/1`"><el-button type="text">{{ scope.row.resource_id }}</el-button></router-link>
+            <router-link v-else-if="scope.row.resource === 'job'" :to="`/pe/taskManage/jobView/${scope.row.resource_id}/1`"><el-button type="text">{{ scope.row.resource_id }}</el-button></router-link>
+            <span v-else>{{ scope.row.resource_id }}</span>
           </template>  
         </el-table-column>
         <el-table-column prop="resource" label="资源类型"></el-table-column>
         <el-table-column prop="operation" label="操作"></el-table-column>
         <el-table-column prop="status" label="结果"></el-table-column>
-        <el-table-column prop="message" label="消息"></el-table-column>
+        <el-table-column label="消息">
+          <template slot-scope="scope">
+            {{ scope.row.message.notes }}
+          </template>  
+        </el-table-column>
       </el-table>
       <div class="list-paging">
         <el-pagination
@@ -167,7 +173,6 @@ export default {
       pageSize: 0, // list长度
       totalPage: 0, // list总数
       listLoading: false,
-      jumper1: '',
       queryForm: JSON.parse(JSON.stringify(queryFormData))
     }
   },
@@ -229,6 +234,7 @@ export default {
       getAudit(searchParams).then(res => {
         this.tableData = res.items
         this.listLoading = false
+        this.totalPage = res.total
       }).catch(error => {
         Message.error(error)
       })
