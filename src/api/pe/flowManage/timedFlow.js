@@ -37,6 +37,18 @@ export function createTimedApi(data) {
 }
 
 /**
+ *  编辑定时流程
+ * @param {Object} params
+ */
+export function updateFlowApi(id, data) {
+  return request({
+    url: `/v1/timed-processes/${id}`,
+    method: 'put',
+    data: data
+  })
+}
+
+/**
  *  删除定时流程
  * @param {Object} data
  */
