@@ -1,10 +1,10 @@
 <template>
   <el-dialog :title="title" :visible="show" :show-close="false" :width="'800px'"
     @open="handleOpen" @close="handleClose">
-    <el-form :label-position="'left'" label-width="90px" size="small">
+    <el-form :model="form" ref="form" :rules="rules" :label-position="'left'" label-width="100px" size="small">
       <el-row>
         <el-col :span="14">
-          <el-form-item label="定时流程名">
+          <el-form-item label="定时流程名" prop="name">
             <el-input v-model="form.name" placeholder="请输入" :disabled="type !== 'add'"></el-input>
           </el-form-item>
         </el-col>
@@ -12,7 +12,7 @@
 
       <el-row>
         <el-col :span="14">
-          <el-form-item label="描述">
+          <el-form-item label="描述" prop="description">
             <el-input type="textarea" v-model="form.description" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
@@ -24,7 +24,7 @@
             <el-radio-group v-model="form.timed_type">
               <el-radio v-for="(item, index) in Object.keys(timed_type_map)" :key="index" :label="item">{{timed_type_map[item]}}</el-radio>
             </el-radio-group>
-            <div v-show="form.timed_type === 'timed'">
+            <div v-if="form.timed_type === 'timed'">
               <el-date-picker
                 v-model="form.timed_date"
                 type="datetime"
@@ -36,16 +36,16 @@
         </el-col>
       </el-row>
 
-      <el-row v-show="form.timed_type === 'cycle'">
+      <el-row v-if="form.timed_type === 'cycle'">
         <el-col>
           <el-form-item label="定时配置">
             <el-radio-group v-model="form.timed_config">
               <el-radio v-for="(item, index) in Object.keys(timed_config_map)" :key="index" :label="item">{{timed_config_map[item]}}</el-radio>
             </el-radio-group>
-            <div v-show="form.timed_config === 'check'">
+            <div v-if="form.timed_config === 'check'">
               <choose-timed ref="chooseTimed"></choose-timed>
             </div>
-            <div v-show="form.timed_config !== 'check'">
+            <div v-if="form.timed_config !== 'check'">
               <custom-timed ref="customTimed"></custom-timed>
             </div>
           </el-form-item>
@@ -96,6 +96,17 @@ export default {
         timed_config: 'check',
         timed_date: '',
         timed_expression: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入定时流程名', trigger: ['blur', 'change'] }
+        ],
+        timed_type: [
+          { required: true, message: '请选择定时类型', trigger: ['blur', 'change'] }
+        ],
+        timed_config: [
+          { required: true, message: '请选择定时配置', trigger: ['blur', 'change'] }
+        ]
       },
       data: null
     }
@@ -155,57 +166,72 @@ export default {
         timed_expression: ''
       }
 
-      this.$refs.chooseTimed.reset()
-      this.$refs.customTimed.reset()
+      this.$refs.chooseTimed && this.$refs.chooseTimed.reset()
+      this.$refs.customTimed && this.$refs.customTimed.reset()
+
+      this.$refs.form.resetFields()
 
       this.show = false
     },
     submit() {
-      let express = ''
-      if (this.form.timed_config === 'check') {
-        express = this.$refs.chooseTimed.getExpress()
-      } else {
-        express = this.$refs.customTimed.getExpress()
-      }
-      if (this.type === 'add') { // 创建
-        const data = {
-          process_id: this.data.id,
-          name: this.form.name,
-          description: this.form.description,
-          timed_type: this.form.timed_type,
-          timed_config: this.form.timed_config,
-          timed_date: this.form.timed_date,
-          timed_expression: express
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.form.timed_type === 'timed' && !this.form.timed_date) {
+            this.$message.error('日期不能为空')
+            return
+          }
+
+          let express = ''
+          if (this.form.timed_config === 'check') {
+            express = this.$refs.chooseTimed.getExpress()
+          } else {
+            express = this.$refs.customTimed.getExpress()
+          }
+          if (this.form.timed_type === 'cycle' && (express === '* * * * *' || express === '')) {
+            this.$message.error('表达式不能为空')
+            return
+          }
+          if (this.type === 'add') { // 创建
+            const data = {
+              process_id: this.data.id,
+              name: this.form.name,
+              description: this.form.description,
+              timed_type: this.form.timed_type,
+              timed_config: this.form.timed_config,
+              timed_date: this.form.timed_date,
+              timed_expression: express
+            }
+            if (data.timed_type === 'cycle') {
+              data.timed_date = ''
+            } else {
+              data.timed_expression = ''
+            }
+            createTimedApi(data).then(() => {
+              this.refresh(1)
+              this.cancel()
+            })
+          } else { // 更新
+            const temp = this.deleteAttr(this.data.scheduling)
+            const data = {
+              scheduling: JSON.stringify(temp),
+              description: this.form.description,
+              timed_expression: this.form.timed_expression,
+              timed_date: this.form.timed_date,
+              timed_type: this.form.timed_type,
+              timed_config: this.form.timed_config
+            }
+            if (data.timed_type === 'cycle') {
+              data.timed_date = ''
+            } else {
+              data.timed_expression = ''
+            }
+            updateFlowApi(this.data.id, data).then(() => {
+              this.cancel()
+              this.refresh()
+            })
+          }
         }
-        if (data.timed_type === 'cycle') {
-          data.timed_date = ''
-        } else {
-          data.timed_expression = ''
-        }
-        createTimedApi(data).then(() => {
-          this.refresh(1)
-          this.cancel()
-        })
-      } else { // 更新
-        const temp = this.deleteAttr(this.data.scheduling)
-        const data = {
-          scheduling: JSON.stringify(temp),
-          description: this.form.description,
-          timed_expression: this.form.timed_expression,
-          timed_date: this.form.timed_date,
-          timed_type: this.form.timed_type,
-          timed_config: this.form.timed_config
-        }
-        if (data.timed_type === 'cycle') {
-          data.timed_date = ''
-        } else {
-          data.timed_expression = ''
-        }
-        updateFlowApi(this.data.id, data).then(() => {
-          this.cancel()
-          this.refresh()
-        })
-      }
+      })
     },
     deleteAttr(obj) {
       const objClone = Array.isArray(obj) ? [] : {}
@@ -227,3 +253,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.up-to-previous {
+  margin-top: -20px;
+}
+</style>

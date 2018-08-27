@@ -5,7 +5,7 @@
     </div>
     <div class="dash-body" v-loading="loading">
       <div class="dash-header">
-        <div class="dash-title">运维作业仪表盘</div>
+        <div class="dash-title">资源管理仪表盘</div>
         <div class="header-flex">
           <div class="dash-desc">{{`早上好，${name}，欢迎来到上证信息运维自动化平台`}}</div>
           <el-form :inline="true">
@@ -25,7 +25,7 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
-              <el-switch v-model="timed"></el-switch>
+              <el-switch v-model="timed" @change="handleChange"></el-switch>
             </el-form-item>
           </el-form>
         </div>
@@ -228,6 +228,9 @@ export default {
         axisLabel: {
           rotate: 45
         }
+      },
+      yAXIS: {
+        minInterval: 1
       }
     }
     return {
@@ -302,7 +305,7 @@ export default {
           this.chartData1.rows = this.handleData1(res[4])
           this.repositories = res[5]
           this.white_black = res[6]
-          this.chartData2.rows = this.handleData2(res)
+          this.chartData2.rows = this.handleData2(res[7].tops)
         }).finally(() => {
           this.loading = false
         })
@@ -333,7 +336,7 @@ export default {
             this.chartData1.rows = this.handleData1(res[2])
             this.repositories = res[3]
             this.white_black = res[4]
-            this.chartData2.rows = this.handleData2(res)
+            this.chartData2.rows = this.handleData2(res[5].tops)
           }).catch(() => {
             clearInterval(this.interval)
           })

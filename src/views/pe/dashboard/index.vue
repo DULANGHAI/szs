@@ -63,11 +63,11 @@
           <div class="card-fcount">
             <span>
               <div>正常主机数</div>
-              <div class="ft-sz">112</div>
+              <div class="ft-sz">{{checkCard.normal_count}}</div>
             </span>
             <span>
               <div>异常主机数</div>
-              <div class="ft-sz">9109</div>
+              <div class="ft-sz">{{checkCard.abnormal_count}}</div>
             </span>
           </div>
         </div>
@@ -239,6 +239,10 @@ export default {
         count: 0,
         ratio: '0%'
       },
+      checkCard: {
+        normal_count: 0,
+        abnormal_count: 0
+      },
       chartData1: {
         columns: ['日期', '失败数', '成功数'],
         rows: []
@@ -296,6 +300,10 @@ export default {
           this.chartData2.rows = this.handleChartData1(res[2])
           this.chartData1.rows = this.handleChartData1(res[3])
           this.chartData3.rows = this.handleChartData3(res[4])
+          this.checkCard = {
+            normal_count: res[4].normal_count,
+            abnormal_count: res[4].abnormal_count
+          }
         }).finally(() => {
           this.loading = false
         })
@@ -326,6 +334,10 @@ export default {
             this.chartData2.rows = this.handleChartData1(res[2])
             this.chartData1.rows = this.handleChartData1(res[3])
             this.chartData3.rows = this.handleChartData3(res[4])
+            this.checkCard = {
+              normal_count: res[4].normal_count,
+              abnormal_count: res[4].abnormal_count
+            }
           }).catch(() => {
             clearInterval(this.interval)
           })

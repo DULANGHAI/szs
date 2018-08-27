@@ -29,14 +29,14 @@
         <el-table-column prop="created_at" label="创建时间" :formatter="formatterTime" width="160"></el-table-column>
         <el-table-column prop="business" label="所属业务">
           <template slot-scope="scope">
-            <el-tag v-for="df in scope.row.business_names">{{ df }}</el-tag>
+            <el-tag v-for="(df, index) in scope.row.business_names" :key="index">{{ df }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column prop="telephone" label="手机"></el-table-column>
         <el-table-column label="角色">
           <template slot-scope="scope">
-            <el-tag v-for="vr in scope.row.role_names">{{ vr }}</el-tag>
+            <el-tag v-for="(vr, index) in scope.row.role_names" :key="index">{{ vr }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column

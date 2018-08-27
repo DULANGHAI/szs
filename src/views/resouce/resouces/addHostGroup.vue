@@ -40,7 +40,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, index) in form.params">
+      <el-row v-for="(item, index) in form.params" :key="index">
         <el-col :span="10">
           <el-form-item label="字段">
             <el-input v-model="item.name" size="small" auto-complete="off" placeholder="请输入字段"></el-input>

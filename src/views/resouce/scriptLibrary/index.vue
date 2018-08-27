@@ -4,7 +4,7 @@
       <div class="page-bar">
         <el-breadcrumb class="app-breadcrumb" separator="/">
           <transition-group name="breadcrumb">
-            <el-breadcrumb-item v-for="(item,index)  in levelList" :key="item.path" v-if="item.meta.title">
+            <el-breadcrumb-item v-for="(item, index)  in levelList" :key="index" v-if="item.meta.title">
               <router-link :to="item.redirect||item.path">{{item.meta.title}}</router-link>
             </el-breadcrumb-item>
           </transition-group>
@@ -15,7 +15,7 @@
                 {{ywzSelectName}}<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="item in ywzList" :command="item.id">{{item.name}}</el-dropdown-item>
+                <el-dropdown-item v-for="(item, index) in ywzList" :key="index" :command="item.id">{{item.name}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -26,7 +26,7 @@
                 {{ywzSelectName}}<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="item in ywzList" :command="item.id">{{item.name}}</el-dropdown-item>
+                <el-dropdown-item v-for="(item, index) in ywzList" :key="index" :command="item.id">{{item.name}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <span role="presentation" class="el-breadcrumb__separator">/</span>

@@ -8,7 +8,7 @@
       <div class="file-nav">
         <div class="file-nav-right">
           <el-button size="small" @click.native="$refs.app.doCreate(false)">添加权限</el-button>
-          <el-button size="small" @click.native="perDelete">删除</el-button>
+          <el-button size="small" @click.native="perDelete" :disabled="isDelete">删除</el-button>
         </div>
       </div>
       <el-table
@@ -61,6 +61,7 @@ export default {
     return {
       listData: [],
       SelectionArray: [],
+      multipleSelection: [],
       currentPage: 1, // 当前页面
       pageSizesArray: [10, 20, 30, 40], // 可选每页数量
       pageSizes: '',
@@ -73,6 +74,11 @@ export default {
   created() {
     this.getList()
     this.isId = this.$route.params.id
+  },
+  computed: {
+    isDelete() {
+      return !(this.multipleSelection.length > 0)
+    }
   },
   methods: {
     getList() {
