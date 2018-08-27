@@ -31,7 +31,7 @@
                   <a style="display: inline-block;" @click="getfilelist()">{{ this.project_name }} </a>
                   <span v-if="pathSpan.length >= 1" role="presentation" class="el-breadcrumb__separator">/</span>
                   <el-breadcrumb separator="/" style="display: inline-block;vertical-align: middle;">
-                    <el-breadcrumb-item v-for="(item, index) in pathSpan"><a v-if="index !== pathSpan.length -1" @click="breadItem(index)">{{ item }}</a><span v-else>{{ item }}</span></el-breadcrumb-item>
+                    <el-breadcrumb-item v-for="(item, index) in pathSpan" :key="index"><a v-if="index !== pathSpan.length -1" @click="breadItem(index)">{{ item }}</a><span v-else>{{ item }}</span></el-breadcrumb-item>
                   </el-breadcrumb>
                 </span>
               </div>
@@ -154,7 +154,7 @@
               <a style="display: inline-block;" @click="getfilelist()">{{ this.project_name }} </a>
               <span v-if="pathSpan.length >= 1" role="presentation" class="el-breadcrumb__separator">/</span>
               <el-breadcrumb separator="/" style="display: inline-block;vertical-align: middle;">
-                <el-breadcrumb-item v-for="(item, index) in pathSpan"><a v-if="index !== pathSpan.length -1" @click="breadItem(index)">{{ item }}</a><span v-else>{{ item }}</span></el-breadcrumb-item>
+                <el-breadcrumb-item v-for="(item, index) in pathSpan" :key="index"><a v-if="index !== pathSpan.length -1" @click="breadItem(index)">{{ item }}</a><span v-else>{{ item }}</span></el-breadcrumb-item>
               </el-breadcrumb>
             </span>
           </div>
