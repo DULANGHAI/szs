@@ -107,13 +107,6 @@ export default {
       return false
     }
   },
-  watch: {
-    repository(val, oldVal) {
-      if (val !== oldVal) {
-        this.init()
-      }
-    }
-  },
   created() {
     this.init()
   },

@@ -5,7 +5,7 @@
     </div>
     <div class="dash-body" v-loading="loading">
       <div class="dash-header">
-        <div class="dash-title">运维作业仪表盘</div>
+        <div class="dash-title">资源管理仪表盘</div>
         <div class="header-flex">
           <div class="dash-desc">{{`早上好，${name}，欢迎来到上证信息运维自动化平台`}}</div>
           <el-form :inline="true">
@@ -302,7 +302,7 @@ export default {
           this.chartData1.rows = this.handleData1(res[4])
           this.repositories = res[5]
           this.white_black = res[6]
-          this.chartData2.rows = this.handleData2(res)
+          this.chartData2.rows = this.handleData2(res[7].tops)
         }).finally(() => {
           this.loading = false
         })
@@ -333,7 +333,7 @@ export default {
             this.chartData1.rows = this.handleData1(res[2])
             this.repositories = res[3]
             this.white_black = res[4]
-            this.chartData2.rows = this.handleData2(res)
+            this.chartData2.rows = this.handleData2(res[5].tops)
           }).catch(() => {
             clearInterval(this.interval)
           })
