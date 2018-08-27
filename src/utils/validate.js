@@ -31,3 +31,31 @@ export function validatAlphabets(str) {
   return reg.test(str)
 }
 
+// 验证邮箱
+export const validateEmail = (rule, value, callback) => {
+  switch (true) {
+    case value === '':
+      callback(new Error('邮箱地址不能为空'))
+      break
+    case !/^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(value):
+      callback(new Error('邮箱地址不正确'))
+      break
+    default:
+      callback()
+  }
+}
+
+// 验证手机
+export const validatePhone = (rule, value, callback) => {
+  switch (true) {
+    case value === '':
+      callback(new Error('手机号码不能为空'))
+      break
+    case !/^1\d{10}$/.test(value):
+      callback(new Error('手机号码格式不正确'))
+      break
+    default:
+      callback()
+  }
+}
+

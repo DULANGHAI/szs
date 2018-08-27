@@ -62,6 +62,7 @@
 <script>
   import { createUserApi, editUserApi, getBusinessesList, getRolesAll } from '@/api/systemManage/system.js'
   import { Message } from 'element-ui'
+  import { validateEmail, validatePhone } from '@/utils/validate'
 
   const formData = {
     'username': '',
@@ -97,13 +98,15 @@
             { required: true, message: '所属业务不能为空', trigger: 'blur' }
           ],
           email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' }
+            { required: true, message: '邮箱不能为空', trigger: 'blur' },
+            { validator: validateEmail, trigger: 'blur' }
           ],
           role_ids: [
             { required: true, message: '角色不能为空', trigger: 'blur' }
           ],
           telephone: [
-            { required: true, message: '电话不能为空', trigger: 'blur' }
+            { required: true, message: '手机号不能为空', trigger: 'blur' },
+            { validator: validatePhone, trigger: 'blur' }
           ]
         }
       }
