@@ -37,7 +37,7 @@
             <el-col :span="12">
               <el-form-item label="版本" prop="version">
                 <el-select v-model="form.version"  style="width:100%" placeholder="请选择版本">
-                  <el-option v-for="item in branchOptions" :key="item.key" :label="item.value" :value="item.value"></el-option>
+                  <el-option v-for="item in branchOptions" :key="item.project_id" :label="item.value" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col> 

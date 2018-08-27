@@ -15,7 +15,7 @@
           label-width="100px"
           label-position="right"
         >
-           <el-form-item label="旧密码" prop="oldpassword">
+          <el-form-item label="旧密码" prop="oldpassword">
             <el-input v-model="form.oldpassword" placeholder="输入旧密码"></el-input>
           </el-form-item>
           <el-form-item label="新密码" prop="password">
