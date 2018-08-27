@@ -15,9 +15,6 @@
           label-width="100px"
           label-position="right"
         >
-          <el-form-item label="用户名" prop="username" >
-            <el-input v-model="form.username" placeholder="请输入用户名" ></el-input>
-          </el-form-item>
            <el-form-item label="旧密码" prop="oldpassword">
             <el-input v-model="form.oldpassword" placeholder="输入旧密码"></el-input>
           </el-form-item>
