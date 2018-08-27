@@ -12,23 +12,23 @@
       <div class="info">
         <div class="info-title">流程信息</div>
         <div class="info-content">
-          <el-form size="small" label-width="70px" label-position="left">
+          <el-form :model="form" ref="form" :rules="rules" size="small" label-width="80px" label-position="left">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="流程名">
+                <el-form-item label="流程名" prop="name">
                   <el-input v-if="!view" v-model="form.name" placeholder="请输入"></el-input>
                   <div v-if="view">{{form.name}}</div>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="是否启用">
+                <el-form-item label="是否启用" prop="status">
                   <el-switch v-model="form.status" :disabled="view === '1'"></el-switch>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="描述">
+                <el-form-item label="描述" prop="description">
                   <el-input v-if="!view" type="textarea" v-model="form.description" rows="4" placeholder="请输入"></el-input>
                   <div v-if="view">{{form.description}}</div>
                 </el-form-item>
@@ -212,6 +212,17 @@ export default {
         name: '',
         status: '',
         description: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入任务名称', trigger: ['blur', 'change'] }
+        ],
+        status: [
+          { required: true, message: '请选择是否启用', trigger: ['change'] }
+        ],
+        description: [
+          { required: true, message: '请输入备注', trigger: ['blur', 'change'] }
+        ]
       },
       form1: { // 左侧的作业筛选列表
         name: '',
@@ -400,22 +411,30 @@ export default {
       })
     },
     submitAll() {
-      const job_id_list = []
-      this.getJobIdList(this.data, job_id_list)
-      const has_manual_job = this.has_manual_job()
-      const data = {
-        'status': this.form.status ? 1 : 0,
-        'name': this.form.name,
-        'has_manual_job': has_manual_job,
-        'job_id_list': job_id_list,
-        'scheduling': JSON.stringify(this.data),
-        'description': this.form.description
-      }
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const job_id_list = []
+          this.getJobIdList(this.data, job_id_list)
+          if (!job_id_list.length) {
+            this.$message.error('请包含至少一个作业')
+            return
+          }
+          const has_manual_job = this.has_manual_job()
+          const data = {
+            'status': this.form.status ? 1 : 0,
+            'name': this.form.name,
+            'has_manual_job': has_manual_job,
+            'job_id_list': job_id_list,
+            'scheduling': JSON.stringify(this.data),
+            'description': this.form.description
+          }
 
-      createFlowApi(data).then(res => {
-        this.$router.push({
-          path: '/pe/flowManage/flowList'
-        })
+          createFlowApi(data).then(res => {
+            this.$router.push({
+              path: '/pe/flowManage/flowList'
+            })
+          })
+        }
       })
     },
     getJobIdList(data, res) {
@@ -436,22 +455,30 @@ export default {
       return result
     },
     update() {
-      const job_id_list = []
-      this.getJobIdList(this.data, job_id_list)
-      const has_manual_job = this.has_manual_job()
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const job_id_list = []
+          this.getJobIdList(this.data, job_id_list)
+          if (!job_id_list.length) {
+            this.$message.error('请包含至少一个作业')
+            return
+          }
+          const has_manual_job = this.has_manual_job()
 
-      const data = {
-        'status': this.form.status ? 1 : 0,
-        'name': this.form.name,
-        'has_manual_job': has_manual_job,
-        'job_id_list': job_id_list,
-        'scheduling': JSON.stringify(this.data),
-        'description': this.form.description
-      }
-      updateFlowApi(this.id, data).then(res => {
-        this.$router.push({
-          path: '/pe/flowManage/flowList'
-        })
+          const data = {
+            'status': this.form.status ? 1 : 0,
+            'name': this.form.name,
+            'has_manual_job': has_manual_job,
+            'job_id_list': job_id_list,
+            'scheduling': JSON.stringify(this.data),
+            'description': this.form.description
+          }
+          updateFlowApi(this.id, data).then(res => {
+            this.$router.push({
+              path: '/pe/flowManage/flowList'
+            })
+          })
+        }
       })
     }
   }
