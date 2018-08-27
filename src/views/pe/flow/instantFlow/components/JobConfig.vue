@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="作业配置" :visible="show" :show-close="false" :width="'600px'"
     @open="handleOpen" @close="handleClose">
-    <el-form :model="form" ref="form" :rules="rules" :label-position="'left'" label-width="100px" size="small">
+    <el-form :model="form" ref="form" :rules="rules" :label-position="'left'" label-width="110px" size="small">
       <el-form-item label="账号" prop="execution_account">
         <el-input v-model="form.execution_account" placeholder="请输入" :disabled="view === '1'"></el-input>
       </el-form-item>
@@ -121,10 +121,12 @@ export default {
               this.cancel()
               this.refresh()
             })
+            this.cancel()
           }
         })
+      } else {
+        this.cancel()
       }
-      this.cancel()
     },
     deleteAttr(obj) {
       const objClone = Array.isArray(obj) ? [] : {}

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div  v-loading="loading">
     <div>
       <breadcrumb></breadcrumb>
     </div>
@@ -39,7 +39,7 @@
       </div>
 
       <!-- 流程创建 -->
-      <div class="container-content" :class="{'view': view === '1'}" v-loading="loading">
+      <div class="container-content" :class="{'view': view === '1'}">
         <!-- 左侧筛选列表 -->
         <div class="left">
           <!-- 筛选 -->
@@ -273,7 +273,6 @@ export default {
           this.initFlowData(res[1])
         }).finally(() => {
           this.loading = false
-          this.initFlowData()
         })
     } else {
       Promise.all([getLanguageApi()])
