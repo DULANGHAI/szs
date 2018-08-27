@@ -62,7 +62,7 @@
 <script>
   import { createUserApi, editUserApi, getBusinessesList, getRolesAll } from '@/api/systemManage/system.js'
   import { Message } from 'element-ui'
-  import { validateEmail, validatePhone } from '@/utils/validate'
+  import { validateEmail, validatePhone, validatePwdZf } from '@/utils/validate'
 
   const formData = {
     'username': '',
@@ -88,8 +88,9 @@
           username: [
             { required: true, message: '用户名不能为空', trigger: 'blur' }
           ],
-          passward: [
-            { required: true, message: '密码不能为空', trigger: 'blur' }
+          password: [
+            { required: true, message: '密码不能为空', trigger: 'blur' },
+            { validator: validatePwdZf, trigger: 'blur' }
           ],
           realname: [
             { required: true, message: '姓名不能为空', trigger: 'blur' }

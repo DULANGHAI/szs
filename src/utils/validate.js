@@ -59,3 +59,16 @@ export const validatePhone = (rule, value, callback) => {
   }
 }
 
+// 字母大小写+数字+符号
+export const validatePwdZf = (rule, value, callback) => {
+  switch (true) {
+    case value === '':
+      callback(new Error('密码不能为空'))
+      break
+    case !/^[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,30}$/.test(value):
+      callback(new Error('密码格式不正确(包含字母大小写、数字、符号)'))
+      break
+    default:
+      callback()
+  }
+}
