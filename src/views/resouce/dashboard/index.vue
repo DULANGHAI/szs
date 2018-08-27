@@ -25,7 +25,7 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label="定时刷新">
-              <el-switch v-model="timed"></el-switch>
+              <el-switch v-model="timed" @change="handleChange"></el-switch>
             </el-form-item>
           </el-form>
         </div>
@@ -228,6 +228,9 @@ export default {
         axisLabel: {
           rotate: 45
         }
+      },
+      yAXIS: {
+        minInterval: 1
       }
     }
     return {

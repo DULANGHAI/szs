@@ -76,7 +76,6 @@
                 </el-form-item>
                 <el-form-item label="脚本变量">
                   <div>{{form.script_parameter}}</div>
-                  <div>-a 文件名     -o 输出文件名     -p 进程名</div>
                 </el-form-item>
               </div>
 
