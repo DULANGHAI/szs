@@ -5,7 +5,7 @@
     width="35%"
     class="pb-dialog add-host-dig">
     <el-form :model="form" :rules="rules" ref="ruleForm">
-      <el-row v-for="(item, index) in form.accounts">
+      <el-row v-for="(item, index) in form.accounts" :key="index">
         <el-col :span="12">
           <el-form-item label="用户">
             <el-input v-model="item.username" :key="index" disabled size="small" auto-complete="off"></el-input>
@@ -24,7 +24,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-for="(item, index) in form.params">
+      <el-row v-for="(item, index) in form.params" :key="index">
         <el-col :span="10">
           <el-form-item label="字段">
             <el-input v-model="item.name" size="small" auto-complete="off" placeholder="请输入字段"></el-input>

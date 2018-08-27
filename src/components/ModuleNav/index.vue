@@ -2,8 +2,8 @@
   <div>
     <el-select v-model="businessName" @change="businessChange" size="mini" placeholder="请选择" style="float:left">
       <el-option
-        v-for="item in ywzList"
-        :key="item.id"
+        v-for="(item, index) in ywzList"
+        :key="index"
         :label="item.name"
         :value="item.name">
       </el-option>
@@ -35,7 +35,6 @@ export default {
   },
   created() {
     this.getBusiness()
-    console.log(999999, this.$store.state.user.repository)
   },
   methods: {
     isActive(path) {

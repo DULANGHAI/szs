@@ -186,12 +186,12 @@
 
     <!-- 弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
-      <el-form ref="form-role" :model="role" label-width="80px" size="small">
+      <el-form ref="formRole" :rules="rules" :model="role" label-width="80px" size="small">
         <el-form-item label="集群名称" prop="name">
-          <el-input v-model="role.name" auto-complete="off" placeholder="请输入"></el-input>
+          <el-input v-model="role.name" auto-complete="off" placeholder="请输入集群名称"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="role.description" placeholder="请输入"></el-input>
+          <el-input v-model="role.description" placeholder="请输入描述"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -270,7 +270,15 @@ export default {
       description: '',
       tableLoading: false,
       dialogType: 'roleCreate',
-      form: JSON.parse(JSON.stringify(formData))
+      form: JSON.parse(JSON.stringify(formData)),
+      rules: {
+        name: [
+          { required: true, message: '集群名称不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '描述不能为空', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -341,6 +349,7 @@ export default {
       this.role = { ...defaultRole }
       this.dialogType = 'roleCreate'
       this.dialogVisible = true
+      this.$refs.formRole && this.$refs.formRole.clearValidate()
     },
     editRole() {
       this.role = this.multipleSelection[0]
@@ -379,11 +388,15 @@ export default {
       }
     },
     addRole() {
-      this.form.business_config.push({
-        'name': this.role.name,
-        'description': this.role.description
+      this.$refs.formRole.validate((valid) => {
+        if (valid) {
+          this.form.business_config.push({
+            'name': this.role.name,
+            'description': this.role.description
+          })
+          this.dialogVisible = false
+        }
       })
-      this.dialogVisible = false
     },
     xgRole() {
       this.dialogVisible = false

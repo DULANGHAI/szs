@@ -81,7 +81,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-for="(item, index) in form.parametersArray">
+          <el-row v-for="(item, index) in form.parametersArray" :key="index">
             <el-col :span="6">
               <el-form-item label="字段">
                 <el-input v-model="item.name" auto-complete="off" placeholder="请输入"></el-input>
