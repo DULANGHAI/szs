@@ -321,6 +321,8 @@ export default {
       this.$refs.chooseTimed.reset()
       this.$refs.customTimed.reset()
 
+      this.$refs.form.resetFields()
+
       this.show = false
     },
     submit() {
