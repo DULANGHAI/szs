@@ -84,7 +84,7 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
         <el-table-column prop="frequency" label="执行次数"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
+        <el-table-column fixed="right" label="操作" width="170">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleJobSet(scope.row)" :disabled="scope.row.status === 1 ? true : false">定时作业配置</el-button>
             <el-button type="text" size="small" @click="handleTaskSet(scope.row)" :disabled="scope.row.status === 1 ? true : false">任务配置</el-button>
