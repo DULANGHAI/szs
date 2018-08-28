@@ -75,8 +75,9 @@
                   <el-button type="text" size="small">查看脚本</el-button>
                 </el-form-item>
                 <el-form-item label="脚本变量">
-                  <div>{{form.script_parameter}}</div>
+                  <div v-if="form.language !== 'playbook'">{{form.script_parameter}}</div>
                 </el-form-item>
+                <script-parame v-if="form.language === 'playbook'" ref="scriptParame" view="1"></script-parame>
               </div>
 
               <div v-if="form.type !== 'file'">
@@ -189,6 +190,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
+import ScriptParame from '@/views/pe/task/taskList/components/ScriptParame'
 
 import { getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 import { getLanguageApi, getAllScriptApi, getTaskDataApi, submitApproveApi } from '@/api/pe/taskManage/taskApprove'
@@ -198,7 +200,8 @@ export default {
   components: {
     Breadcrumb,
     RiskLevel,
-    ScriptOption
+    ScriptOption,
+    ScriptParame
   },
   data() {
     return {
@@ -285,6 +288,18 @@ export default {
           this.selectedVersion = this.computeSelectedVersion(res1)
         })
       })
+      // 如果选择的是playbook
+      if (this.form.language === 'playbook') {
+        const data = JSON.parse(this.form.script_parameter)
+        const temp = []
+        Object.keys(data).forEach(keyName => {
+          temp.push({
+            key: keyName,
+            value: data[keyName]
+          })
+        })
+        this.$refs.scriptParame.setData(temp)
+      }
     },
     getLanguageId(val) {
       let result = ''

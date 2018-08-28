@@ -71,10 +71,11 @@
             <div v-if="view">{{selectedVersion.version}}</div>
             <el-button type="text" size="small" @click="handleViewScript">查看脚本</el-button>
           </el-form-item>
-          <el-form-item label="脚本变量" prop="script_parameter" key="script_parameter">
-            <el-input v-if="!view" v-model="form.script_parameter"></el-input>
-            <div v-if="view">{{form.script_parameter}}</div>
+          <el-form-item label="脚本变量" key="script_parameter">
+            <el-input v-if="!view && form.language !== 'playbook'" v-model="form.script_parameter"></el-input>
+            <div v-if="view && form.language !== 'playbook'">{{form.script_parameter}}</div>
           </el-form-item>
+          <script-parame v-if="form.language === 'playbook'" ref="scriptParame" :view="view"></script-parame>
         </div>
         <!-- 文件分发 -->
         <div v-if="form.type === 'file'">
@@ -145,6 +146,7 @@ import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import FileSelect from './components/FileSelect'
 import ViewScript from './components/ViewScript'
+import ScriptParame from './components/ScriptParame'
 
 import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 
@@ -155,7 +157,8 @@ export default {
     RiskLevel,
     ScriptOption,
     FileSelect,
-    ViewScript
+    ViewScript,
+    ScriptParame
   },
   data() {
     return {
@@ -292,6 +295,18 @@ export default {
           this.selectedVersion = this.computeSelectedVersion(res1)
         })
       })
+      // 如果选择的是playbook
+      if (this.form.language === 'playbook') {
+        const data = JSON.parse(this.form.script_parameter)
+        const temp = []
+        Object.keys(data).forEach(keyName => {
+          temp.push({
+            key: keyName,
+            value: data[keyName]
+          })
+        })
+        this.$refs.scriptParame.setData(temp)
+      }
     },
     /**
      * 当查看、编辑遇到文件分发任务时还需处理
@@ -391,6 +406,15 @@ export default {
         this.$refs.fileSelect.$refs.selectForm.validate((valid) => {
           if (valid) {
             this.form.file_selection = JSON.stringify(this.$refs.fileSelect.getData())
+            this.mainValide()
+          } else {
+            return
+          }
+        })
+      } else if (this.form.type === 'script' && this.form.language === 'playbook') {
+        this.$refs.scriptParame.$refs.selectForm.validate((valid) => {
+          if (valid) {
+            this.form.script_parameter = JSON.stringify(this.$refs.scriptParame.getData())
             this.mainValide()
           } else {
             return

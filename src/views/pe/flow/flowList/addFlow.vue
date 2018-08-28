@@ -145,18 +145,18 @@
         <div class="button-container">
           <!-- 添加作业按钮组 -->
           <div v-if="!view && !id">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="submitAll">确定</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
+            <el-button size="small" type="primary" class="margl-20" @click="submitAll">确定</el-button>
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
           <!-- 查看的按钮组 -->
           <div v-if="view">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="goEdit" :disabled="form.status === 1">>编辑</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
+            <el-button size="small" type="primary" class="margl-20" @click="goEdit" :disabled="form.status === 1">编辑</el-button>
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
           <!-- 编辑的按钮组 -->
           <div v-if="!view && id">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="update">提交</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
+            <el-button size="small" type="primary" class="margl-20" @click="update">提交</el-button>
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
         </div>
       </div>
