@@ -59,7 +59,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .script-option {
   // min-width: 466px;
-  height: 65px;
+  min-height: 65px;
   padding: 8px 13px;
   // display: flex;
   // justify-content: space-between;
