@@ -263,7 +263,8 @@ export default {
         disabledDate(time) {
           return time.getTime() > +new Date(default_end_time)
         }
-      }
+      },
+      interval: ''
     }
   },
   computed: {
@@ -338,9 +339,10 @@ export default {
               normal_count: res[4].normal_count,
               abnormal_count: res[4].abnormal_count
             }
-          }).catch(() => {
-            clearInterval(this.interval)
           })
+          // .catch(() => {
+          //   clearInterval(this.interval)
+          // })
       }, 10000)
     },
     stopInterval() {
@@ -351,7 +353,7 @@ export default {
      */
     handleChartData1(data) {
       const result = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         result.push({
           '日期': item.date,
           '失败数': item.failed,
@@ -362,7 +364,7 @@ export default {
     },
     handleChartData2(data) {
       const result = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         result.push({
           'name': item.name,
           'num': item.count
@@ -372,7 +374,7 @@ export default {
     },
     handleChartData3(data) {
       const result = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         result.push({
           'IP': item.target_ip,
           '异常次数': item.count
