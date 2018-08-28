@@ -23,9 +23,9 @@
           <el-button type="text" size="small">查看脚本</el-button>
         </el-form-item>
         <el-form-item label="脚本变量">
-          <el-input v-if="view !== '1'" v-model="data.script_parameter"></el-input>
-          <div v-else>{{data.script_parameter}}</div>
+          <el-input v-if="data.language !== 'playbook'" v-model="data.script_parameter"></el-input>
         </el-form-item>
+        <script-parame v-if="data.language === 'playbook'" ref="scriptParame"></script-parame>
       </div>
 
       <div>
@@ -45,11 +45,18 @@
         <el-switch v-model="data.is_enable" disabled></el-switch>
       </el-form-item>
     </el-form>
+
+    <!-- script playbook -->
+    <div v-if="data.language === 'playbook'">
+      <el-button size="small" type="primary" class="margl-20" @click="playbookOk">确定</el-button>
+      <el-button size="small" @click="playbookCancle">取消</el-button>
+    </div>
   </div>
 </template>
 
 <script>
 import RiskLevel from '@/components/RiskLevel'
+import ScriptParame from '@/views/pe/task/taskList/components/ScriptParame'
 import { getLanguageApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 
 export default {
@@ -59,7 +66,8 @@ export default {
     data: Object
   },
   components: {
-    RiskLevel
+    RiskLevel,
+    ScriptParame
   },
   data() {
     return {
@@ -92,6 +100,18 @@ export default {
           this.selectedVersion = this.computeSelectedVersion(res1)
         })
       })
+      // 如果选择的是playbook
+      if (this.data.language === 'playbook') {
+        const data = JSON.parse(this.data.script_parameter)
+        const temp = []
+        Object.keys(data).forEach(keyName => {
+          temp.push({
+            key: keyName,
+            value: data[keyName]
+          })
+        })
+        this.$refs.scriptParame.setData(temp)
+      }
     })
   },
   methods: {
@@ -125,6 +145,26 @@ export default {
         }
       }
       return result
+    },
+    playbookCancle() {
+      const data = JSON.parse(this.data.script_parameter)
+      const temp = []
+      Object.keys(data).forEach(keyName => {
+        temp.push({
+          key: keyName,
+          value: data[keyName]
+        })
+      })
+      this.$refs.scriptParame.setData(temp)
+      this.$message.success('操作成果')
+    },
+    playbookOk() {
+      this.$refs.scriptParame.$refs.selectForm.validate((valid) => {
+        if (valid) {
+          this.data.script_parameter = JSON.stringify(this.$refs.scriptParame.getData())
+          this.$message.success('操作成果')
+        }
+      })
     }
   }
 }

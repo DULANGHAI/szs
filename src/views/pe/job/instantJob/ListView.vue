@@ -45,7 +45,7 @@
               <div class="mart-10">创建</div>
             </div>
             <div class="op-item" @click="doTask" :class="{disable: multipleSelection.length !== 1}">
-              <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
+              <svg-icon icon-class="zhixing" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
             </div>
             <div class="op-item" @click="refresh">
@@ -72,7 +72,7 @@
             <el-table-column prop="name" label="作业名" width="130px" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="creator" label="执行人"></el-table-column>
             <el-table-column prop="job_type" label="类型" :formatter="formatterJobType"></el-table-column>
-            <el-table-column prop="created_at" label="提交时间" width="160px"></el-table-column>
+            <el-table-column prop="created_at" label="提交时间" width="160px" :formatter="formatterTime"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="handleJobSet(scope.row)">作业配置</el-button>
@@ -171,6 +171,9 @@ export default {
     }, 20)
   },
   methods: {
+    formatterTime(row) {
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+    },
     handleSystemData(data) {
       const result = [{ label: '全部', value: '' }]
       Object.keys(data).forEach((item) => {

@@ -83,7 +83,7 @@
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="name" label="名称" width="130px"></el-table-column>
           <el-table-column prop="creator" label="创建人"></el-table-column>
-          <el-table-column prop="created_at" label="创建时间" width="160px"></el-table-column>
+          <el-table-column prop="created_at" label="创建时间" width="160px" :formatter="formatterTime"></el-table-column>
           <el-table-column prop="description" label="描述" width="160px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="风险等级" width="88px">
             <template slot-scope="scope">
@@ -243,6 +243,9 @@ export default {
         return '启用'
       }
       return '停用'
+    },
+    formatterTime(row) {
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     handlePageChange(val) {
       this.getListData(val)

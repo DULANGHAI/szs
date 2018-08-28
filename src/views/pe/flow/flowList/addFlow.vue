@@ -93,7 +93,7 @@
                 <div class="mart-10">下移</div>
               </div>
               <div class="op-item" @click="addManualFun">
-                <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
+                <svg-icon icon-class="liucheng" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">人工流程</div>
               </div>
             </div>
@@ -145,18 +145,18 @@
         <div class="button-container">
           <!-- 添加作业按钮组 -->
           <div v-if="!view && !id">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="submitAll">确定</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
+            <el-button size="small" type="primary" class="margl-20" @click="submitAll">确定</el-button>
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
           <!-- 查看的按钮组 -->
           <div v-if="view">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="goEdit" :disabled="form.status === 1">>编辑</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
+            <el-button size="small" type="primary" class="margl-20" @click="goEdit" :disabled="form.status === 1">编辑</el-button>
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
           <!-- 编辑的按钮组 -->
           <div v-if="!view && id">
-            <el-button size="small" type="primary" icon="el-icon-search" class="margl-20" @click="update">提交</el-button>
-            <el-button size="small" icon="el-icon-refresh" @click="goBack">返回</el-button>
+            <el-button size="small" type="primary" class="margl-20" @click="update">提交</el-button>
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
         </div>
       </div>

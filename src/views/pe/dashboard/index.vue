@@ -295,7 +295,7 @@ export default {
       ])
         .then(res => {
           this.jobCard = res[0]
-          this.chartData4.rows = this.handleData2(res[0].top5)
+          this.chartData4.rows = this.handleChartData2(res[0].top5)
           this.flowCard = res[1]
           this.chartData2.rows = this.handleChartData1(res[2])
           this.chartData1.rows = this.handleChartData1(res[3])
@@ -329,7 +329,7 @@ export default {
         ])
           .then(res => {
             this.jobCard = res[0]
-            this.chartData4.rows = this.handleData2(res[0].top5)
+            this.chartData4.rows = this.handleChartData2(res[0].top5)
             this.flowCard = res[1]
             this.chartData2.rows = this.handleChartData1(res[2])
             this.chartData1.rows = this.handleChartData1(res[3])

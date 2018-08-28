@@ -1,10 +1,10 @@
 <template>
   <el-dialog :title="title" :visible="show" :show-close="false" :width="'800px'"
     @open="handleOpen" @close="handleClose">
-    <el-form :label-position="'left'" label-width="90px" size="small">
+    <el-form :model="form" ref="form" :rules="rules" :label-position="'left'" label-width="100px" size="small">
       <el-row v-if="type === 'add'">
         <el-col :span="11">
-          <el-form-item label="作业名">
+          <el-form-item label="作业名" prop="job_id">
             <el-select value-key="id" v-model="selectJob" placeholder="请选择"
               filterable
               remote
@@ -24,12 +24,12 @@
 
       <el-row>
         <el-col :span="11">
-          <el-form-item label="定时作业名">
+          <el-form-item label="定时作业名" prop="name">
             <el-input v-model="form.name" placeholder="请输入" :disabled="type !== 'add'"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="11" :offset="2">
-          <el-form-item label="账号" label-width="60px">
+        <el-col :span="11" :offset="2" prop="execution_account">
+          <el-form-item label="账号" label-width="80px">
             <el-input v-model="form.execution_account" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
@@ -42,7 +42,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="2">
-          <el-form-item label="目标IP" label-width="60px">
+          <el-form-item label="目标IP" label-width="80px" prop="target_ip">
             <treeselect v-model="form.target_ip" :multiple="true" search-nested :options="options" placeholder="请选择" />
           </el-form-item>
         </el-col>
@@ -84,20 +84,20 @@
 
       <el-row>
         <el-col :span="11">
-          <el-form-item label="重试次数">
-            <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="1"></el-input-number>
+          <el-form-item label="重试次数" prop="frequency">
+            <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="0"></el-input-number>
             次
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-row>
+      <!-- <el-row>
         <el-col :span="11">
           <el-form-item label="启用">
             <el-switch v-model="form.status" :active-value="1" :inactive-value="0" :disabled="type !== 'add'"></el-switch>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
 
     </el-form>
 
@@ -155,6 +155,23 @@ export default {
         timed_expression: '',
         frequency: '',
         status: 0
+      },
+      rules: {
+        job_id: [
+          { required: true, message: '请选择作业', trigger: ['change'] }
+        ],
+        name: [
+          { required: true, message: '请输入定时作业名', trigger: ['blur', 'change'] }
+        ],
+        execution_account: [
+          { required: true, message: '请输入账号', trigger: ['blur', 'change'] }
+        ],
+        target_ip: [
+          { required: true, message: '请选择目标IP', trigger: ['change'] }
+        ],
+        frequency: [
+          { required: true, message: '请输入重试次数', trigger: ['blur', 'change'] }
+        ]
       },
       // 用来查询作业的参数
       jobform: {
@@ -304,60 +321,76 @@ export default {
       this.$refs.chooseTimed.reset()
       this.$refs.customTimed.reset()
 
+      this.$refs.form.resetFields()
+
       this.show = false
     },
     submit() {
-      let express = ''
-      if (this.form.timed_config === 'check') {
-        express = this.$refs.chooseTimed.getExpress()
-      } else {
-        express = this.$refs.customTimed.getExpress()
-      }
-      if (this.type === 'add') {
-        const data = {
-          'status': this.form.status,
-          'job_id': this.form.job_id,
-          'execution_account': this.form.execution_account,
-          'timed_expression': express,
-          'timed_date': this.form.timed_date,
-          'name': this.form.name,
-          'frequency': this.form.frequency,
-          'target_ip': this.form.target_ip,
-          'timed_config': this.form.timed_config,
-          'timed_type': this.form.timed_type,
-          'description': this.form.description
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.form.timed_type === 'timed' && !this.form.timed_date) {
+            this.$message.error('日期不能为空')
+            return
+          }
+
+          let express = ''
+          if (this.form.timed_config === 'check') {
+            express = this.$refs.chooseTimed.getExpress()
+          } else {
+            express = this.$refs.customTimed.getExpress()
+          }
+          if (this.form.timed_type === 'cycle' && (express === '* * * * *' || express === '')) {
+            this.$message.error('表达式不能为空')
+            return
+          }
+          if (this.type === 'add') {
+            const data = {
+              'status': this.form.status,
+              'job_id': this.form.job_id,
+              'execution_account': this.form.execution_account,
+              'timed_expression': express,
+              'timed_date': this.form.timed_date,
+              'name': this.form.name,
+              'frequency': this.form.frequency,
+              'target_ip': this.form.target_ip,
+              'timed_config': this.form.timed_config,
+              'timed_type': this.form.timed_type,
+              'description': this.form.description
+            }
+            if (data.timed_type === 'cycle') {
+              data.timed_date = ''
+            } else {
+              data.timed_expression = ''
+            }
+            createJobApi(data).then(res => {
+              this.refresh(1)
+              this.cancel()
+            })
+          } else {
+            const data = {
+              'description': this.form.description,
+              'execution_account': this.form.execution_account,
+              'timed_expression': express,
+              'timed_date': this.form.timed_date,
+              'scheduling': this.data.scheduling,
+              'frequency': this.form.frequency,
+              'target_ip': this.form.target_ip,
+              'timed_config': this.form.timed_config,
+              'timed_type': this.form.timed_type
+            }
+            if (data.timed_type === 'cycle') {
+              data.timed_date = ''
+            } else {
+              data.timed_expression = ''
+            }
+            updateJobApi(this.data.id, data).then(res => {
+              this.refresh()
+              this.cancel()
+            })
+          }
+          // fenge
         }
-        if (data.timed_type === 'cycle') {
-          data.timed_date = ''
-        } else {
-          data.timed_expression = ''
-        }
-        createJobApi(data).then(res => {
-          this.refresh(1)
-          this.cancel()
-        })
-      } else {
-        const data = {
-          'description': this.form.description,
-          'execution_account': this.form.execution_account,
-          'timed_expression': express,
-          'timed_date': this.form.timed_date,
-          'scheduling': this.data.scheduling,
-          'frequency': this.form.frequency,
-          'target_ip': this.form.target_ip,
-          'timed_config': this.form.timed_config,
-          'timed_type': this.form.timed_type
-        }
-        if (data.timed_type === 'cycle') {
-          data.timed_date = ''
-        } else {
-          data.timed_expression = ''
-        }
-        updateJobApi(this.data.id, data).then(res => {
-          this.refresh()
-          this.cancel()
-        })
-      }
+      })
     }
   }
 }

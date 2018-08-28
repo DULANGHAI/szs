@@ -179,10 +179,18 @@ export default {
   },
   methods: {
     formatterTime1(row) {
-      return this.$dayjs(row.start_time).format('YYYY-MM-DD HH:mm:ss')
+      if (row.start_time) {
+        return this.$dayjs(row.start_time).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     formatterTime2(row) {
-      return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      if (row.end_time) {
+        return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     formatterExecutionType(row) {
       return this.execution_type_map[row.execution_type]
