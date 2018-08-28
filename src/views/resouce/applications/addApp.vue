@@ -188,7 +188,7 @@ export default {
     }
   },
   created() {
-    this.rjbPath = this.$store.state.user.repository + '/scripts'
+    this.rjbPath = this.$store.state.user.repository + '/applications'
     this.pzwjPath = this.$store.state.user.repository + '/configurations'
 
     if (this.$route.params.id) {
