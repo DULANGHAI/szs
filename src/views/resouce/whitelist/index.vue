@@ -76,6 +76,7 @@
           <el-table-column
             prop="created_at"
             :formatter="formatterTime"
+            sortable
             label="创建时间">
           </el-table-column>
           <el-table-column
@@ -161,7 +162,7 @@ export default {
   },
   methods: {
     formatterTime(row) {
-      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

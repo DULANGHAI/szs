@@ -63,7 +63,7 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-button size="mini" :disabled="is_sltmount" @click.native="FileDownload(multipleSelection[0].id)">下载</el-button>
+                <el-button size="mini" :disabled="is_sltmount" @click.native="FileDownload(multipleSelection[0].file_id)">下载</el-button>
                 <el-button size="mini" :disabled="is_dltmount" @click.native="FileDelete(SelectionArray)">删除</el-button>
               </div>
             </div>

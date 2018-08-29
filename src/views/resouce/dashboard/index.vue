@@ -13,8 +13,8 @@
               <el-date-picker
                 size="small"
                 v-model="datetimerange"
-                type="datetimerange"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                type="daterange"
+                value-format="yyyy-MM-dd"
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
@@ -138,8 +138,8 @@ import dayjs from 'dayjs'
 
 import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi, getJobChartDataApi } from '@/api/resouce/dashboard/index'
 
-const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD HH:mm:ss')
-const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss')
+const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD')
+const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD')
 
 export default {
   components: {
@@ -312,6 +312,7 @@ export default {
         })
     },
     handleTimeChange() {
+      console.log(this.datetimerange)
       this.init()
     },
     handleChange(val) {
