@@ -34,8 +34,8 @@
         <el-table-column prop="" label="定时配置"></el-table-column>
         <el-table-column prop="" label="状态"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
-        <el-table-column prop="start_time" label="开始时间" :formatter="formatterTime1"></el-table-column>
-        <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
+        <el-table-column prop="start_time" label="开始时间"></el-table-column>
+        <el-table-column prop="end_time" label="结束时间"></el-table-column>
         <el-table-column prop="time" label="执行耗时"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
@@ -147,16 +147,6 @@ export default {
     },
     formatterJobType(row) {
       return this.job_type_map[row.job_type]
-    },
-    formatterTime1(row) {
-      return this.$dayjs(row.start_at).format('YYYY-MM-DD HH:mm:ss')
-    },
-    formatterTime2(row) {
-      if (row.end_time) {
-        return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
-      } else {
-        return ''
-      }
     },
     formatterType(row) {
       if (row._level === 1) {

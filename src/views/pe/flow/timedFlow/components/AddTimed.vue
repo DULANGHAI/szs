@@ -182,15 +182,18 @@ export default {
           }
 
           let express = ''
-          if (this.form.timed_config === 'check') {
-            express = this.$refs.chooseTimed.getExpress()
-          } else {
-            express = this.$refs.customTimed.getExpress()
+          if (this.form.timed_type === 'cycle') {
+            if (this.form.timed_config === 'check') {
+              express = this.$refs.chooseTimed.getExpress()
+            } else {
+              express = this.$refs.customTimed.getExpress()
+            }
+            if (express === '* * * * *' || express === '') {
+              this.$message.error('表达式不能为空')
+              return
+            }
           }
-          if (this.form.timed_type === 'cycle' && (express === '* * * * *' || express === '')) {
-            this.$message.error('表达式不能为空')
-            return
-          }
+
           if (this.type === 'add') { // 创建
             const data = {
               process_id: this.data.id,

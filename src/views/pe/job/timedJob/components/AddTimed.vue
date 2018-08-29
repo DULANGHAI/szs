@@ -54,7 +54,7 @@
             <el-radio-group v-model="form.timed_type">
               <el-radio v-for="(item, index) in Object.keys(timed_type_map)" :key="index" :label="item">{{timed_type_map[item]}}</el-radio>
             </el-radio-group>
-            <div v-show="form.timed_type === 'timed'">
+            <div v-if="form.timed_type === 'timed'">
               <el-date-picker
                 v-model="form.timed_date"
                 type="datetime"
@@ -66,16 +66,16 @@
         </el-col>
       </el-row>
 
-      <el-row v-show="form.timed_type === 'cycle'">
+      <el-row v-if="form.timed_type === 'cycle'">
         <el-col>
           <el-form-item label="定时配置">
             <el-radio-group v-model="form.timed_config">
               <el-radio v-for="(item, index) in Object.keys(timed_config_map)" :key="index" :label="item">{{timed_config_map[item]}}</el-radio>
             </el-radio-group>
-            <div v-show="form.timed_config === 'check'">
+            <div v-if="form.timed_config === 'check'">
               <choose-timed ref="chooseTimed"></choose-timed>
             </div>
-            <div v-show="form.timed_config !== 'check'">
+            <div v-if="form.timed_config !== 'check'">
               <custom-timed ref="customTimed"></custom-timed>
             </div>
           </el-form-item>
@@ -334,14 +334,16 @@ export default {
           }
 
           let express = ''
-          if (this.form.timed_config === 'check') {
-            express = this.$refs.chooseTimed.getExpress()
-          } else {
-            express = this.$refs.customTimed.getExpress()
-          }
-          if (this.form.timed_type === 'cycle' && (express === '* * * * *' || express === '')) {
-            this.$message.error('表达式不能为空')
-            return
+          if (this.form.timed_type === 'cycle') {
+            if (this.form.timed_config === 'check') {
+              express = this.$refs.chooseTimed.getExpress()
+            } else {
+              express = this.$refs.customTimed.getExpress()
+            }
+            if (express === '* * * * *' || express === '') {
+              this.$message.error('表达式不能为空')
+              return
+            }
           }
           if (this.type === 'add') {
             const data = {
