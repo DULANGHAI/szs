@@ -44,7 +44,7 @@
             <el-col :span="6">
               <el-form-item label="版本">
                 <el-autocomplete
-                  v-model="form.verion"
+                  v-model="form.version"
                   :fetch-suggestions="versionSearch"
                   placeholder="请输入版本"
                 ></el-autocomplete>
@@ -80,6 +80,7 @@
                 <el-date-picker
                   v-model="form.datatime"
                   type="daterange"
+                  value-format="yyyy-MM-dd"
                   style="width:100%"
                   range-separator="至"
                   start-placeholder="开始日期"
@@ -93,6 +94,7 @@
               <div class="file-nav">
                 <div class="file-nav-left">
                   <el-button size="small" @click="goCreate()">添加应用实例</el-button>
+                  <el-button size="small" @click.native="viewDetail()" :disabled="is_sltmount" >查看</el-button>
                   <el-button size="small" @click.native="FileEdit(SelectionArray)" :disabled="is_sltmount" >编辑</el-button>
                   <el-button size="small" @click.native="FileDelete(SelectionArray)" :disabled="is_dltmount">删除</el-button>
                 </div>
@@ -198,6 +200,7 @@
         </el-pagination>
       </div>
     </div>
+    <add-view ref="app" v-on:getList="getList"></add-view>
   </div>
 </template>
 
@@ -206,6 +209,7 @@ import { getApplicationList, getApplicationSearch, deleteApp } from '@/api/resou
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message, MessageBox } from 'element-ui'
+import AddView from './appView'
 
 const formData = {
   'datatime': []
@@ -213,7 +217,8 @@ const formData = {
 export default {
   components: {
     Breadcrumb,
-    RiskLevel
+    RiskLevel,
+    AddView
   },
   data() {
     return {
@@ -268,6 +273,9 @@ export default {
           id: val
         }
       })
+    },
+    viewDetail() {
+      this.$refs.app.doCreate(true, this.multipleSelection[0])
     },
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')

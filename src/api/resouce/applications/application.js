@@ -73,7 +73,7 @@ export function deleteApp(params) {
   return request({
     url: '/v1/applications/',
     method: 'delete',
-    params
+    data: params
   })
 }
 

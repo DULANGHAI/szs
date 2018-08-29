@@ -57,7 +57,15 @@
           <el-table-column prop="creator" label="执行人"></el-table-column>
           <el-table-column prop="name" label="作业名"></el-table-column>
           <el-table-column prop="system_type" label="系统类型"></el-table-column>
-          <el-table-column prop="target_ip" label="目标IP" width="160px" :formatter="formatterIp" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="目标IP">
+            <template slot-scope="scope">
+              <div v-if="scope.row.target_ip">
+                <div v-for="(item, index) in scope.row.target_ip.split(',')" :key="index">
+                  {{item}}
+                </div>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="time" label="执行耗时"></el-table-column>
           <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
@@ -156,10 +164,10 @@ export default {
     formatterTime2(row) {
       return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
     },
-    formatterIp(row) {
-      const data = JSON.parse(row.target_ip).host
-      return data.toString()
-    },
+    // formatterIp(row) {
+    //   const data = row.target_ip.split(',')
+    //   return data.toString()
+    // },
     getListData(index) {
       this.loading = true
       const params = this.form

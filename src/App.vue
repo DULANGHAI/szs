@@ -49,4 +49,7 @@ export default {
 .el-form-item.is-error .vue-treeselect__control {
   border-color: #f56c6c;
 }
+.el-form-item.is-success .vue-treeselect__control {
+  border-color: #67c23a;
+}
 </style>

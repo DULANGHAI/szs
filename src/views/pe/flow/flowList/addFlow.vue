@@ -93,7 +93,7 @@
                 <div class="mart-10">下移</div>
               </div>
               <div class="op-item" @click="addManualFun">
-                <svg-icon icon-class="delete_job" :style="{ transform: 'scale(1.5)' }" />
+                <svg-icon icon-class="liucheng" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">人工流程</div>
               </div>
             </div>

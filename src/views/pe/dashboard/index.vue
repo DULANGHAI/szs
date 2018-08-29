@@ -263,7 +263,8 @@ export default {
         disabledDate(time) {
           return time.getTime() > +new Date(default_end_time)
         }
-      }
+      },
+      interval: ''
     }
   },
   computed: {
@@ -299,7 +300,7 @@ export default {
           this.flowCard = res[1]
           this.chartData2.rows = this.handleChartData1(res[2])
           this.chartData1.rows = this.handleChartData1(res[3])
-          this.chartData3.rows = this.handleChartData3(res[4])
+          this.chartData3.rows = this.handleChartData3(res[4].tops)
           this.checkCard = {
             normal_count: res[4].normal_count,
             abnormal_count: res[4].abnormal_count
@@ -333,14 +334,15 @@ export default {
             this.flowCard = res[1]
             this.chartData2.rows = this.handleChartData1(res[2])
             this.chartData1.rows = this.handleChartData1(res[3])
-            this.chartData3.rows = this.handleChartData3(res[4])
+            this.chartData3.rows = this.handleChartData3(res[4].tops)
             this.checkCard = {
               normal_count: res[4].normal_count,
               abnormal_count: res[4].abnormal_count
             }
-          }).catch(() => {
-            clearInterval(this.interval)
           })
+          // .catch(() => {
+          //   clearInterval(this.interval)
+          // })
       }, 10000)
     },
     stopInterval() {
@@ -351,7 +353,7 @@ export default {
      */
     handleChartData1(data) {
       const result = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         result.push({
           '日期': item.date,
           '失败数': item.failed,
@@ -362,7 +364,7 @@ export default {
     },
     handleChartData2(data) {
       const result = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         result.push({
           'name': item.name,
           'num': item.count
@@ -372,7 +374,7 @@ export default {
     },
     handleChartData3(data) {
       const result = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         result.push({
           'IP': item.target_ip,
           '异常次数': item.count

@@ -149,10 +149,12 @@ export default {
         timed_expression: this.data.timed_expression
       }
       this.$nextTick(() => {
-        if (this.data.timed_config === 'check') {
-          this.$refs.chooseTimed.setExpress(this.data.timed_expression)
-        } else {
-          this.$refs.customTimed.setExpress(this.data.timed_expression)
+        if (this.data.timed_type === 'cycle') {
+          if (this.data.timed_config === 'check') {
+            this.$refs.chooseTimed.setExpress(this.data.timed_expression)
+          } else {
+            this.$refs.customTimed.setExpress(this.data.timed_expression)
+          }
         }
       })
     },
@@ -182,15 +184,18 @@ export default {
           }
 
           let express = ''
-          if (this.form.timed_config === 'check') {
-            express = this.$refs.chooseTimed.getExpress()
-          } else {
-            express = this.$refs.customTimed.getExpress()
+          if (this.form.timed_type === 'cycle') {
+            if (this.form.timed_config === 'check') {
+              express = this.$refs.chooseTimed.getExpress()
+            } else {
+              express = this.$refs.customTimed.getExpress()
+            }
+            if (express === '* * * * *' || express === '') {
+              this.$message.error('表达式不能为空')
+              return
+            }
           }
-          if (this.form.timed_type === 'cycle' && (express === '* * * * *' || express === '')) {
-            this.$message.error('表达式不能为空')
-            return
-          }
+
           if (this.type === 'add') { // 创建
             const data = {
               process_id: this.data.id,

@@ -25,7 +25,7 @@
         <el-table-column prop="name" label="角色名"></el-table-column>
         <el-table-column prop="description" label="备注"></el-table-column>
         <el-table-column prop="created_at" label="创建时间" :formatter="formatterTime"></el-table-column>
-        <el-table-column prop="create_user" label="创建人"> </el-table-column>
+        <el-table-column prop="created_user" label="创建人"> </el-table-column>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button size="small" type="text" @click="goInfo(scope.row.id)">查看权限</el-button>

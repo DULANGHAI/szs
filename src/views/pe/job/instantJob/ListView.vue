@@ -45,7 +45,7 @@
               <div class="mart-10">创建</div>
             </div>
             <div class="op-item" @click="doTask" :class="{disable: multipleSelection.length !== 1}">
-              <svg-icon icon-class="create_instant" :style="{ transform: 'scale(1.5)' }" />
+              <svg-icon icon-class="zhixing" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
             </div>
             <div class="op-item" @click="refresh">
