@@ -18,6 +18,7 @@
               <el-date-picker
                 v-model="daterange"
                 type="daterange"
+                value-format="yyyy-MM-dd"
                 style="width:100%"
                 range-separator="-"
                 start-placeholder="开始日期"
