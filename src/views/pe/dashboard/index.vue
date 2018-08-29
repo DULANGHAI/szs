@@ -29,7 +29,7 @@
             </el-form-item>
           </el-form>
         </div>
-        
+
       </div>
       <div class="dash-card">
         <div class="card-panel panel-bg-01">
@@ -128,7 +128,6 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
-import dayjs from 'dayjs'
 
 import { getJobCardDataApi, getFlowCardDataApi, getFlowChartDataApi, getJobChartDataApi, getHostChartDataApi } from '@/api/pe/dashboard/index'
 

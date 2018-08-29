@@ -134,7 +134,6 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
-import dayjs from 'dayjs'
 
 import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi, getJobChartDataApi } from '@/api/resouce/dashboard/index'
 
