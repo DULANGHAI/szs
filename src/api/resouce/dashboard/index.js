@@ -8,10 +8,7 @@ export function getHostsDataApi(params) {
   return request({
     url: '/v1/statistics/hosts',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -23,10 +20,7 @@ export function getApplicationDataApi(params) {
   return request({
     url: '/v1/statistics/applications',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -38,10 +32,7 @@ export function getRepositoriesDataApi(params) {
   return request({
     url: '/v1/statistics/repositories',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -53,10 +44,7 @@ export function getWhiteBlackDataApi(params) {
   return request({
     url: '/v1/statistics/risk_commands',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -68,10 +56,7 @@ export function getFileChartDataApi(params) {
   return request({
     url: '/v1/statistics/file-commits',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -83,10 +68,7 @@ export function getJobChartDataApi(params) {
   return request({
     url: '/v1/statistics/jobs-top',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 

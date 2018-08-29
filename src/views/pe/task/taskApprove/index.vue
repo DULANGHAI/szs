@@ -24,6 +24,7 @@
                 <el-option :label="'命令'" :value="'command'"></el-option>
                 <el-option :label="'脚本'" :value="'script'"></el-option>
                 <el-option :label="'文件分发'" :value="'file'"></el-option>
+                <el-option :label="'playbook'" :value="'playbook'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -146,7 +147,8 @@ import { getListApi, getCreatorApi, getApproverApi } from '@/api/pe/taskManage/t
 const taskTypeMap = {
   command: '命令',
   script: '脚本',
-  file: '文件分发'
+  file: '文件分发',
+  playbook: 'playbook'
 }
 // const taskStatusMap = {
 //   pass: '通过',

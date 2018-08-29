@@ -11,7 +11,7 @@
       <!-- 当前节点 -->
       <div>
         <!-- 命令、脚本、文件分发任务先都用这个渲染 -->
-        <command-option v-if="data.type === 'command' || data.type === 'script' || data.type === 'file'" :data.sync="data" :uniqueId="uniqueId"
+        <command-option v-if="data.type === 'command' || data.type === 'script' || data.type === 'file' || data.type === 'playbook'" :data.sync="data" :uniqueId="uniqueId"
           :selected="selected"
           :selectNode="selectNode"></command-option>
         <!-- 结束节点 -->

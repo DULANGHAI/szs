@@ -13,7 +13,7 @@
       
       <!-- 当前节点 -->
       <div>
-        <command-option v-if="data.type === 'command' || data.type === 'script' || data.type === 'file'" :data.sync="data" :uniqueId="uniqueId"></command-option>
+        <command-option v-if="data.type === 'command' || data.type === 'script' || data.type === 'file' || data.type === 'playbook'" :data.sync="data" :uniqueId="uniqueId"></command-option>
         <end-option v-else-if="data.type.indexOf('end_') === 0"
           :data.sync="data"
           :uniqueId="uniqueId"></end-option>
