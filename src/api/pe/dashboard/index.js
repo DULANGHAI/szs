@@ -8,10 +8,7 @@ export function getJobCardDataApi(params) {
   return request({
     url: '/v1/statistics/job-records',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -22,10 +19,7 @@ export function getFlowCardDataApi(params) {
   return request({
     url: '/v1/statistics/flow-records',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -36,10 +30,7 @@ export function getJobChartDataApi(params) {
   return request({
     url: '/v1/statistics/job-numbers',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -50,10 +41,7 @@ export function getFlowChartDataApi(params) {
   return request({
     url: '/v1/statistics/flow-numbers',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
 
@@ -64,9 +52,6 @@ export function getHostChartDataApi(params) {
   return request({
     url: '/v1/statistics/hosts-top',
     method: 'get',
-    params: {
-      start_time: dayjs(params.start_time).toJSON(),
-      end_time: dayjs(params.end_time).toJSON()
-    }
+    params: params
   })
 }
