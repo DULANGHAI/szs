@@ -82,7 +82,8 @@ export default {
       taskTypeMap: {
         command: '命令',
         script: '脚本',
-        file: '文件分发'
+        file: '文件分发',
+        playbook: 'playbook'
       },
       systemAndLang: {},
       scriptOptions: [],
