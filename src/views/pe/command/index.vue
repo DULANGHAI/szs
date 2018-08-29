@@ -167,6 +167,12 @@ export default {
         this.selectedIp = ''
         this.log = ''
       }
+    },
+    'form1.name'(val, oldVal) {
+      this.form1.page = 1
+      this.dataJob = []
+      this.selectedJob = {}
+      this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
     }
   },
   created() {
