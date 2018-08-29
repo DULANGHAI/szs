@@ -91,8 +91,6 @@
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" :formatter="formatterEnable"></el-table-column>
-          <el-table-column prop="frequency" label="执行次数"></el-table-column>
-          <el-table-column prop="success_rate" label="成功率"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.status === 1">编辑</el-button>
