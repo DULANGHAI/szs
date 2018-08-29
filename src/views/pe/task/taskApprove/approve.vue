@@ -58,7 +58,7 @@
               <el-form-item label="目标系统">
                 <div>{{form.target_system}}</div>
               </el-form-item>
-              <el-form-item label="语言" v-if="form.type !== 'file'">
+              <el-form-item label="语言" v-if="form.type !== 'file' && form.type !== 'playbook'">
                 <div>{{form.language}}</div>
               </el-form-item>
               <!-- 命令 -->
@@ -75,9 +75,16 @@
                   <el-button type="text" size="small">查看脚本</el-button>
                 </el-form-item>
                 <el-form-item label="脚本变量">
-                  <div v-if="form.language !== 'playbook'">{{form.script_parameter}}</div>
+                  <div>{{form.script_parameter}}</div>
                 </el-form-item>
-                <script-parame v-if="form.language === 'playbook'" ref="scriptParame" view="1"></script-parame>
+              </div>
+              <!-- playbook -->
+              <div v-if="form.type === 'playbook'">
+                <el-form-item label="playbook">
+                  <div>{{form.script.name}}</div>
+                </el-form-item>
+                <el-form-item label="变量"></el-form-item>
+                <script-parame ref="scriptParame" view="1"></script-parame>
               </div>
 
               <div v-if="form.type !== 'file'">
@@ -130,7 +137,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="提交时间">
-                    <div>{{$dayjs(form.created_at).format('YYYY-MM-DD HH:mm:ss')}}</div>
+                    <div>{{form.created_at}}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -191,6 +198,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import ScriptParame from '@/views/pe/task/taskList/components/ScriptParame'
+import PlaybookModel from '@/views/pe/task/taskList/components/PlaybookModel'
 
 import { getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 import { getLanguageApi, getAllScriptApi, getTaskDataApi, submitApproveApi } from '@/api/pe/taskManage/taskApprove'
@@ -201,7 +209,8 @@ export default {
     Breadcrumb,
     RiskLevel,
     ScriptOption,
-    ScriptParame
+    ScriptParame,
+    PlaybookModel
   },
   data() {
     return {
@@ -252,6 +261,8 @@ export default {
             // 如果是脚本任务还需再请求一些接口
             if (res[0].type === 'script') {
               this.doWhenScript()
+            } else if (res[0].type === 'playbook') {
+              this.doWhenPlaybook()
             }
           })
           this.loading = false
@@ -288,18 +299,22 @@ export default {
           this.selectedVersion = this.computeSelectedVersion(res1)
         })
       })
-      // 如果选择的是playbook
-      if (this.form.language === 'playbook') {
-        const data = JSON.parse(this.form.script_parameter)
-        const temp = []
-        Object.keys(data).forEach(keyName => {
-          temp.push({
-            key: keyName,
-            value: data[keyName]
-          })
+    },
+    /**
+     * 当查看、编辑遇到playbook时还需处理
+     */
+    doWhenPlaybook() {
+      this.form.script = JSON.parse(this.form.script)
+      // 参数处理
+      const data = JSON.parse(this.form.script_parameter)
+      const temp = []
+      Object.keys(data).forEach(keyName => {
+        temp.push({
+          key: keyName,
+          value: data[keyName]
         })
-        this.$refs.scriptParame.setData(temp)
-      }
+      })
+      this.$refs.scriptParame.setData(temp)
     },
     getLanguageId(val) {
       let result = ''

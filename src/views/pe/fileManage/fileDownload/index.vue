@@ -12,7 +12,7 @@
         <el-form :model="form" :inline="true" ref="ruleForm" size="small">
           <el-form-item label="目标IP" prop="target_ip"
             :rules="[
-              { required: true, message: '目标IP不能为空' }
+              { required: true, message: '目标IP不能为空', trigger: ['blur', 'change'] }
             ]">
             <div style="width: 200px;">
               <treeselect v-model="form.target_ip"
@@ -20,14 +20,14 @@
                 :multiple="false" 
                 :clearable="false"
                 :options="options"
-                @input="ipChange"
                 placeholder="请选择" />
             </div>
           </el-form-item>
-          <el-form-item label="路径">
-            <el-input>
-              <i class="el-input__icon" slot="prefix">～</i>
-            </el-input>
+          <el-form-item label="路径" prop="path"
+            :rules="[
+              { required: true, message: '路径不能为空', trigger: ['blur', 'change'] }
+            ]">
+            <el-input v-model="form.path"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="getListData">查询</el-button>

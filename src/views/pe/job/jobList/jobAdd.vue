@@ -121,7 +121,7 @@
           <!-- 命令类型 -->
           <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
           <!-- 脚本类型 -->
-          <script-show v-if="selected.type === 'script'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
+          <script-show v-if="selected.type === 'script' || selected.type === 'playbook'" :view="view" :data.sync="selected" :key="uniqueId"></script-show>
           <!-- 文件分发类型 -->
           <file-show v-if="selected.type === 'file'" :view="view" :data.sync="selected" :key="uniqueId"></file-show>
         </div>
@@ -242,7 +242,8 @@ export default {
     addDisable() {
       if (this.selected.id === undefined && this.scheduling.id !== undefined ||
         this.form.system_type === '' ||
-        this.view) {
+        this.view ||
+        this.scheduling.type === 'playbook') {
         return true
       } else {
         return false
@@ -253,7 +254,8 @@ export default {
         if (this.selected.id === undefined ||
         (this.selected.next && this.selected.next.length !== 0) ||
         (this.selected.type.indexOf('end_') === 0) ||
-        this.view) {
+        this.view ||
+        this.scheduling.type === 'playbook') {
           return true
         } else {
           return false
@@ -350,6 +352,12 @@ export default {
       return scheduling
     },
     addNode(item) {
+      // 添加的任务为playbook时，只能有playbook一个任务，也不要结束节点
+      if (item.type === 'playbook' && this.scheduling.id) {
+        this.$message.error('不能添加playbook类型任务')
+        return
+      }
+
       item.timestr = +new Date()
       item.parentstr = this.selected.timestr
       if (this.scheduling.id === undefined) {
@@ -414,20 +422,23 @@ export default {
     openEndModel() {
       this.showEndModel = true
     },
-    // 作业的校验，1.必须有值；2.每个分支的最后一个节点必须要有结束节点
+    // 作业的校验，1.必须有值；2.每个分支的最后一个节点必须要有结束节点 3.playbook 不能有结束节点
     jobValidateFun() {
       // 1.看值是否为空
       if (!this.scheduling.type) {
         this.$message.warning('请编排作业')
         return false
       }
-      // 2.每个分支的最后一个节点必须要有结束节点
-      // 方法： 先找出next.length === 0 的节点，判断该节点的type.indexOf('end') === 0
-      const nodeArr = this.findNoNextNode(this.scheduling)
-      if (nodeArr.length > 0) {
-        this.$message.warning('作业必须要以结束节点结束')
-        return false
+      // 2.每个分支的最后一个节点必须要有结束节点，但playbook 不能有结束节点,不校验这个
+      // 方法：先找出next.length === 0 的节点，判断该节点的type.indexOf('end') === 0
+      if (this.scheduling.type !== 'playbook') {
+        const nodeArr = this.findNoNextNode(this.scheduling)
+        if (nodeArr.length > 0) {
+          this.$message.warning('作业必须要以结束节点结束')
+          return false
+        }
       }
+
       return true
     },
     findNoNextNode(temp) {

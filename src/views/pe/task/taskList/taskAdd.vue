@@ -17,10 +17,11 @@
           <div v-if="view">{{form.description}}</div>
         </el-form-item>
         <el-form-item label="任务类型" prop="type">
-          <el-radio-group v-if="!view" v-model="form.type" @change="systemChange">
+          <el-radio-group v-if="!view" v-model="form.type" @change="typeChange">
             <el-radio label="command">命令</el-radio>
             <el-radio label="script">脚本</el-radio>
             <el-radio label="file">文件分发</el-radio>
+            <el-radio label="playbook">playbook</el-radio>
           </el-radio-group>
           <div v-if="view">{{form.type}}</div>
         </el-form-item>
@@ -32,7 +33,7 @@
             </el-select>
             <div v-if="view">{{form.target_system}}</div>
           </el-form-item>
-          <el-form-item label="语言" prop="language" label-width="50px" style="margin-left: 40px;" v-if="form.type !== 'file'">
+          <el-form-item label="语言" prop="language" label-width="50px" style="margin-left: 40px;" v-if="form.type !== 'file' && form.type !== 'playbook'">
             <el-select v-if="!view" v-model="form.language" placeholder="请选择" :disabled="!form.target_system" @change="languageChange">
               <el-option v-for="(item, index) in systemAndLang[form.target_system]" :key="index" :label="item.name" :value="item.name"></el-option>
             </el-select>
@@ -72,10 +73,9 @@
             <el-button type="text" size="small" @click="handleViewScript">查看脚本</el-button>
           </el-form-item>
           <el-form-item label="脚本变量" key="script_parameter">
-            <el-input v-if="!view && form.language !== 'playbook'" v-model="form.script_parameter"></el-input>
-            <div v-if="view && form.language !== 'playbook'">{{form.script_parameter}}</div>
+            <el-input v-if="!view" v-model="form.script_parameter"></el-input>
+            <div v-if="view">{{form.script_parameter}}</div>
           </el-form-item>
-          <script-parame v-if="form.language === 'playbook'" ref="scriptParame" :view="view"></script-parame>
         </div>
         <!-- 文件分发 -->
         <div v-if="form.type === 'file'">
@@ -94,6 +94,15 @@
           <el-form-item label="文件替换" prop="is_replace" key="is_replace">
             <el-switch v-model="form.is_replace" :disabled="view === '1'"></el-switch>
           </el-form-item>
+        </div>
+        <!-- playbook -->
+        <div v-if="form.type === 'playbook'">
+          <el-form-item label="playbook">
+            <el-input v-if="!view" v-model="form.script.name" @focus="openFile" readonly placeholder="请选择"></el-input>
+            <div v-if="view">{{form.script.name}}</div>
+          </el-form-item>
+          <el-form-item label="变量"></el-form-item>
+          <script-parame ref="scriptParame" :view="view"></script-parame>
         </div>
 
         <div v-if="form.type !== 'file'">
@@ -137,6 +146,8 @@
 
     <!-- 查看脚本 -->
     <view-script ref="viewScript"></view-script>
+    <!-- 文件选择model -->
+    <playbook-model ref="playbookModel" :system="form.target_system" :fileOk="fileOk"></playbook-model>
   </div>
 </template>
 
@@ -147,6 +158,7 @@ import ScriptOption from '@/components/ScriptOption'
 import FileSelect from './components/FileSelect'
 import ViewScript from './components/ViewScript'
 import ScriptParame from './components/ScriptParame'
+import PlaybookModel from './components/PlaybookModel'
 
 import { getLanguageApi, getTaskRiskApi, createTaskApi, getTaskApi, upadateTaskApi, getAllScriptApi, getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 
@@ -158,7 +170,8 @@ export default {
     ScriptOption,
     FileSelect,
     ViewScript,
-    ScriptParame
+    ScriptParame,
+    PlaybookModel
   },
   data() {
     return {
@@ -188,7 +201,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入任务名称', trigger: ['blur', 'change'] }
+          { required: true, message: '请输入任务名称', trigger: ['blur', 'change'] },
+          { pattern: /^[^\u4e00-\u9fa5]+$/, message: '任务名称不能包含中文', trigger: ['blur', 'change'] }
         ],
         description: [
           { required: true, message: '请输入备注', trigger: ['blur', 'change'] }
@@ -260,6 +274,8 @@ export default {
               this.doWhenScript()
             } else if (res[0].type === 'file') { // 处理文件分发任务
               this.doWhenFile()
+            } else if (res[0].type === 'playbook') {
+              this.doWhenPlaybook()
             }
           })
           this.loading = false
@@ -295,18 +311,6 @@ export default {
           this.selectedVersion = this.computeSelectedVersion(res1)
         })
       })
-      // 如果选择的是playbook
-      if (this.form.language === 'playbook') {
-        const data = JSON.parse(this.form.script_parameter)
-        const temp = []
-        Object.keys(data).forEach(keyName => {
-          temp.push({
-            key: keyName,
-            value: data[keyName]
-          })
-        })
-        this.$refs.scriptParame.setData(temp)
-      }
     },
     /**
      * 当查看、编辑遇到文件分发任务时还需处理
@@ -314,6 +318,22 @@ export default {
     doWhenFile() {
       const data = JSON.parse(this.form.file_selection)
       this.$refs.fileSelect.setData(data)
+    },
+    /**
+     * 当查看、编辑遇到playbook时还需处理
+     */
+    doWhenPlaybook() {
+      this.form.script = JSON.parse(this.form.script)
+      // 参数处理
+      const data = JSON.parse(this.form.script_parameter)
+      const temp = []
+      Object.keys(data).forEach(keyName => {
+        temp.push({
+          key: keyName,
+          value: data[keyName]
+        })
+      })
+      this.$refs.scriptParame.setData(temp)
     },
     computeSelectedScript(res) {
       let result = {}
@@ -345,6 +365,22 @@ export default {
         this.form.risk_level = res.risk_level
         this.form.risk_statement = res.risk_statement
       })
+    },
+    typeChange() {
+      this.form.command = ''
+
+      this.form.script = ''
+      this.form.script_parameter = ''
+      this.form.script_version = ''
+
+      this.form.file_selection = ''
+      this.form.file_owner = ''
+      this.form.file_permission = ''
+      this.form.is_replace = false
+
+      this.form.time_out = 1
+      this.form.risk_level = 0
+      this.form.risk_statement = '风险说明自动填写评估详情，用户不能修改'
     },
     systemChange() {
       // this.form.language = ''
@@ -411,15 +447,10 @@ export default {
             return
           }
         })
-      } else if (this.form.type === 'script' && this.form.language === 'playbook') {
-        this.$refs.scriptParame.$refs.selectForm.validate((valid) => {
-          if (valid) {
-            this.form.script_parameter = JSON.stringify(this.$refs.scriptParame.getData())
-            this.mainValide()
-          } else {
-            return
-          }
-        })
+      } else if (this.form.type === 'playbook') {
+        this.form.script = JSON.stringify(this.form.script)
+        this.form.script_parameter = JSON.stringify(this.$refs.scriptParame.getData())
+        this.mainValide()
       } else {
         this.mainValide()
       }
@@ -427,7 +458,7 @@ export default {
     mainValide() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (this.form.type !== 'file' && this.form.risk_level === 0) {
+          if (this.form.type !== 'file' && this.form.type !== 'playbook' && this.form.risk_level === 0) {
             this.$message.info('等待风险等级返回，稍后提交')
             return
           }
@@ -438,6 +469,8 @@ export default {
                   path: `/pe/taskManage/taskList`
                 })
               }
+            }).catch(() => {
+              this.form.script = JSON.parse(this.form.script)
             })
           } else {
             createTaskApi(this.form).then(res => {
@@ -446,6 +479,8 @@ export default {
                   path: `/pe/taskManage/taskList`
                 })
               }
+            }).catch(() => {
+              this.form.script = JSON.parse(this.form.script)
             })
           }
         }
@@ -478,6 +513,18 @@ export default {
         branch: this.selectedVersion.commit_sha
       })
       this.$refs.viewScript.showModel()
+    },
+    openFile() {
+      if (!this.view) {
+        if (!this.form.target_system) {
+          this.$message.error('请先选择系统')
+          return
+        }
+        this.$refs.playbookModel.showMoel()
+      }
+    },
+    fileOk(data) {
+      this.form.script = data
     }
   }
 }
