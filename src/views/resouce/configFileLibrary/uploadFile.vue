@@ -110,7 +110,7 @@
       },
       // 上传文件大小
       beforeAvatarUpload(file) {
-        const isLt2M = file.size / 1024 / 1024 < 2
+        const isLt2M = file.size / 1024 / 1024 < 500
         this.beforeUpload = true
         if (!isLt2M) {
           this.beforeUpload = false
