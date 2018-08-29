@@ -39,7 +39,7 @@
           <el-col :span="6">
             <el-form-item label="创建人">
               <el-select v-model="form.creator" placeholder="请选择">
-                <el-option v-for="(item, index) in creator_arr" :key="index" :label="item.name" :value="item.value"></el-option>
+                <el-option v-for="(item, index) in creator_arr" :key="index" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -121,7 +121,7 @@ import CopyModel from './components/CopyModel'
 
 import ScriptOption from '@/components/ScriptOption'
 
-import { getJobListApi, getFlowListApi, changeFlowStatusApi, deleteFlowApi } from '@/api/pe/flowManage/flowList'
+import { getCreatorApi, getJobListApi, getFlowListApi, changeFlowStatusApi, deleteFlowApi } from '@/api/pe/flowManage/flowList'
 
 export default {
   components: {
@@ -196,9 +196,10 @@ export default {
   },
   created() {
     this.tableLoading = true
-    Promise.all([getFlowListApi(this.form)]).then(res => {
+    Promise.all([getFlowListApi(this.form), getCreatorApi()]).then(res => {
       this.data = res[0].items
       this.total = res[0].total
+      this.creator_arr = res[1].creator
       this.tableLoading = false
     }).catch(() => {
       this.tableLoading = false

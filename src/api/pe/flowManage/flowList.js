@@ -12,6 +12,17 @@ export function getLanguageApi() {
 }
 
 /**
+ * 获取流程创建人
+ * @param {Object} params
+ */
+export function getCreatorApi() {
+  return request({
+    url: '/v1/processes/creator/',
+    method: 'get'
+  })
+}
+
+/**
  * 作业列表
  * @param {Object} params
  */
