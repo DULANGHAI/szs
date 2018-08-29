@@ -300,7 +300,7 @@ export default {
           this.flowCard = res[1]
           this.chartData2.rows = this.handleChartData1(res[2])
           this.chartData1.rows = this.handleChartData1(res[3])
-          this.chartData3.rows = this.handleChartData3(res[4])
+          this.chartData3.rows = this.handleChartData3(res[4].tops)
           this.checkCard = {
             normal_count: res[4].normal_count,
             abnormal_count: res[4].abnormal_count
@@ -334,7 +334,7 @@ export default {
             this.flowCard = res[1]
             this.chartData2.rows = this.handleChartData1(res[2])
             this.chartData1.rows = this.handleChartData1(res[3])
-            this.chartData3.rows = this.handleChartData3(res[4])
+            this.chartData3.rows = this.handleChartData3(res[4].tops)
             this.checkCard = {
               normal_count: res[4].normal_count,
               abnormal_count: res[4].abnormal_count
