@@ -54,7 +54,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="创建者">
-              <el-select v-model="creator" multiple placeholder="请选择">
+              <el-select v-model="form.creator" placeholder="请选择">
                 <el-option v-for="name in creaters" :key="name" :label="name" :value="name"></el-option>
               </el-select>
             </el-form-item>
@@ -170,7 +170,6 @@ export default {
       data: [],
       total: 0,
       creaters: [],
-      creator: [], // 选择的创建者Array
       systemAndLang: {},
       multipleSelection: [],
       multipleStart: true,
@@ -206,9 +205,6 @@ export default {
         this.multipleStop = true
         this.multipleDelete = true
       }
-    },
-    creator(arr) {
-      this.form.creator = arr.join(',')
     }
   },
   created() {
@@ -312,7 +308,6 @@ export default {
         page: 1,
         per_page: 10
       }
-      this.creator = []
       this.multipleSelection = []
       this.search()
     },
