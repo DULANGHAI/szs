@@ -149,10 +149,12 @@ export default {
         timed_expression: this.data.timed_expression
       }
       this.$nextTick(() => {
-        if (this.data.timed_config === 'check') {
-          this.$refs.chooseTimed.setExpress(this.data.timed_expression)
-        } else {
-          this.$refs.customTimed.setExpress(this.data.timed_expression)
+        if (this.data.timed_type === 'cycle') {
+          if (this.data.timed_config === 'check') {
+            this.$refs.chooseTimed.setExpress(this.data.timed_expression)
+          } else {
+            this.$refs.customTimed.setExpress(this.data.timed_expression)
+          }
         }
       })
     },
