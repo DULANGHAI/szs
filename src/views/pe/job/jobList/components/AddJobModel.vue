@@ -6,6 +6,7 @@
           <el-radio label="command">命令</el-radio>
           <el-radio label="script">脚本</el-radio>
           <el-radio label="file">文件分发</el-radio>
+          <el-radio label="playbook">playbook</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="选择作业">
