@@ -20,7 +20,12 @@
       <el-row>
         <el-col :span="24" style="padding-bottom: 15px;">
           <div class="abh-left">状态:</div>
-          <div class="abh-right">{{ form.instance_status }}</div>
+          <div class="abh-right">
+            <span v-if="form.instance_status === 1">新建</span>
+            <span v-else-if="form.instance_status === 2" style="color:#FAAD14">已修改</span>
+            <span v-else-if="form.instance_status === 3" style="color:#52C41A">已发布</span>
+            <span v-else-if="form.instance_status === 4" style="color:#F5222D">已下线</span>
+          </div>
         </el-col>
       </el-row>
       <el-row>

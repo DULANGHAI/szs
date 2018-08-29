@@ -44,7 +44,7 @@
             <el-col :span="6">
               <el-form-item label="版本">
                 <el-autocomplete
-                  v-model="form.verion"
+                  v-model="form.version"
                   :fetch-suggestions="versionSearch"
                   placeholder="请输入版本"
                 ></el-autocomplete>
