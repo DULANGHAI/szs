@@ -346,7 +346,7 @@ export default {
       getApplicationSearch(params).then(response => {
         for (const i of response) {
           list.push({
-            'value': i.name
+            'value': i.instance_name
           })
         }
         cb(this.unique(list))
