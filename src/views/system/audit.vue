@@ -17,6 +17,7 @@
               <el-date-picker
                 v-model="queryForm.datatime"
                 type="daterange"
+                value-format="yyyy-MM-dd"
                 style="width:100%"
                 range-separator="至"
                 start-placeholder="开始日期"
