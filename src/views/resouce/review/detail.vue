@@ -189,7 +189,7 @@
               <el-table-column
                 prop="created_at"
                 label="更新时间"
-                :formatter="formatterTime"
+                :formatter="formatterTimeUpdate"
                 show-overflow-tooltip>
               </el-table-column>
             </el-table>
@@ -380,6 +380,9 @@ export default {
     },
     formatterTime(row) {
       return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatterTimeUpdate(row) {
+      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
     doSubmit() {
       this.$refs.ruleForm.validate((valid) => {
