@@ -103,7 +103,8 @@
         empty-text="暂无数据"
         v-loading.body="listLoading"
         :data="tableData">
-        <el-table-column prop="created_at" label="时间" :formatter="formatterTime"></el-table-column>
+        <el-table-column prop="created_at" width="160px" label="时间" :formatter="formatterTime"></el-table-column>
+        <el-table-column prop="user" label="用户"></el-table-column>
         <el-table-column prop="source_ip" label="源IP"></el-table-column>
         <el-table-column label="资源ID">
           <template slot-scope="scope">
