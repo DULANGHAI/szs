@@ -128,11 +128,12 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import { mapGetters } from 'vuex'
 import echarts from 'echarts'
+import dayjs from 'dayjs'
 
 import { getJobCardDataApi, getFlowCardDataApi, getFlowChartDataApi, getJobChartDataApi, getHostChartDataApi } from '@/api/pe/dashboard/index'
 
-const default_start_time = ''
-const default_end_time = ''
+const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD')
+const default_end_time = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
 
 export default {
   components: {
