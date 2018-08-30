@@ -30,7 +30,7 @@
         <!-- <el-table-column prop="name" label="项目名"></el-table-column> -->
         <el-table-column prop="job_type" label="类型" :formatter="formatterType"></el-table-column>
         <el-table-column prop="creator" label="执行人"></el-table-column>
-        <el-table-column prop="execution_type" label="作业类型" :formatter="formatterExecutionType"></el-table-column>
+        <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
         <el-table-column prop="execution_status" label="状态" :formatter="formatterExecutionStatus"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
         <el-table-column prop="start_time" label="开始时间" width="160px"></el-table-column>
@@ -65,9 +65,11 @@ export default {
     TreeTable
   },
   data() {
-    this.execution_type_map = {
-      timed: '定时',
-      cycle: '周期'
+    this.job_type_map = {
+      ordinary: '普通作业',
+      update: '应用更新&发布',
+      quit: '应用下线',
+      inspection: '日常检查'
     }
     return {
       daterange: '',
@@ -147,8 +149,8 @@ export default {
     handlePageChange(val) {
       this.getListData(val)
     },
-    formatterExecutionType(row) {
-      return this.execution_type_map[row.execution_type]
+    formatterJobType(row) {
+      return this.job_type_map[row.job_type]
     },
     formatterType(row) {
       if (row._level === 1) {
