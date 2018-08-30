@@ -68,11 +68,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="状态">
-              <el-autocomplete
-                  v-model="queryForm.status"
-                  :fetch-suggestions="statusAutoSearch"
-                  @select="handleSelect"
-                ></el-autocomplete>
+              <el-input v-model="queryForm.status"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -142,7 +138,7 @@
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
 import common from './common'
-import { UserSearch, Resources, getAudit, searchStatus } from '@/api/systemManage/system.js'
+import { UserSearch, Resources, getAudit } from '@/api/systemManage/system.js'
 import { Message } from 'element-ui'
 
 var queryFormData = {
@@ -198,26 +194,6 @@ export default {
       this.queryForm = JSON.parse(JSON.stringify(queryFormData))
       this.getList()
     },
-    statusAutoSearch(queryString, cb) {
-      const params = {
-        'status': queryString
-      }
-      var list = []
-      searchStatus(params).then(response => {
-        for (const i of response) {
-          list.push({
-            'value': i.status
-          })
-        }
-        cb(this.unique(list))
-      }).catch(error => {
-        Message.error(error)
-      })
-    },
-    unique(arr) {
-      const res = new Map()
-      return arr.filter((arr) => !res.has(arr.value) && res.set(arr.value, 1))
-    },
     getList() {
       var searchParams = {
         'page': this.currentPage,
@@ -270,9 +246,6 @@ export default {
       this.currentPage = val
       this.getList()
       // console.log(`当前页: ${val}`)
-    },
-    handleSelect(item) {
-      console.log(item)
     }
   }
 }
