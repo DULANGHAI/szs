@@ -142,7 +142,8 @@ export default {
       ordinary: '普通作业',
       update: '应用更新&发布',
       quit: '应用下线',
-      inspection: '日常检查'
+      inspection: '日常检查',
+      distribution: '文件分发'
     }
     return {
       loading: false,

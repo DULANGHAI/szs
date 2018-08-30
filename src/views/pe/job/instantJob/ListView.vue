@@ -5,9 +5,9 @@
       <div class="left">
         <!-- 筛选 -->
         <div class="job-filter">
-          <el-input placeholder="可搜索作业名"
+          <el-input placeholder="请输入"
             suffix-icon="el-icon-search"
-            v-model="form1.name">
+            v-model="form1.fq">
           </el-input>
           <el-dropdown>
             <span class="el-dropdown-link">
@@ -126,6 +126,7 @@ export default {
         creator: '',
         start_time: '',
         end_time: '',
+        fq: '',
         page: 1,
         per_page: 10
       },
@@ -144,7 +145,8 @@ export default {
     }
   },
   watch: {
-    'form1.name'(val, oldVal) {
+    'form1.fq'(val, oldVal) {
+      this.form1.fq = val
       this.form1.page = 1
       this.dataJob = []
       this.selectedJob = {}

@@ -38,7 +38,7 @@
             <!-- 命令类型 -->
             <command-show v-if="selected.type === 'command'" :data="selected"></command-show>
             <!-- 脚本类型 -->
-            <script-show v-if="selected.type === 'script'" :data.sync="selected" :key="uniqueId"></script-show>
+            <script-show v-if="selected.type === 'script' || selected.type === 'playbook'" :data.sync="selected" :key="uniqueId"></script-show>
             <!-- 文件分发类型 -->
           <file-show v-if="selected.type === 'file'" :view="view" :data.sync="selected" :key="uniqueId"></file-show>
           </div>

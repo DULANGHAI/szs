@@ -30,6 +30,7 @@ export function getJobListApi(params) {
     url: '/v1/jobs/enable/',
     method: 'get',
     params: {
+      fq: params.fq || null,
       system_type: params.system_type || null,
       page: params.page,
       per_page: params.per_page
