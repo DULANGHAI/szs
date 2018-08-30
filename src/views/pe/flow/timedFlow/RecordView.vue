@@ -27,15 +27,14 @@
     <div class="table" v-loading="loading">
       <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
         <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
-        <el-table-column prop="name" label="项目名"></el-table-column>
+        <!-- <el-table-column prop="name" label="项目名"></el-table-column> -->
         <el-table-column prop="job_type" label="类型" :formatter="formatterType"></el-table-column>
         <el-table-column prop="executor" label="执行人"></el-table-column>
         <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
-        <el-table-column prop="" label="定时配置"></el-table-column>
-        <el-table-column prop="" label="状态"></el-table-column>
+        <el-table-column prop="execution_status" label="状态" :formatter="formatterExecutionStatus"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
-        <el-table-column prop="start_time" label="开始时间"></el-table-column>
-        <el-table-column prop="end_time" label="结束时间"></el-table-column>
+        <el-table-column prop="start_time" label="开始时间" width="160px"></el-table-column>
+        <el-table-column prop="end_time" label="结束时间" width="160px"></el-table-column>
         <el-table-column prop="time" label="执行耗时"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
@@ -155,6 +154,17 @@ export default {
         return '人工流程'
       } else {
         return '作业'
+      }
+    },
+    formatterExecutionStatus(row) {
+      if (row.execution_status === 1) {
+        return '执行中'
+      } else if (row.execution_status === 2) {
+        return '暂停'
+      } else if (row.execution_status === 3) {
+        return '停止'
+      } else if (row.execution_status === 4) {
+        return '完成'
       }
     },
     startFlow(id) {
