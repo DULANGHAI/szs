@@ -67,7 +67,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="time" label="执行耗时"></el-table-column>
-          <el-table-column prop="end_time" label="结束时间" :formatter="formatterTime2"></el-table-column>
+          <el-table-column prop="end_time" label="结束时间" width="160px" :formatter="formatterTime2"></el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
           <el-table-column prop="result" label="结果"></el-table-column>
         </el-table>
@@ -159,10 +159,18 @@ export default {
       return this.job_type_map[row.job_type]
     },
     formatterTime1(row) {
-      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+      if (row.created_at) {
+        return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     formatterTime2(row) {
-      return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      if (row.end_time) {
+        return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     // formatterIp(row) {
     //   const data = row.target_ip.split(',')

@@ -294,6 +294,7 @@ export default {
 
     },
     cancel() {
+      this.$refs.form.resetFields()
       this.form = {
         job_id: '',
         name: '',
@@ -320,10 +321,8 @@ export default {
       this.jobArr = []
       this.selectJob = {}
 
-      this.$refs.chooseTimed.reset()
-      this.$refs.customTimed.reset()
-
-      this.$refs.form.resetFields()
+      this.$refs.chooseTimed && this.$refs.chooseTimed.reset()
+      this.$refs.customTimed && this.$refs.customTimed.reset()
 
       this.show = false
     },
@@ -367,6 +366,7 @@ export default {
               data.timed_expression = ''
             }
             createJobApi(data).then(res => {
+              this.$message.success('创建成功')
               this.refresh(1)
               this.cancel()
             })
@@ -388,6 +388,7 @@ export default {
               data.timed_expression = ''
             }
             updateJobApi(this.data.id, data).then(res => {
+              this.$message.success('更改成功')
               this.refresh()
               this.cancel()
             })

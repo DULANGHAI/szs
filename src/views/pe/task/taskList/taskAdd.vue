@@ -97,7 +97,7 @@
         </div>
         <!-- playbook -->
         <div v-if="form.type === 'playbook'">
-          <el-form-item label="playbook">
+          <el-form-item label="playbook" prop="script">
             <el-input v-if="!view" v-model="form.script.name" @focus="openFile" readonly placeholder="请选择"></el-input>
             <div v-if="view">{{form.script.name}}</div>
           </el-form-item>
