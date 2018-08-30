@@ -20,7 +20,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="提交时间">
-                    <div>{{$dayjs(form.created_at).format('YYYY-MM-DD HH:mm:ss')}}</div>
+                    <div>{{form.created_at ? $dayjs(form.created_at).format('YYYY-MM-DD HH:mm:ss') : ''}}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
