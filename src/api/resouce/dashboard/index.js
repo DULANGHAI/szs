@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import dayjs from 'dayjs'
 
 /**
  * 获取主机数
