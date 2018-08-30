@@ -84,12 +84,12 @@
           <el-row v-for="(item, index) in form.parametersArray" :key="index">
             <el-col :span="6">
               <el-form-item label="字段">
-                <el-input v-model="item.name" auto-complete="off" placeholder="请输入"></el-input>
+                <el-input v-model="item.name" :key="index" auto-complete="off" placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="值">
-                <el-input v-model="item.value" auto-complete="off" placeholder="请输入"></el-input>
+                <el-input v-model="item.value" :key="index" auto-complete="off" placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="2">
@@ -245,15 +245,17 @@ export default {
     getAppDetail() {
       this.isEdit = true
       getApplicationDetail(this.$route.params.id).then(response => {
-        this.form = response
-        this.appName = {
-          value: response.name
-        }
         this.form = {
-          ...this.form,
-          name: response.name
+          'instance_name': response.instance_name,
+          'instance_description': response.instance_description,
+          'name': response.name,
+          'type': response.type,
+          'language': response.language,
+          'version': response.version,
+          'parametersArray': response.parameters,
+          'sw_package_repository': response.sw_package_repository,
+          'cfg_file_repository': response.cfg_file_repository
         }
-        this.form.parametersArray = response.parameters
       }).catch(error => {
         Message.error(error)
       })
@@ -322,6 +324,7 @@ export default {
     },
     // 添加变量
     addParameters() {
+      console.log(this.form.parametersArray)
       this.form.parametersArray.push({
         'name': '',
         'value': ''
