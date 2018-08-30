@@ -69,14 +69,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" label="执行时间" width="160px"></el-table-column>
+        <el-table-column prop="created_at" label="执行时间" width="160px" :formatter="formatterTime1"></el-table-column>
         <el-table-column prop="creator" label="执行人"></el-table-column>
         <el-table-column prop="name" label="作业名"></el-table-column>
         <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
         <el-table-column prop="system_type" label="系统类型"></el-table-column>
         <el-table-column prop="target_ip" label="目标IP" width="160px" :formatter="formatterIp" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="time" label="执行耗时"></el-table-column>
-        <el-table-column prop="end_time" label="结束时间"></el-table-column>
+        <el-table-column prop="end_time" label="结束时间" width="160px" :formatter="formatterTime2"></el-table-column>
         <el-table-column prop="status" label="状态"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
@@ -167,6 +167,16 @@ export default {
     },
     formatterJobType(row) {
       return this.job_type_map[row.job_type]
+    },
+    formatterTime1(row) {
+      return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatterTime2(row) {
+      if (row.end_time) {
+        return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     formatterIp(row) {
       return row.target_ip.split(',').toString()

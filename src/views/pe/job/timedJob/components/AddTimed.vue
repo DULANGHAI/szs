@@ -294,6 +294,7 @@ export default {
 
     },
     cancel() {
+      this.$refs.form.resetFields()
       this.form = {
         job_id: '',
         name: '',
@@ -320,10 +321,8 @@ export default {
       this.jobArr = []
       this.selectJob = {}
 
-      this.$refs.chooseTimed.reset()
-      this.$refs.customTimed.reset()
-
-      this.$refs.form.resetFields()
+      this.$refs.chooseTimed && this.$refs.chooseTimed.reset()
+      this.$refs.customTimed && this.$refs.customTimed.reset()
 
       this.show = false
     },
