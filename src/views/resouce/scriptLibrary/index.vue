@@ -93,7 +93,7 @@
             min-width="30%"
             show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goFileDetail(scope.row.id, scope.row.name)">{{ scope.row.name}}</el-button>
+              <el-button type="text" size="small" @click="goFileDetail(scope.row.project_id, scope.row.name)">{{ scope.row.name}}</el-button>
             </template>
           </el-table-column>
           <el-table-column
