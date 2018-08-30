@@ -27,7 +27,7 @@
     <div class="table" v-loading="loading">
       <tree-table :data.sync="data" :expandAll="false" :multipleSelection.sync="multipleSelection">
         <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
-        <el-table-column prop="name" label="项目名"></el-table-column>
+        <!-- <el-table-column prop="name" label="项目名"></el-table-column> -->
         <el-table-column prop="job_type" label="类型" :formatter="formatterType"></el-table-column>
         <el-table-column prop="executor" label="执行人"></el-table-column>
         <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
