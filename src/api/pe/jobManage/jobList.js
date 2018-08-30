@@ -103,3 +103,13 @@ export function getAppListApi() {
     method: 'get'
   })
 }
+
+/**
+ * 获取作业列表里的创建者筛选条件
+ */
+export function getJobCreatorApi() {
+  return request({
+    url: '/v1/jobs/job-creator/',
+    method: 'get'
+  })
+}

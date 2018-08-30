@@ -41,7 +41,7 @@
           <el-col :span="6">
             <el-form-item label="创建人">
               <el-select v-model="form.creator" placeholder="请选择">
-                <el-option v-for="(item, index) in job_creator_arr" :key="index" :label="item.name" :value="item.value"></el-option>
+                <el-option v-for="(item, index) in job_creator_arr" :key="index" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -123,7 +123,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import CopyModel from './components/CopyModel'
 
-import { getLanguageApi, getJobListApi, changeJobStatusApi, deleteJobApi } from '@/api/pe/jobManage/jobList'
+import { getLanguageApi, getJobCreatorApi, getJobListApi, changeJobStatusApi, deleteJobApi } from '@/api/pe/jobManage/jobList'
 
 export default {
   components: {
@@ -197,10 +197,11 @@ export default {
   },
   created() {
     this.loading = true
-    Promise.all([getLanguageApi(), getJobListApi(this.form)]).then(res => {
+    Promise.all([getLanguageApi(), getJobListApi(this.form), getJobCreatorApi()]).then(res => {
       this.systemAndLang = res[0]
       this.data = res[1].items
       this.total = res[1].total
+      this.job_creator_arr = res[2].creator
       this.loading = false
     }).catch(() => {
       this.loading = false
