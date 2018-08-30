@@ -219,7 +219,22 @@ export default {
     search() {
       this.getListData(1)
     },
-    refresh() {},
+    refresh() {
+      this.daterange = ''
+      this.form = {
+        execution_id: '',
+        job_type: '',
+        system_type: '',
+        name: '',
+        execution_type: '',
+        creator: '',
+        start_time: '',
+        end_time: '',
+        page: 1,
+        per_page: 10
+      }
+      this.search()
+    },
     goView(id) {
       this.$router.push({
         path: `/pe/jobManage/recordDetail/${id}`
