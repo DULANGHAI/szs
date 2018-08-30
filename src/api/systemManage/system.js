@@ -279,13 +279,14 @@ export function getPermission(params) {
   })
 }
 /**
- * 权限列表 - 所有
+ * 权限列表 - id的权限
  * @param {Object} params
  */
-export function getPermissionList() {
+export function getPermissionList(params) {
   return request({
     url: '/v1/permissions/',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 /**

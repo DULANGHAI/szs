@@ -9,6 +9,7 @@
         <el-select 
           multiple
           size="small"
+          filterable
           v-model="form.permission_ids">
           <el-option
             v-for="item in permissionList"
@@ -57,7 +58,10 @@
         this.getSelectList()
       },
       getSelectList() {
-        getPermissionList().then(res => {
+        var params = {
+          'role_id': this.$props.id
+        }
+        getPermissionList(params).then(res => {
           this.permissionList = res
         }).catch(error => {
           Message.error(error)
