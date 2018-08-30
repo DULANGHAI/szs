@@ -98,6 +98,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { getsystemMessage, confirmMessage } from '@/api/systemManage/system.js'
+import { Message } from 'element-ui'
 
 const message_type_map = {
   '0': '通知',
@@ -190,22 +191,17 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'success'
-      })
-        .then(() => {
-          confirmMessage(row.id, { status: '0' }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '消息已确认!'
-            })
-            this.getListData()
-          })
-        })
-        .catch(() => {
+      }).then(() => {
+        confirmMessage(row.id, { status: '0' }).then(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: 'success',
+            message: '消息已确认!'
           })
+          this.getListData()
         })
+      }).catch((error) => {
+        Message.error(error)
+      })
     }
   }
 }

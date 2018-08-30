@@ -6,7 +6,7 @@
         个人信息
       </div>
 
-      <div class="container-body-wrap">
+      <div class="person-body">
         <el-form
           ref="form"
           :model="form"
@@ -15,14 +15,14 @@
           label-width="100px"
           label-position="right"
         >
-          <el-form-item label="用户名" prop="userName">
+          <el-form-item label="用户名" prop="username">
             <el-input v-model="form.username" disabled placeholder="输入用户名"></el-input>
           </el-form-item>
-          <el-form-item label="姓名" prop="name">
+          <el-form-item label="姓名" prop="realname">
             <el-input v-model="form.realname" placeholder="输入姓名"></el-input>
           </el-form-item>
           <el-form-item label="所属业务">
-            <el-select v-model="form.business_ids" disabled style="width: 100%" multiple placeholder="请选择">
+            <el-select v-model="form.business_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.id"
@@ -34,14 +34,14 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="form.email" placeholder="输入邮箱"></el-input>
           </el-form-item>
-          <el-form-item label="手机号" prop="phone">
+          <el-form-item label="手机号" prop="telephone">
             <el-input v-model="form.telephone" placeholder="输入手机号"></el-input>
           </el-form-item>
           <el-form-item label="微信号" prop="weixin">
             <el-input v-model="form.wechat" placeholder="输入微信号"></el-input>
           </el-form-item>
           <el-form-item label="角色">
-            <el-select v-model="form.role_ids" disabled style="width: 100%" multiple placeholder="请选择">
+            <el-select v-model="form.role_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.id"
@@ -69,6 +69,7 @@ import { editUserApi, getUserInfo } from '@/api/systemManage/system.js'
 import { Message } from 'element-ui'
 // import {mapActions,mapGetters} from 'vuex'
 import { mapGetters } from 'vuex'
+import { validateEmail, validatePhone } from '@/utils/validate'
 
 var formData = {
   'username': '',
@@ -103,9 +104,15 @@ export default {
         // rePassword: [
         //   { required: true, trigger: 'blur', validator: validatePass }
         // ],
-        username: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
-        telephone: [{ required: true, message: '请输入手机号码', trigger: 'blur' }],
+        realname: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { validator: validateEmail, trigger: 'blur' }
+        ],
+        telephone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { validator: validatePhone, trigger: 'blur' }
+        ],
         wechat: [{ required: true, message: '请输入微信号', trigger: 'blur' }]
       }
     }
@@ -165,5 +172,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
+.person-body{
+  margin: 25px;
+  padding: 25px 25px;
+  border-radius: 4px;
+  background-color: #fff;
+}
 </style>
