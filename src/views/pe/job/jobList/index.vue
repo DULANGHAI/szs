@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="作业类型">
-              <el-select v-model="form.type" placeholder="请选择">
+              <el-select v-model="form.job_type" placeholder="请选择">
                 <el-option v-for="(item, index) in Object.keys(job_type_map)" :key="index" :label="job_type_map[item]" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -143,7 +143,7 @@ export default {
       form: {
         name: '',
         system_type: '',
-        type: '',
+        job_type: '',
         creator: '',
         start_time: '',
         end_time: '',
@@ -254,7 +254,7 @@ export default {
       this.form = {
         name: '',
         system_type: '',
-        type: '',
+        job_type: '',
         creator: '',
         start_time: '',
         end_time: '',
