@@ -208,10 +208,8 @@ export default {
         'status': this.queryForm.status,
         'message': this.queryForm.message
       }
-      this.listLoading = true
       getAudit(searchParams).then(res => {
         this.tableData = res.items
-        this.listLoading = false
         this.totalPage = res.total
       }).catch(error => {
         Message.error(error)
