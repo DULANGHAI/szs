@@ -49,7 +49,7 @@
           <div class="job-filter">
             <el-input placeholder="可搜索作业名"
               suffix-icon="el-icon-search"
-              v-model="form1.name">
+              v-model="form1.ip">
             </el-input>
           </div>
           <!-- 列表 -->
@@ -132,7 +132,7 @@ export default {
         ]
       },
       form1: { // 左侧的作业筛选列表
-        name: '',
+        ip: '',
         page: 1,
         per_page: 10
       },
@@ -168,7 +168,8 @@ export default {
         this.log = ''
       }
     },
-    'form1.name'(val, oldVal) {
+    'form1.ip'(val, oldVal) {
+      this.form1.ip = val
       this.form1.page = 1
       this.dataJob = []
       this.selectedJob = {}

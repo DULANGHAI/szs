@@ -366,6 +366,7 @@ export default {
               data.timed_expression = ''
             }
             createJobApi(data).then(res => {
+              this.$message.success('创建成功')
               this.refresh(1)
               this.cancel()
             })
@@ -387,6 +388,7 @@ export default {
               data.timed_expression = ''
             }
             updateJobApi(this.data.id, data).then(res => {
+              this.$message.success('更改成功')
               this.refresh()
               this.cancel()
             })
