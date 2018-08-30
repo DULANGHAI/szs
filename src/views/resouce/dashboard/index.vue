@@ -137,8 +137,8 @@ import echarts from 'echarts'
 
 import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi, getJobChartDataApi } from '@/api/resouce/dashboard/index'
 
-const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD')
-const default_end_time = dayjs().subtract(1, 'day').endOf('day').format('YYYY-MM-DD')
+const default_start_time = ''
+const default_end_time = ''
 
 export default {
   components: {
@@ -311,7 +311,6 @@ export default {
         })
     },
     handleTimeChange() {
-      console.log(this.datetimerange)
       this.init()
     },
     handleChange(val) {
