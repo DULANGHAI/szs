@@ -24,10 +24,10 @@
           <el-form-item label="所属业务">
             <el-select v-model="form.business_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                v-for="(item, index) in ptions"
+                :key="index"
+                :label="item"
+                :value="item">
               </el-option>
             </el-select>
           </el-form-item>
@@ -75,10 +75,12 @@ var formData = {
   'username': '',
   'realname': '',
   'business_ids': [],
+  'business_names': [],
   'email': '',
   'telephone': '',
   'wechat': '',
   'role_ids': [],
+  'role_names': [],
   'status': false
 }
 export default {
@@ -133,10 +135,12 @@ export default {
           'username': res.username,
           'realname': res.realname,
           'business_ids': res.business_ids,
+          'business_names': res.business_names,
           'email': res.email,
           'telephone': res.telephone,
           'wechat': res.wechat,
           'role_ids': res.role_ids,
+          'role_names': res.role_names,
           'status': res.status !== 0
         }
       }).catch(error => {
@@ -148,10 +152,12 @@ export default {
         'username': this.form.username,
         'realname': this.form.realname,
         'business_ids': this.form.business_ids,
+        'business_names': this.form.business_names,
         'email': this.form.email,
         'telephone': this.form.telephone,
         'wechat': this.form.wechat,
         'role_ids': this.form.role_ids,
+        'role_names': this.form.role_names,
         'status': this.form.status ? 1 : 0
       }
       this.$refs[formName].validate(valid => {
