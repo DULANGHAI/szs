@@ -22,7 +22,7 @@
             <el-input v-model="form.realname" placeholder="输入姓名"></el-input>
           </el-form-item>
           <el-form-item label="所属业务">
-            <el-select v-model="form.business_ids" disabled style="width: 100%" multiple placeholder="请选择">
+            <el-select v-model="form.business_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.id"
@@ -41,7 +41,7 @@
             <el-input v-model="form.wechat" placeholder="输入微信号"></el-input>
           </el-form-item>
           <el-form-item label="角色">
-            <el-select v-model="form.role_ids" disabled style="width: 100%" multiple placeholder="请选择">
+            <el-select v-model="form.role_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.id"

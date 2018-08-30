@@ -103,7 +103,7 @@
           this.fileList = fileList
           Message.success('上传成功！')
         } else {
-          Message.error('上传失败，请重试！')
+          Message.error(response.message)
         }
       },
       // 移除上传文件列表
