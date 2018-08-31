@@ -24,7 +24,7 @@
           <el-form-item label="所属业务">
             <el-select v-model="form.business_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
-                v-for="(item, index) in ptions"
+                v-for="(item, index) in businessOptions"
                 :key="index"
                 :label="item"
                 :value="item">
@@ -43,7 +43,7 @@
           <el-form-item label="角色">
             <el-select v-model="form.role_names" disabled style="width: 100%" multiple placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in roleOptions"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -101,6 +101,8 @@ export default {
     return {
       form: JSON.parse(JSON.stringify(formData)),
       options: [],
+      businessOptions: [],
+      roleOptions: [],
       rules: {
         // password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         // rePassword: [
