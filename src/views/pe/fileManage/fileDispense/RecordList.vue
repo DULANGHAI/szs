@@ -19,9 +19,17 @@
       <el-table-column prop="name" label="作业名"></el-table-column>
       <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
       <el-table-column prop="system_type" label="系统类型"></el-table-column>
-      <el-table-column prop="target_ip" label="目标IP" :formatter="formatterTargetIp"></el-table-column>
+      <el-table-column prop="target_ip" label="目标IP" width="120px">
+        <template slot-scope="scope">
+          <div v-if="scope.row.target_ip">
+            <div v-for="(item, index) in scope.row.target_ip.split(',')" :key="index">
+              {{item}}
+            </div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="time" label="执行耗时"></el-table-column>
-      <el-table-column prop="end_time" label="结束时间" width="160px"></el-table-column>
+      <el-table-column prop="end_time" label="结束时间" width="160px" :formatter="formatterEndTime"></el-table-column>
       <el-table-column prop="status" label="状态"></el-table-column>
       <el-table-column prop="result" label="结果"></el-table-column>
     </el-table>
@@ -90,9 +98,12 @@ export default {
     formatterJobType(row) {
       return this.job_type_map[row.job_type]
     },
-    formatterTargetIp(row) {
-      // return JSON.parse(row.target_ip).host.toString()
-      return row.target_ip
+    formatterEndTime(row) {
+      if (row.end_time) {
+        return this.$dayjs(row.end_time).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     }
   }
 }

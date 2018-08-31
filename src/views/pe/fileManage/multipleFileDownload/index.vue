@@ -10,12 +10,18 @@
       <!-- 筛选 -->
       <div class="toolbar">
         <el-form :model="form" :inline="true" ref="ruleForm" size="small">
-          <el-form-item label="目标IP">
+          <el-form-item label="目标IP" prop="target_ip"
+            :rules="[
+              { required: true, message: '目标IP不能为空', trigger: ['blur', 'change'] }
+            ]">
             <div style="width: 200px;">
               <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" />
             </div>
           </el-form-item>
-          <el-form-item label="路径">
+          <el-form-item label="路径" prop="path"
+            :rules="[
+              { required: true, message: '路径不能为空', trigger: ['blur', 'change'] }
+            ]">
             <el-input v-model="form.path">
               <i class="el-input__icon" slot="prefix">～</i>
             </el-input>
@@ -35,8 +41,8 @@
           :data="data"
           tooltip-effect="dark"
           style="width: 100%">
-          <el-table-column prop="created_at" label="执行时间"></el-table-column>
-          <el-table-column prop="target_ip" label="目标IP">
+          <el-table-column prop="created_at" label="执行时间" width="160px" :formatter="formatterTime"></el-table-column>
+          <el-table-column prop="target_ip" label="目标IP" width="120px">
             <template slot-scope="scope">
               <div v-if="scope.row.target_ip">
                 <div v-for="(item, index) in scope.row.target_ip.split(',')" :key="index">
@@ -47,19 +53,23 @@
           </el-table-column>
           <el-table-column prop="creator" label="创建人"></el-table-column>
           <el-table-column prop="status" label="状态"></el-table-column>
-          <el-table-column prop="success_ip" label="下载成功IP">
+          <el-table-column prop="success_ip" label="下载成功IP" width="120px">
             <template slot-scope="scope">
               <div v-if="scope.row.success_ip">
-                <div v-for="(item, index) in scope.row.success_ip.split(',')" :key="index">
+                <div v-for="(item, index) in scope.row.success_ip.split(',')" :key="index"
+                  class="can-click"
+                  @click="handleViewLog(scope.row.execution_id, item)">
                   {{item}}
                 </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="failed_ip" label="下载失败IP">
+          <el-table-column prop="failed_ip" label="下载失败IP" width="120px">
             <template slot-scope="scope">
               <div v-if="scope.row.failed_ip">
-                <div v-for="(item, index) in scope.row.failed_ip.split(',')" :key="index">
+                <div v-for="(item, index) in scope.row.failed_ip.split(',')" :key="index"
+                  class="can-click"
+                  @click="handleViewLog(scope.row.execution_id, item)">
                   {{item}}
                 </div>
               </div>
@@ -76,6 +86,9 @@
           <el-pagination layout="total,prev, pager, next" :total="total" @current-change="handlePageChange"></el-pagination>
         </div>
       </div>
+
+      <!-- 查看下载日志 -->
+      <view-log ref="viewLog"></view-log>
     </div>
   </div>
 </template>
@@ -84,6 +97,7 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import ViewLog from './components/ViewLog'
 
 import { postDownloadApi, downloadListApi } from '@/api/pe/fileManage/multipleFileDownload'
 import { getIpApi } from '@/api/pe/common/index'
@@ -91,7 +105,8 @@ import { getIpApi } from '@/api/pe/common/index'
 export default {
   components: {
     Breadcrumb,
-    Treeselect
+    Treeselect,
+    ViewLog
   },
   data() {
     return {
@@ -122,19 +137,30 @@ export default {
       })
   },
   methods: {
+    formatterTime(row) {
+      if (row.created_at) {
+        return this.$dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
+    },
     // 创建一个下载
     download() {
-      const path = []
-      path.push(this.form.path)
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          const path = []
+          path.push(this.form.path)
 
-      const data = {
-        target_ip: this.form.target_ip,
-        path: path,
-        system_type: 'linux'
-      }
-      postDownloadApi(data).then(() => {
-        this.$message.success('成功')
-        this.getListData(1)
+          const data = {
+            target_ip: this.form.target_ip,
+            path: path,
+            system_type: 'linux'
+          }
+          postDownloadApi(data).then(() => {
+            this.$message.success('成功')
+            this.getListData(1)
+          })
+        }
       })
     },
     // 重置
@@ -168,8 +194,9 @@ export default {
     realDownload(id) {
       window.open(`/v1/buckets/mul-download/${id}`)
     },
-    formatterTarget(row) {
-
+    // 查看下载记录
+    handleViewLog(execution_id, target_ip) {
+      this.$refs.viewLog.showModel({ execution_id, target_ip })
     }
   }
 }
@@ -203,5 +230,9 @@ export default {
 .pagination {
   display: flex;
   justify-content: flex-end;
+}
+.can-click {
+  cursor: pointer;
+  color: #409EFF;
 }
 </style>

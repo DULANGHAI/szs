@@ -79,7 +79,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="6">
+          <el-col>
             <el-button size="small" type="primary" icon="el-icon-search" class="margl-70" @click="search">查询</el-button>
             <el-button size="small" icon="el-icon-refresh" @click="refresh">重置</el-button>
           </el-col>

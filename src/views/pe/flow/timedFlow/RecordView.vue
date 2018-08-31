@@ -29,7 +29,7 @@
         <!-- <el-table-column prop="name" label="名称" width="130px" :show-overflow-tooltip="true"></el-table-column> -->
         <!-- <el-table-column prop="name" label="项目名"></el-table-column> -->
         <el-table-column prop="job_type" label="类型" :formatter="formatterType"></el-table-column>
-        <el-table-column prop="executor" label="执行人"></el-table-column>
+        <el-table-column prop="creator" label="执行人"></el-table-column>
         <el-table-column prop="job_type" label="作业类型" :formatter="formatterJobType"></el-table-column>
         <el-table-column prop="execution_status" label="状态" :formatter="formatterExecutionStatus"></el-table-column>
         <el-table-column prop="result" label="结果"></el-table-column>
@@ -38,8 +38,10 @@
         <el-table-column prop="time" label="执行耗时"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="startFlow(scope.row.execution_id)">执行</el-button>
-            <el-button type="text" size="small" @click="stopFlow(scope.row.execution_id)">停止</el-button>
+            <div v-if="scope.row._level === 1">
+              <el-button type="text" size="small" @click="startFlow(scope.row.execution_id)" :disabled="scope.row.execution_status !== 2">执行</el-button>
+              <el-button type="text" size="small" @click="stopFlow(scope.row.execution_id)" :disabled="scope.row.execution_status !== 1">停止</el-button>
+            </div>
           </template>
         </el-table-column>
       </tree-table>
@@ -95,7 +97,7 @@ export default {
     init() {
       this.loading = true
       getRecordListApi(this.form).then(res => {
-        this.data = res.items
+        this.data = this.handleData(res.items)
         this.total = res.total
         this.loading = false
       }).catch(() => {
@@ -109,7 +111,7 @@ export default {
         params.page = index
       }
       getRecordListApi(params).then(res => {
-        this.data = res.items
+        this.data = this.handleData(res.items)
         this.total = res.total
         this.loading = false
       }).catch(() => {

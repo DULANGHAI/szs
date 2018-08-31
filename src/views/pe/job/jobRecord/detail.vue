@@ -7,7 +7,7 @@
       {{$route.name}}
     </div>
     <div class="container-body">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="执行路径" name="first">
           <div class="tabs-contents">
             <record-path ref="recordPath"></record-path>
@@ -61,6 +61,13 @@ export default {
       return getLogDetailApi(execution_id, target_ip).then(res => {
         return res.execution_log
       })
+    },
+    handleClick(tab, event) {
+      if (tab.name === 'second') {
+        setTimeout(() => {
+          this.$refs.recordLog.$refs.codemirror.editor.refresh()
+        }, 60)
+      }
     }
   }
 }
