@@ -1,15 +1,17 @@
 <template>
   <el-dialog
-    v-loading="loading"
     title="查看脚本"
     :visible="dialogVisible"
     width="35%"
     class="pb-dialog"
     @close="handleClose"
     @open="handleOpen()">
-    <div v-if="codeFileContent">
-      <codemirror v-model="codeFileContent" ref="myEditor" :options="codeOptions"></codemirror>
+    <div v-loading="loading">
+      <div v-if="codeFileContent">
+        <codemirror v-model="codeFileContent" ref="myEditor" :options="codeOptions"></codemirror>
+      </div>
     </div>
+    
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
     </div>
