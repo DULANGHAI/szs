@@ -26,6 +26,14 @@ export function getRepository() {
   })
 }
 
+// 业务组 头部
+export function getRepositoryHd(id) {
+  return request({
+    url: '/v1/users/' + id + '/businesses',
+    method: 'get'
+  })
+}
+
 // 子组
 export function getRepositoryZizu(id, type) {
   return request({
