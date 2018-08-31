@@ -105,7 +105,7 @@
                 <el-table-column
                   prop="committed_date"
                   label="提交时间"
-                  :formatter="formatterTime"
+                  :formatter="formatterTime2"
                   min-width="20%">
                 </el-table-column>
                 <el-table-column
@@ -329,6 +329,10 @@ export default {
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
     },
+    // 提交时间
+    formatterTime2(row) {
+      return this.$dayjs(row.committed_date).format('YYYY-MM-DD HH:mm:ss')
+    },
     // 全选
     toggleSelection(rows) {
       if (rows) {
@@ -480,7 +484,7 @@ export default {
     },
     // 下载文件
     FileDownload(id) {
-      window.open('/v1/repository/project/' + this.project_id + '/files/download?id=' + id)
+      window.open('/v1/repositories/project/' + this.project_id + '/files/download?id=' + id)
     },
     // 点击文件判断类型进行操作
     isfiletype(type, path) {

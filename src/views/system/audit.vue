@@ -85,7 +85,7 @@
               type="primary"
               icon="el-icon-search"
               class="margl-70"
-              @click.native="getList">查询
+              @click.native="getList(true)">查询
             </el-button>
             <el-button size="small" @click.native="audit" icon="el-icon-printer">导出</el-button>
             <el-button size="small" @click.native="searchReset">重置</el-button>
@@ -194,7 +194,8 @@ export default {
       this.queryForm = JSON.parse(JSON.stringify(queryFormData))
       this.getList()
     },
-    getList() {
+    getList(issearch) {
+      if (issearch) this.currentPage = 1
       var searchParams = {
         'page': this.currentPage,
         'per_page': this.pageSizes || 10,

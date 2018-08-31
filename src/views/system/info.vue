@@ -198,9 +198,9 @@ export default {
             message: '消息已确认!'
           })
           this.getListData()
+        }).catch((error) => {
+          Message.error(error)
         })
-      }).catch((error) => {
-        Message.error(error)
       })
     }
   }
