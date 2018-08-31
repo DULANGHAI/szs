@@ -47,7 +47,7 @@
           <div class="title">执行历史</div>
           <!-- 筛选 -->
           <div class="job-filter">
-            <el-input placeholder="可搜索作业名"
+            <el-input placeholder="可搜索IP"
               suffix-icon="el-icon-search"
               v-model="form1.ip">
             </el-input>
