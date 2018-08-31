@@ -241,7 +241,8 @@ export const constantRouterMap = [
             path: 'fileDispense',
             name: '文件分发',
             component: () => import('@/views/pe/fileManage/fileDispense/index'),
-            meta: { title: '文件分发' }
+            meta: { title: '文件分发' },
+            refresh: true
           },
           {
             path: 'fileDownload',
@@ -398,13 +399,15 @@ export const constantRouterMap = [
             path: 'software',
             name: 'softwareLibrary',
             component: () => import('@/views/resouce/softwareLibrary/index'),
-            meta: { title: '软件包库' }
+            meta: { title: '软件包库' },
+            refresh: true
           },
           {
             path: 'script',
             name: 'scriptLibrary',
             component: () => import('@/views/resouce/scriptLibrary/index'),
-            meta: { title: '脚本库' }
+            meta: { title: '脚本库' },
+            refresh: true
           },
           // {
           //   path: 'script/file',
@@ -417,7 +420,8 @@ export const constantRouterMap = [
             path: 'config',
             name: 'configFileLibrary',
             component: () => import('@/views/resouce/configFileLibrary/index'),
-            meta: { title: '配置文件库' }
+            meta: { title: '配置文件库' },
+            refresh: true
           },
           {
             path: 'review',
