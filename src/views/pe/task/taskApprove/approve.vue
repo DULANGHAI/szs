@@ -71,7 +71,7 @@
                   <div>{{form.script}}</div>
                 </el-form-item>
                 <el-form-item label="脚本版本">
-                  <div>{{form.script_version}}</div>
+                  <div>{{selectedVersion.version}}</div>
                   <el-button type="text" size="small" @click="handleViewScript">查看脚本</el-button>
                 </el-form-item>
                 <el-form-item label="脚本变量">
@@ -137,7 +137,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="提交时间">
-                    <div>{{form.created_at}}</div>
+                    <div>{{form.created_at ? $dayjs(form.created_at).format('YYYY-MM-DD HH:mm:ss') : ''}}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -169,7 +169,7 @@
               :data="form.approve_record"
               style="width: 100%">
               <el-table-column prop="approver" label="姓名"></el-table-column>
-              <el-table-column prop="update_at" label="审批时间"></el-table-column>
+              <el-table-column prop="update_at" label="审批时间" :formatter="formatterTime"></el-table-column>
               <el-table-column prop="approval_comments" label="审批意见"></el-table-column>
               <el-table-column label="风险等级">
                 <template slot-scope="scope">
@@ -247,6 +247,8 @@ export default {
       systemAndLang: {},
       scriptOptions: [],
       scriptVersionOptions: [],
+      selectedScript: {}, // 选中的脚本
+      selectedVersion: {},
       origin: {
         risk_level: ''
       }
@@ -255,12 +257,11 @@ export default {
   created() {
     this.loading = true
     if (this.id) {
-      Promise.all([getTaskDataApi(this.id), getAllScriptApi(), getLanguageApi()])
+      Promise.all([getTaskDataApi(this.id), getLanguageApi()])
         .then(res => {
           this.form = res[0]
           this.origin.risk_level = res[0].risk_level
-          this.scriptOptions = res[1].items
-          this.systemAndLang = res[2]
+          this.systemAndLang = res[1]
           this.$nextTick(() => {
             // 如果是脚本任务还需再请求一些接口
             if (res[0].type === 'script') {
@@ -269,17 +270,9 @@ export default {
               this.doWhenPlaybook()
             }
           })
-          this.loading = false
-        }).catch(() => {
+        }).finally(() => {
           this.loading = false
         })
-    } else {
-      getAllScriptApi().then(res => {
-        this.scriptOptions = res.items
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
     }
   },
   mounted() {
@@ -406,6 +399,13 @@ export default {
           })
         }
       })
+    },
+    formatterTime(row) {
+      if (row.updated_at) {
+        return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     }
   }
 }

@@ -166,17 +166,16 @@ export default {
       return result
     },
     handleViewScript() {
-      console.log('点击查看')
       if (!this.data.project_id) {
-        this.$message.info('请选择语言')
+        this.$message.info('数据异常')
         return
       }
       if (!this.selectedScript.full_path) {
-        this.$message.info('请选择脚本')
+        this.$message.info('数据异常')
         return
       }
       if (!this.selectedVersion.commit_sha) {
-        this.$message.info('请选择脚本版本')
+        this.$message.info('数据异常')
         return
       }
       this.$refs.viewScript.setParames({

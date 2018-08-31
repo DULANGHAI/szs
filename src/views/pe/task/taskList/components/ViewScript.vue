@@ -1,15 +1,16 @@
 <template>
   <el-dialog
-    v-loading="loading"
     title="查看脚本"
     :visible="dialogVisible"
     width="35%"
     class="pb-dialog"
     @close="handleClose"
-    @open="handleOpen()">
+    @open="handleOpen()"
+    append-to-body>
     <div v-if="codeFileContent">
       <codemirror v-model="codeFileContent" ref="myEditor" :options="codeOptions"></codemirror>
     </div>
+    
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
     </div>
@@ -33,7 +34,6 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      loading: false,
       parames: null,
       codeFileContent: '',
       codeOptions: { // 文件内容配置
@@ -63,11 +63,8 @@ export default {
       this.parames = parames
     },
     getData() {
-      this.loading = true
       getScriptApi(this.parames.id, this.parames).then(res => {
         this.codeFileContent = res.content
-      }).finally(() => {
-        this.loading = false
       })
     }
   }

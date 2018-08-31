@@ -234,7 +234,11 @@ export default {
       }
     },
     formatterTime(row) {
-      return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      if (row.updated_at) {
+        return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
     },
     formatterTaskType(row) {
       return taskTypeMap[row.type]
