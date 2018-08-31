@@ -6,10 +6,8 @@
     class="pb-dialog"
     @close="handleClose"
     @open="handleOpen()">
-    <div v-loading="loading">
-      <div v-if="codeFileContent">
-        <codemirror v-model="codeFileContent" ref="myEditor" :options="codeOptions"></codemirror>
-      </div>
+    <div v-if="codeFileContent">
+      <codemirror v-model="codeFileContent" ref="myEditor" :options="codeOptions"></codemirror>
     </div>
     
     <div slot="footer" class="dialog-footer">
@@ -35,7 +33,6 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      loading: false,
       parames: null,
       codeFileContent: '',
       codeOptions: { // 文件内容配置
@@ -65,11 +62,8 @@ export default {
       this.parames = parames
     },
     getData() {
-      this.loading = true
       getScriptApi(this.parames.id, this.parames).then(res => {
         this.codeFileContent = res.content
-      }).finally(() => {
-        this.loading = false
       })
     }
   }
