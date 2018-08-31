@@ -166,7 +166,8 @@ export default {
       return result
     },
     handleViewScript() {
-      if (!this.form.project_id) {
+      console.log('点击查看')
+      if (!this.data.project_id) {
         this.$message.info('请选择语言')
         return
       }
@@ -179,7 +180,7 @@ export default {
         return
       }
       this.$refs.viewScript.setParames({
-        id: this.form.project_id,
+        id: this.data.project_id,
         full_path: this.selectedScript.full_path,
         branch: this.selectedVersion.commit_sha
       })
