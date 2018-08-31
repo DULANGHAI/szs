@@ -130,7 +130,7 @@
                   label="姓名">
                 </el-table-column>
                 <el-table-column
-                  prop="updated_at"
+                  prop="created_at"
                   :formatter="formatterTime"
                   label="审批时间">
                 </el-table-column>
@@ -187,7 +187,7 @@
                 label="最近提交">
               </el-table-column>
               <el-table-column
-                prop="created_at"
+                prop="updated_at"
                 label="更新时间"
                 :formatter="formatterTimeUpdate"
                 show-overflow-tooltip>

@@ -5,7 +5,7 @@
         <el-breadcrumb class="app-breadcrumb" separator="/">
           <transition-group name="breadcrumb">
             <el-breadcrumb-item v-for="(item,index)  in levelList" :key="item.path" v-if="item.meta.title">
-              <router-link :to="item.redirect||item.path">{{item.meta.title}}</router-link>
+              <span>{{item.meta.title}}</span>
             </el-breadcrumb-item>
           </transition-group>
           <span role="presentation" class="el-breadcrumb__separator">/</span>

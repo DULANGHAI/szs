@@ -365,4 +365,7 @@ export default {
   .hostuploadpanel ul{
     display: none !important;
   }
+  .review-body .el-button+.el-button{
+    margin-left: 0px;
+  }
 </style>
