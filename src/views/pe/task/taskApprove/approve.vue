@@ -72,7 +72,7 @@
                 </el-form-item>
                 <el-form-item label="脚本版本">
                   <div>{{form.script_version}}</div>
-                  <el-button type="text" size="small">查看脚本</el-button>
+                  <el-button type="text" size="small" @click="handleViewScript">查看脚本</el-button>
                 </el-form-item>
                 <el-form-item label="脚本变量">
                   <div>{{form.script_parameter}}</div>
@@ -189,6 +189,8 @@
         </el-tab-pane>
       </el-tabs>
 
+      <!-- 查看脚本 -->
+      <view-script ref="viewScript"></view-script>
     </div>
   </div>
 </template>
@@ -199,6 +201,7 @@ import RiskLevel from '@/components/RiskLevel'
 import ScriptOption from '@/components/ScriptOption'
 import ScriptParame from '@/views/pe/task/taskList/components/ScriptParame'
 import PlaybookModel from '@/views/pe/task/taskList/components/PlaybookModel'
+import ViewScript from '@/views/pe/task/taskList/components/ViewScript'
 
 import { getScriptVersionApi } from '@/api/pe/taskManage/taskList'
 import { getLanguageApi, getAllScriptApi, getTaskDataApi, submitApproveApi } from '@/api/pe/taskManage/taskApprove'
@@ -210,7 +213,8 @@ export default {
     RiskLevel,
     ScriptOption,
     ScriptParame,
-    PlaybookModel
+    PlaybookModel,
+    ViewScript
   },
   data() {
     return {
@@ -346,6 +350,26 @@ export default {
         }
       }
       return result
+    },
+    handleViewScript() {
+      if (!this.form.project_id) {
+        this.$message.info('请选择语言')
+        return
+      }
+      if (!this.selectedScript.full_path) {
+        this.$message.info('请选择脚本')
+        return
+      }
+      if (!this.selectedVersion.commit_sha) {
+        this.$message.info('请选择脚本版本')
+        return
+      }
+      this.$refs.viewScript.setParames({
+        id: this.form.project_id,
+        full_path: this.selectedScript.full_path,
+        branch: this.selectedVersion.commit_sha
+      })
+      this.$refs.viewScript.showModel()
     },
     systemChange() {
       this.form.language = ''
