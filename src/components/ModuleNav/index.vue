@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { getRepository } from '@/api/script'
+import { getRepositoryHd } from '@/api/script'
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import { mapGetters } from 'vuex'
@@ -30,7 +30,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'moduleName'
+      'moduleName',
+      'token'
     ])
   },
   created() {
@@ -44,7 +45,7 @@ export default {
       return false
     },
     getBusiness() {
-      getRepository().then(response => {
+      getRepositoryHd(this.token).then(response => {
         this.ywzList = response
         const bsName = Cookies.get('BussinessGroup') || response[0].name
         this.businessName = bsName

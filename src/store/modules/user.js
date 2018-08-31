@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getRepository } from '@/api/script'
+import { getRepositoryHd } from '@/api/script'
 import { getToken, setToken, getUserName, setUserName, removeUserName, getUserInit, setUserInit, removeToken, removeUserInit, getBussinessGroup, setBussinessGroup } from '@/utils/auth'
 
 const user = {
@@ -85,7 +85,7 @@ const user = {
     // 获取业务组
     GetBussiness({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getRepository().then(response => {
+        getRepositoryHd(state.token).then(response => {
           const data = response
           getBussinessGroup() || setBussinessGroup(data[0].name)
           getBussinessGroup() || commit('SET_REPOSITORY', data[0].name)

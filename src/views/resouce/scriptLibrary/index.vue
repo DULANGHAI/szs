@@ -202,7 +202,7 @@ export default {
       getRepositoryZizu(name, this.r_type).then(response => {
         this.zizuList = response
         if (response.length > 0) {
-          this.zzSelect = response[0].id
+          // this.zzSelect = response[0].id
           this.getYuyan(response[0].id)
         } else {
           this.isSpeed = 1
@@ -215,6 +215,7 @@ export default {
     // 选择业务组select
     ywzChange(id) {
       this.isfile = false
+      this.isSpeed = 1
       for (var item in this.ywzList) {
         if (this.ywzList[item].id === id) {
           this.getZizu(id, this.ywzList[item].name)
@@ -245,6 +246,7 @@ export default {
         group_id: id
       }
       this.listLoading = true
+      this.zzSelect = id
       getRepositoryYuyan(params).then(response => {
         this.yyList = response
         this.listLoading = false
@@ -274,7 +276,7 @@ export default {
       // })
     },
     getList() {
-      this.zizuList = []
+      // this.zizuList = []
       this.yyList = []
       this.getYuyan(this.zzSelect)
     }

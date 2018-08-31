@@ -279,6 +279,8 @@ export default {
     dappEdit() {
       if (this.multipleSelection[0].type === 'business') {
         Message.error('只有主机组和主机可以编辑')
+      } else if (this.multipleSelection[0].is_read_only === 1) {
+        Message.error('此主机组不能编辑')
       } else if (this.multipleSelection[0].type === 'host') {
         this.$refs.edit.doCreate(true, this.multipleSelection)
       } else {
