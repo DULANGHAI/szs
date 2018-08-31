@@ -247,6 +247,8 @@ export default {
       systemAndLang: {},
       scriptOptions: [],
       scriptVersionOptions: [],
+      selectedScript: {}, // 选中的脚本
+      selectedVersion: {},
       origin: {
         risk_level: ''
       }
