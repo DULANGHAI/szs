@@ -117,7 +117,9 @@
           <el-table-column
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goDetail(scope.row.id)">查看</el-button>
+              
+              <el-button v-if="scope.row.status === 'initial'" disabled type="text" size="small">查看</el-button>
+              <el-button v-else type="text" size="small" @click="goDetail(scope.row.id)">查看</el-button>
               <el-button v-if="form.isStatus==='cancel'" type="text" size="small" @click="revoke(scope.row.id)">撤销</el-button>
             </template>
           </el-table-column>

@@ -42,6 +42,7 @@
                   </el-upload>
                 </span>
                 <el-button size="small" @click.native="onCMDB">同步CMBD</el-button>
+                <el-button size="small" @click.native="onScheduler">同步scheduler</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="dappAdd">添加主机组</el-button>
                 <el-button size="small" :disabled="multipleSelection.length !== 1" @click.native="dappEdit">编辑</el-button>
               </div>
@@ -100,7 +101,7 @@
 </template>
 
 <script>
-import { getHostList, delGroups, postCMDB } from '@/api/resouce/resouces/host'
+import { getHostList, delGroups, postCMDB, postScheduler } from '@/api/resouce/resouces/host'
 import Breadcrumb from '@/components/Breadcrumb'
 import RiskLevel from '@/components/RiskLevel'
 import { Message, MessageBox } from 'element-ui'
@@ -296,6 +297,14 @@ export default {
     },
     onCMDB() {
       postCMDB().then(response => {
+        this.getList()
+        Message.success('同步成功！')
+      }).catch(error => {
+        Message.error(error)
+      })
+    },
+    onScheduler() {
+      postScheduler().then(response => {
         this.getList()
         Message.success('同步成功！')
       }).catch(error => {
