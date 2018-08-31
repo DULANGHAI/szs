@@ -75,3 +75,11 @@ export function postCMDB() {
   })
 }
 
+// Scheduler
+export function postScheduler() {
+  return request({
+    url: '/v1/hosts/scheduler',
+    method: 'post'
+  })
+}
+

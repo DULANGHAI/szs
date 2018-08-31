@@ -443,6 +443,12 @@ export default {
     },
     // 查看文件内容
     getFileDetail(path) {
+      this.codeOptions = {
+        ...this.codeOptions,
+        readOnly: true,
+        autofocus: false
+      }
+      this.is_editContent = false
       const params = {
         full_path: path,
         branch: this.branch
@@ -518,9 +524,7 @@ export default {
     submitEdit() {
       const successCallBack = () => {
         Message.success('编辑成功')
-        this.$router.push({
-          name: 'review'
-        })
+        this.fileDetailWrap = false
       }
       const params = {
         'content': this.codeFileContent,

@@ -61,7 +61,7 @@
           min-width="30%"
           show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="yyListDelete(scope.row.id)">删除</el-button>
+            <el-button type="text" size="small" @click="yyListDelete(scope.row.project_id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
