@@ -21,12 +21,12 @@
           </el-col>
           <el-col :span="5">
             <el-form-item label="开始时间">
-              <div>{{$dayjs(form.start_time).format('YYYY-MM-DD HH:mm:ss')}}</div>
+              <div>{{form.start_time ? $dayjs(form.start_time).format('YYYY-MM-DD HH:mm:ss') : ''}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item label="结束时间">
-              <div>{{$dayjs(form.end_time).format('YYYY-MM-DD HH:mm:ss')}}</div>
+              <div>{{form.end_time ? $dayjs(form.end_time).format('YYYY-MM-DD HH:mm:ss') : ""}}</div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -93,7 +93,8 @@ export default {
       ordinary: '普通作业',
       update: '应用更新&发布',
       quit: '应用下线',
-      inspection: '日常检查'
+      inspection: '日常检查',
+      distribution: '文件分发'
     }
     return {
       form: {
