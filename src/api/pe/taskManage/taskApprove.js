@@ -48,10 +48,11 @@ export function getLanguageApi() {
 /**
  * 查询所有的脚本
  */
-export function getAllScriptApi() {
+export function getAllScriptApi(params) {
   return request({
-    url: '',
-    method: 'get'
+    url: '/v1/repositories/script',
+    method: 'get',
+    params: params
   })
 }
 

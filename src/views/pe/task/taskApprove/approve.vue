@@ -71,7 +71,7 @@
                   <div>{{form.script}}</div>
                 </el-form-item>
                 <el-form-item label="脚本版本">
-                  <div>{{selectedScript.version}}</div>
+                  <div>{{selectedVersion.version}}</div>
                   <el-button type="text" size="small" @click="handleViewScript">查看脚本</el-button>
                 </el-form-item>
                 <el-form-item label="脚本变量">
@@ -257,12 +257,11 @@ export default {
   created() {
     this.loading = true
     if (this.id) {
-      Promise.all([getTaskDataApi(this.id), getAllScriptApi(), getLanguageApi()])
+      Promise.all([getTaskDataApi(this.id), getLanguageApi()])
         .then(res => {
           this.form = res[0]
           this.origin.risk_level = res[0].risk_level
-          this.scriptOptions = res[1].items
-          this.systemAndLang = res[2]
+          this.systemAndLang = res[1]
           this.$nextTick(() => {
             // 如果是脚本任务还需再请求一些接口
             if (res[0].type === 'script') {
@@ -271,17 +270,9 @@ export default {
               this.doWhenPlaybook()
             }
           })
-          this.loading = false
-        }).catch(() => {
+        }).finally(() => {
           this.loading = false
         })
-    } else {
-      getAllScriptApi().then(res => {
-        this.scriptOptions = res.items
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
     }
   },
   mounted() {

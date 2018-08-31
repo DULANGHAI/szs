@@ -5,7 +5,8 @@
     width="35%"
     class="pb-dialog"
     @close="handleClose"
-    @open="handleOpen()">
+    @open="handleOpen()"
+    append-to-body>
     <div v-if="codeFileContent">
       <codemirror v-model="codeFileContent" ref="myEditor" :options="codeOptions"></codemirror>
     </div>
