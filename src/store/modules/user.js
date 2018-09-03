@@ -51,6 +51,7 @@ const user = {
           setToken(data.id)
           setUserInit(data.init_login)
           setUserName(data.username)
+          commit('SET_TOKEN', data.id)
           commit('SET_USERID', data.id)
           commit('SET_NAME', data.username)
           commit('SET_USERINIT', data.init_login)
