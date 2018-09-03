@@ -63,7 +63,7 @@ export default {
         risk_level: '',
         creator: '',
         page: 1,
-        per_page: 10
+        per_page: 30
       },
       loading: false,
       selected: '',
@@ -120,7 +120,7 @@ export default {
         risk_level: '',
         creator: '',
         page: 1,
-        per_page: 10
+        per_page: 30
       }
       this.loading = false
       this.selected = ''
