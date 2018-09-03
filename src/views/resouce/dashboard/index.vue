@@ -306,7 +306,7 @@ export default {
           this.chartData1.rows = this.handleData1(res[4])
           this.repositories = res[5]
           this.white_black = res[6]
-          this.chartData2.rows = this.handleData2(res[7].tops)
+          this.chartData2.rows = this.handleData2(res[7])
         }).finally(() => {
           this.loading = false
         })
@@ -337,7 +337,7 @@ export default {
             this.chartData1.rows = this.handleData1(res[2])
             this.repositories = res[3]
             this.white_black = res[4]
-            this.chartData2.rows = this.handleData2(res[5].tops)
+            this.chartData2.rows = this.handleData2(res[5])
           })
           // .catch(() => {
           //   clearInterval(this.interval)
