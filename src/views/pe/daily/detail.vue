@@ -124,7 +124,6 @@ export default {
       form: {
         name: '',
         system_type: '',
-        target_ip: [],
         result: '',
         execution_id: '',
         start_time: '',
@@ -135,7 +134,13 @@ export default {
       data: [],
       total: 0,
       systemAndLang: {},
-      result_arr: [],
+      result_arr: [
+        'end_success',
+        'end_failed',
+        'end_rollback',
+        'failed',
+        'not_match'
+      ],
       check_item_arr: [],
       daterange: ''
     }
@@ -177,9 +182,6 @@ export default {
       const params = {
         name: this.form.name,
         system_type: this.form.system_type,
-        target_ip: JSON.stringify({
-          host: this.form.target_ip
-        }),
         result: this.form.result,
         execution_id: this.form.execution_id,
         start_time: this.form.start_time,
@@ -209,7 +211,6 @@ export default {
         name: '',
         system_type: '',
         job_type: '',
-        target_ip: [],
         result: '',
         execution_id: '',
         start_time: '',

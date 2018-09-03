@@ -125,7 +125,14 @@ export default {
                 this.refresh()
               })
             } else {
-              this.addManualData(this.form)
+              this.addManualData({
+                job_type: this.form.job_type,
+                name: this.form.name,
+                description: this.form.description,
+                notifier: this.form.notifier,
+                notify_type: this.form.notify_type,
+                timestr: this.form.timestr
+              })
               this.cancel()
             }
           }

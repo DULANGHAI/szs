@@ -121,4 +121,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+.link {
+  color: #409EFF;
+}
 </style>
