@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!isEdit ? '添加命令白名单' : '编辑命令白名单' "
+    :title="title"
     :visible.sync="dialogVisible"
     width="35%"
     class="pb-dialog">
@@ -52,6 +52,11 @@
             { required: true, message: '备注不能为空', trigger: 'blur' }
           ]
         }
+      }
+    },
+    computed: {
+      title() {
+        return this.isEdit ? '编辑命令白名单' : '添加命令白名单'
       }
     },
     methods: {

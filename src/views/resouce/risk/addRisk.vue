@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!isEdit ? '新建风险命令' : '编辑风险命令' "
+    :title="title"
     :visible.sync="dialogVisible"
     width="35%"
     class="pb-dialog">
@@ -66,6 +66,11 @@
             { required: true, message: '备注不能为空', trigger: 'blur' }
           ]
         }
+      }
+    },
+    computed: {
+      title() {
+        return this.isEdit ? '编辑风险命令' : '新建风险命令'
       }
     },
     methods: {

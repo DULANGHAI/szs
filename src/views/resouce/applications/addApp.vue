@@ -232,7 +232,7 @@ export default {
       getRepositoryYuyan(params).then(response => {
         this.appList = response.map((item, index) => {
           const ali = {
-            key: item.id,
+            key: item.project_id,
             value: item.name
           }
           return ali
