@@ -1,6 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getRepositoryHd } from '@/api/script'
-import { getToken, setToken, getUserName, setUserName, removeUserName, getUserInit, setUserInit, removeToken, removeUserInit, getBussinessGroup, setBussinessGroup } from '@/utils/auth'
+import { getToken, setToken, getUserName, setUserName, removeUserName, getUserInit, setUserInit, removeToken, removeUserInit, getBussinessGroup, setBussinessGroup, removeBussinessGroup } from '@/utils/auth'
 
 const user = {
   state: {
@@ -109,6 +109,7 @@ const user = {
           removeToken()
           removeUserInit()
           removeUserName()
+          removeBussinessGroup()
           resolve()
         }).catch(error => {
           reject(error)
@@ -125,6 +126,7 @@ const user = {
         removeToken()
         removeUserInit()
         removeUserName()
+        removeBussinessGroup()
         resolve()
       })
     }
