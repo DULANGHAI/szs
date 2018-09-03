@@ -1,7 +1,7 @@
 <template>
   <div class="app-main">
     <transition name="fade" mode="out-in">
-      <router-view :key="activeKey"></router-view>
+      <router-view :key="routeKey"></router-view>
       <!-- <router-view></router-view> -->
     </transition>
   </div>
@@ -11,14 +11,15 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'AppMain',
-  data() {
-    return {
-      activeKey: +new Date()
-    }
-  },
+  // data() {
+  //   return {
+  //     activeKey: +new Date()
+  //   }
+  // },
   computed: {
     ...mapGetters([
-      'repository'
+      'repository',
+      'routeKey'
     ])
     // key() {
     //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
@@ -27,7 +28,8 @@ export default {
   watch: {
     repository(val, oldVal) {
       if (val !== oldVal) {
-        this.activeKey = +new Date()
+        // this.activeKey = +new Date()
+        this.$store.commit('CHANGE_ROUTEKEY', +new Date())
       }
     }
   }
