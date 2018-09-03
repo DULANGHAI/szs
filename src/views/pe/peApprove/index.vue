@@ -88,9 +88,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
+          <el-table-column fixed="right" label="操作" width="150">
             <template slot-scope="scope">
-              <!-- <el-button type="text" size="small" @click="goDetail(scope.row)">详情</el-button> -->
+              <el-button type="text" size="small" @click="goDetail(scope.row)">详情</el-button>
               <el-button type="text" size="small" @click="pass(scope.row)" :disabled="scope.row.status !== '1'">通过</el-button>
               <el-button type="text" size="small" @click="nopass(scope.row)" :disabled="scope.row.status !== '1'">拒绝</el-button>
             </template>
@@ -184,17 +184,13 @@ export default {
       }
       this.search()
     },
-    // goDetail(row) {
-    //   if (row.operation_type === '1') {
-    //     // godetail
-    //   } else if (row.operation_type === '2') {
-    //     // godetail
-    //   } else if (row.operation_type === '3') {
-    //     // godetail
-    //   } else if (row.operation_type === '4') {
-    //     // godetail
-    //   }
-    // },
+    goDetail(row) {
+      if (row.operation_type === '1' || row.operation_type === '2') {
+        window.open(`/#/pe/jobManage/jobView/${row.tmp_id}/1`)
+      } else if (row.operation_type === '3' || row.operation_type === '4') {
+        window.open(`/pe/flowManage/flowView/${row.tmp_id}/1`)
+      }
+    },
     pass(row) {
       this.$refs.approveModel.setData(row.id, '2')
       this.$refs.approveModel.showModel()
