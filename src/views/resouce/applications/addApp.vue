@@ -4,7 +4,7 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="container-title">
-      {{ isEdit ? '添加应用实例' : '编辑应用实例' }}
+      {{ !isEdit ? '添加应用实例' : '编辑应用实例' }}
     </div>
     <div class="container-body-wrap add-app-body">
       <template>
