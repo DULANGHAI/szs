@@ -110,12 +110,12 @@
             </template>
           </el-table-column>
           <el-table-column prop="is_enable" label="状态" :formatter="formatterEnable"></el-table-column>
-          <el-table-column prop="status" label="审批状态"></el-table-column>
-          <el-table-column prop="change_result" label="编辑状态"></el-table-column>
+          <el-table-column prop="status" label="审批状态" :formatter="formatterStatus"></el-table-column>
+          <el-table-column prop="change_result" label="编辑状态" :formatter="formatterChangeResult"></el-table-column>
           <el-table-column prop="approver" label="审批人"></el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.is_enable || !scope.row.is_enable && (scope.row.status === '审批中' || scope.row.change_result === '修改内容审批中')">编辑</el-button>
+              <el-button type="text" size="small" @click="goEdit(scope.row.id)" :disabled="scope.row.is_enable || !scope.row.is_enable && (scope.row.status === '审批中' || scope.row.status === 'pending' || scope.row.change_result === '修改内容审批中' || scope.row.change_result === 'pending')">编辑</el-button>
               <el-button type="text" size="small" @click="goView(scope.row.id)">查看</el-button>
               <el-button type="text" size="small" @click="handleSingleStatus(scope.row)">{{scope.row.is_enable ? '停用' : '启用'}}</el-button>
               <el-button type="text" size="small" class="danger" @click="handleSingleDelete(scope.row.id)" :disabled="scope.row.is_enable">删除</el-button>
@@ -147,6 +147,18 @@ const taskTypeMap = {
   script: '脚本',
   file: '文件分发',
   playbook: 'playbook'
+}
+const statusMap = {
+  'pass': '审批通过',
+  'no-pass': '审批不通过',
+  'pending': '审批中',
+  'no-need': '无需审批'
+}
+const changeResultMap = {
+  'pass': '修改内容审批通过',
+  'no-pass': '修改内容审批不通过',
+  'pending': '修改内容审批中',
+  'no-need': '修改内容无需审批'
 }
 
 export default {
@@ -248,6 +260,12 @@ export default {
         return '启用'
       }
       return '停用'
+    },
+    formatterStatus(row) {
+      return statusMap[row.status] ? statusMap[row.status] : row.status
+    },
+    formatterChangeResult(row) {
+      return changeResultMap[row.change_result] ? changeResultMap[row.change_result] : row.change_result
     },
     /**
      * 接口

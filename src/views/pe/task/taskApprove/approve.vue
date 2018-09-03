@@ -25,7 +25,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="状态">
-                    <div>{{form.status}}</div>
+                    <div>{{statusMap[form.status] ? statusMap[form.status] : form.status}}</div>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -142,7 +142,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="状态">
-                    <div>{{form.status}}</div>
+                    <div>{{statusMap[form.status] ? statusMap[form.status] : form.status}}</div>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -251,6 +251,12 @@ export default {
       selectedVersion: {},
       origin: {
         risk_level: ''
+      },
+      statusMap: {
+        'pass': '审批通过',
+        'no-pass': '审批不通过',
+        'pending': '审批中',
+        'no-need': '无需审批'
       }
     }
   },
