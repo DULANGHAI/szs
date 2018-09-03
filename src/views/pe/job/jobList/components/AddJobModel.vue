@@ -2,7 +2,7 @@
   <el-dialog title="添加作业" :visible.sync="show">
     <el-form>
       <el-form-item label="作业类型">
-        <el-radio-group v-model="form.type">
+        <el-radio-group v-model="form.type" @change="handleTypeChange">
           <el-radio label="command">命令</el-radio>
           <el-radio label="script">脚本</el-radio>
           <el-radio label="file">文件分发</el-radio>
@@ -63,7 +63,7 @@ export default {
         risk_level: '',
         creator: '',
         page: 1,
-        per_page: 10
+        per_page: 30
       },
       loading: false,
       selected: '',
@@ -72,6 +72,13 @@ export default {
     }
   },
   methods: {
+    handleTypeChange() {
+      this.form.name = ''
+      this.form.page = 1
+      this.selected = ''
+      this.jobArr = []
+      this.selectedObj = null
+    },
     firstData(e) {
       this.loading = true
       this.form.name = e.target.value
@@ -113,7 +120,7 @@ export default {
         risk_level: '',
         creator: '',
         page: 1,
-        per_page: 10
+        per_page: 30
       }
       this.loading = false
       this.selected = ''

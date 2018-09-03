@@ -95,6 +95,7 @@ export default {
         replace: false
       }
       this.$refs.ruleForm.resetFields()
+      this.dialogVisible = false
     },
     doSubmit() {
       this.$refs.ruleForm.validate((valid) => {

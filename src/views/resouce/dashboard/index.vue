@@ -138,8 +138,8 @@ import dayjs from 'dayjs'
 
 import { getHostsDataApi, getApplicationDataApi, getWorkersDataApi, getHealthDataApi, getFileChartDataApi, getRepositoriesDataApi, getWhiteBlackDataApi, getJobChartDataApi } from '@/api/resouce/dashboard/index'
 
-const default_start_time = dayjs().subtract(8, 'day').format('YYYY-MM-DD')
-const default_end_time = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+const default_start_time = dayjs().subtract(7, 'day').format('YYYY-MM-DD')
+const default_end_time = dayjs().format('YYYY-MM-DD')
 
 export default {
   components: {
@@ -306,7 +306,7 @@ export default {
           this.chartData1.rows = this.handleData1(res[4])
           this.repositories = res[5]
           this.white_black = res[6]
-          this.chartData2.rows = this.handleData2(res[7].tops)
+          this.chartData2.rows = this.handleData2(res[7])
         }).finally(() => {
           this.loading = false
         })
@@ -337,7 +337,7 @@ export default {
             this.chartData1.rows = this.handleData1(res[2])
             this.repositories = res[3]
             this.white_black = res[4]
-            this.chartData2.rows = this.handleData2(res[5].tops)
+            this.chartData2.rows = this.handleData2(res[5])
           })
           // .catch(() => {
           //   clearInterval(this.interval)

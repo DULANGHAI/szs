@@ -91,7 +91,11 @@
             </div>
             <div v-else-if="scope.row.status === '等待'">
               <el-button type="text" size="small" @click="deleteJob(scope.row.execution_id)">删除</el-button>
-            </div> 
+            </div>
+            <div v-if="scope.row.status === '停止'">
+              <el-button type="text" size="small" disabled="">执行</el-button>
+              <el-button type="text" size="small" disabled="">停止</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

@@ -12,7 +12,7 @@
       </div>
       <!-- 查看的按钮组 -->
       <div v-if="view">
-        <el-button type="primary" @click="goEdit">编辑</el-button>
+        <el-button type="primary" @click="goEdit" :disabled="form.status">编辑</el-button>
         <el-button @click="goBack">返回</el-button>
       </div>
       <!-- 编辑的按钮组 -->

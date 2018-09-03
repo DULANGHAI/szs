@@ -46,6 +46,7 @@ export default {
     handleClose() {
       this.form.name = ''
       this.$refs.ruleForm.resetFields()
+      this.dialogVisible = false
     },
     doSubmit() {
       this.$refs.ruleForm.validate((valid) => {

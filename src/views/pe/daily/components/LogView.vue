@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-loading="loading"
-    title="新建目录"
+    title="日志查看"
     :visible="dialogVisible"
     width="500px"
     @close="handleClose">
