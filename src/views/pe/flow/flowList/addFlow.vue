@@ -92,7 +92,7 @@
                 <svg-icon icon-class="move-down" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">下移</div>
               </div>
-              <div class="op-item" @click="addManualFun">
+              <div class="op-item" @click="addManualFun" :class="{disable: !data.length}">
                 <svg-icon icon-class="liucheng" :style="{ transform: 'scale(1.5)' }" />
                 <div class="mart-10">人工流程</div>
               </div>
@@ -341,11 +341,19 @@ export default {
       this.data.push(temp)
     },
     moveUp() {
+      if (this.selectRowIndex === 1 && this.selectRow.job_type === 'manual') {
+        this.$message.error('人工节点不能出现在第一个')
+        return
+      }
       if (this.selectRowIndex > 0) {
         this.swapArray(this.selectRowIndex - 1, this.selectRowIndex)
       }
     },
     moveDown() {
+      if (this.selectRowIndex === 0 && this.data[1].job_type === 'manual') {
+        this.$message.error('人工节点不能出现在第一个')
+        return
+      }
       if (this.selectRowIndex < this.data.length - 1) {
         this.swapArray(this.selectRowIndex, this.selectRowIndex + 1)
       }
@@ -420,6 +428,14 @@ export default {
             this.$message.error('请包含至少一个作业')
             return
           }
+          // 判断是否每个作业都配置了“失败处理方式”
+          for (let i = 0; i < this.data.length; i++) {
+            if (this.data[i].job_type !== 'manual' && !this.data[i].handleFailed) {
+              this.$message.error('作业 ' + this.data[i].name + ' 应该配置“失败处理方式”')
+              return
+            }
+          }
+          // 判断是否含有人工流程
           const has_manual_job = this.has_manual_job()
           const data = {
             'status': this.form.status ? 1 : 0,
