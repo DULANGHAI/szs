@@ -54,8 +54,8 @@ export default {
       form: {
         target_ip: [],
         target_dest: '',
-        owner: '',
-        mode: '',
+        owner: 'mds',
+        mode: '0644',
         replace: false
       },
       rules: {
@@ -90,8 +90,8 @@ export default {
       this.form = {
         target_ip: [],
         target_dest: '',
-        owner: '',
-        mode: '',
+        owner: 'mds',
+        mode: '0644',
         replace: false
       }
       this.$refs.ruleForm.resetFields()

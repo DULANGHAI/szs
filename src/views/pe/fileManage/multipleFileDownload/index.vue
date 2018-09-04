@@ -22,9 +22,7 @@
             :rules="[
               { required: true, message: '路径不能为空', trigger: ['blur', 'change'] }
             ]">
-            <el-input v-model="form.path">
-              <i class="el-input__icon" slot="prefix">～</i>
-            </el-input>
+            <el-input v-model="form.path"></el-input>
           </el-form-item>
         </el-form>
         <div>

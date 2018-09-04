@@ -89,7 +89,7 @@ export default {
       loading: false,
       form: {
         target_ip: null,
-        path: ''
+        path: '/home/mds'
       },
       options: [],
       data: [],
@@ -123,7 +123,7 @@ export default {
   methods: {
     ipChange(value) {
       this.form.target_ip = value
-      this.form.path = ''
+      this.form.path = '/home/mds'
       this.getListData()
     },
     // 文件浏览

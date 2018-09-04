@@ -44,7 +44,7 @@
                     <treeselect v-model="form.target_ip" :multiple="true" :options="options" placeholder="请选择" :disabled="view === '1'" />
                   </el-form-item>
                   <el-form-item label="失败重试次数" prop="frequency" label-width="106px">
-                    <el-input-number v-model="form.frequency" controls-position="right" :min="1" :precision="0" :disabled="view === '1'"></el-input-number>
+                    <el-input-number v-model="form.frequency" controls-position="right" :min="0" :precision="0" :disabled="view === '1'"></el-input-number>
                     次
                   </el-form-item>
                 <!-- </el-form> -->
@@ -189,7 +189,7 @@ export default {
         description: '',
         execution_account: '',
         target_ip: null,
-        frequency: 1,
+        frequency: 0,
         system_type: '',
         job_type: 'ordinary',
         applications: '',

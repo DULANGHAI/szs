@@ -190,8 +190,8 @@ export default {
         script_version: '',
 
         file_selection: '',
-        file_owner: '',
-        file_permission: '',
+        file_owner: 'mds',
+        file_permission: '0644',
         is_replace: false,
 
         time_out: 30,
@@ -375,8 +375,8 @@ export default {
       this.form.script_version = ''
 
       this.form.file_selection = ''
-      this.form.file_owner = ''
-      this.form.file_permission = ''
+      this.form.file_owner = 'mds'
+      this.form.file_permission = '0644'
       this.form.is_replace = false
 
       this.form.time_out = 1
@@ -427,8 +427,8 @@ export default {
         script_version: '',
 
         file_selection: '',
-        file_owner: '',
-        file_permission: '',
+        file_owner: 'mds',
+        file_permission: '0644',
         is_replace: false,
 
         time_out: 30,
