@@ -40,7 +40,7 @@ export function getListApi(params) {
       creator: params.creator,
       start_time: params.start_time,
       end_time: params.end_time,
-      page: 1,
+      page: params.page,
       per_page: 10
     }
   })
