@@ -137,18 +137,29 @@ export default {
     },
     // 创建一个下载
     download() {
+      const temp = this.getIpAndPath()
       const target_ip_arr = []
-      const path_arr = []
       target_ip_arr.push(this.form.target_ip)
-      path_arr.push(this.form.path)
+
       const data = {
         target_ip: target_ip_arr,
-        path: path_arr,
+        path: temp.path,
         system_type: 'linux'
       }
       postDownloadApi(data).then(() => {
         this.$message.success('成功，请到批量下载中查看')
       })
+    },
+    getIpAndPath() {
+      const result = {
+        // target_ip: [],
+        path: []
+      }
+      this.multipleSelection.forEach((item) => {
+        // result.target_ip.push(item.target_ip)
+        result.path.push(item.path)
+      })
+      return result
     },
     // 进去文件夹
     enterDir(path) {
