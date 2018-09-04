@@ -122,7 +122,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态"></el-table-column>
+          <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
           <el-table-column label="操作" fixed="right" width="70">
             <template slot-scope="scope">
               <el-button type="text" @click="goView(scope.row)">查看</el-button>
@@ -150,11 +150,12 @@ const taskTypeMap = {
   file: '文件分发',
   playbook: 'playbook'
 }
-// const taskStatusMap = {
-//   pass: '通过',
-//   'no-pass': '拒绝',
-//   pending: '审核中'
-// }
+const statusMap = {
+  'pass': '审批通过',
+  'no-pass': '审批不通过',
+  'pending': '审批中',
+  'no-need': '无需审批'
+}
 
 export default {
   name: 'example1',
@@ -228,6 +229,9 @@ export default {
     formatterTaskType(row) {
       return taskTypeMap[row.type]
     },
+    formatterStatus(row) {
+      return statusMap[row.status] ? statusMap[row.status] : row.status
+    },
     renderHeader(h, { column, $index }) {
       return (
         <span>
@@ -263,7 +267,7 @@ export default {
       this.search()
     },
     goView(row) {
-      if (row.status === '审批中') { // 审核中，可操作
+      if (row.status === '审批中' || row.status === 'pending') { // 审核中，可操作
         this.$router.push({
           path: `/pe/taskManage/approveTask/${row.id}`
         })

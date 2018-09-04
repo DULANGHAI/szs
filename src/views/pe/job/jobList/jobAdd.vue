@@ -252,7 +252,7 @@ export default {
     endDisable() {
       if (this.uniqueId) {
         if (this.selected.id === undefined ||
-        (this.selected.next && this.selected.next.length !== 0) ||
+        // (this.selected.next && this.selected.next.length !== 0) ||
         (this.selected.type.indexOf('end_') === 0) ||
         this.view ||
         this.scheduling.type === 'playbook') {

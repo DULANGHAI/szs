@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加作业" :visible.sync="show">
+  <el-dialog title="添加作业" :visible.sync="show" @close="handleClose">
     <el-form>
       <el-form-item label="作业类型">
         <el-radio-group v-model="form.type" @change="handleTypeChange">
@@ -133,6 +133,9 @@ export default {
         this.selectedObj.next = []
       }
       this.addNode(this.selectedObj)
+      this.cancel()
+    },
+    handleClose() {
       this.cancel()
     }
   }

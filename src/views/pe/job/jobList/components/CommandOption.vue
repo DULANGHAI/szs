@@ -3,7 +3,9 @@
     <div class="flex">
       <svg-icon icon-class="icon-script" :style="{ width: '24px', height: '24px', marginRight: '10px' }"/>
       <div>
-        <div class="name">{{data.name}}</div>
+        <el-tooltip class="item" effect="dark" :content="data.name" placement="top">
+          <div class="name">{{data.name}}</div>
+        </el-tooltip>
         <risk-level :level="data.risk_level"></risk-level>
       </div>
     </div>
@@ -66,6 +68,10 @@ export default {
 }
 .name {
   color: #000000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 274px;
 }
 .path {
   font-size: 10px;

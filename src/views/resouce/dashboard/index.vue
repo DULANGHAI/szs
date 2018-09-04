@@ -257,7 +257,7 @@ export default {
         rows: []
       },
       chartData2: {
-        columns: ['IP', '异常次数'],
+        columns: ['IP', '执行次数'],
         rows: []
       },
       chartData3: [],
@@ -367,7 +367,7 @@ export default {
       data && data.forEach((item) => {
         result.push({
           'IP': item.target_ip,
-          '异常次数': item.count
+          '执行次数': item.count
         })
       })
       return result

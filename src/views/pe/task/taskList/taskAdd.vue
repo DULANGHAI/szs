@@ -138,7 +138,7 @@
         </el-form-item>
         <!-- 查看的按钮组 -->
         <el-form-item v-if="view">
-          <el-button @click="goEdit" :disabled="form.status === '审批中' || form.change_result === '修改内容审批中'">编辑</el-button>
+          <el-button @click="goEdit" :disabled="form.status === '审批中' || form.status === 'pending' || form.change_result === '修改内容审批中' || form.change_result === 'pending'">编辑</el-button>
           <el-button @click="goBack">返回</el-button>
         </el-form-item>
       </el-form>
@@ -194,7 +194,7 @@ export default {
         file_permission: '',
         is_replace: false,
 
-        time_out: 1,
+        time_out: 30,
         risk_level: 0,
         risk_statement: '风险说明自动填写评估详情，用户不能修改',
         is_enable: false
@@ -430,7 +430,7 @@ export default {
         file_permission: '',
         is_replace: false,
 
-        time_out: 1,
+        time_out: 30,
         risk_level: 0,
         risk_statement: '风险说明自动填写评估详情，用户不能修改',
         is_enable: false
