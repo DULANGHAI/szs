@@ -157,6 +157,9 @@ export default {
     this.init()
     this.startInterval()
   },
+  beforeDestroy() {
+    this.stopInterval()
+  },
   methods: {
     init() {
       this.loading = true
