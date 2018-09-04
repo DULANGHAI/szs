@@ -79,7 +79,10 @@ export default {
     }
   },
   created() {
-    this.init()
+    // 加上20ms延时，因为偶尔出现了‘repository’拿不到的情况
+    setTimeout(() => {
+      this.init()
+    }, 20)
   },
   methods: {
     init() {
