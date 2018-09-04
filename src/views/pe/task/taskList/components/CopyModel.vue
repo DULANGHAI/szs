@@ -34,7 +34,8 @@ export default {
       rules: {
         name: [
           { required: true, message: '任务名不能为空', trigger: 'blur' },
-          { pattern: /^[^\u4e00-\u9fa5]+$/, message: '任务名称不能包含中文', trigger: ['blur', 'change'] }
+          { pattern: /^[^\u4e00-\u9fa5]+$/, message: '任务名称不能包含中文', trigger: ['blur', 'change'] },
+          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: ['blur', 'change'] }
         ]
       }
     }

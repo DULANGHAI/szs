@@ -215,7 +215,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入任务名称', trigger: ['blur', 'change'] }
+          { required: true, message: '请输入流程名称', trigger: ['blur', 'change'] },
+          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: ['blur', 'change'] }
         ],
         status: [
           { required: true, message: '请选择是否启用', trigger: ['change'] }
@@ -231,6 +232,7 @@ export default {
         creator: '',
         start_time: '',
         end_time: '',
+        status: 1,
         page: 1,
         per_page: 10
       },

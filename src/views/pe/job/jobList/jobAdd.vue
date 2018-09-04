@@ -197,7 +197,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入作业名称', trigger: ['blur', 'change'] }
+          { required: true, message: '请输入作业名称', trigger: ['blur', 'change'] },
+          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: ['blur', 'change'] }
         ],
         description: [
           { required: true, message: '请输入备注', trigger: ['blur', 'change'] }
