@@ -221,7 +221,19 @@ export default {
     search() {
       this.getListData(1)
     },
-    refresh() {},
+    refresh() {
+      this.form = {
+        name: '',
+        job_id: '',
+        creator: '',
+        start_time: '',
+        end_time: '',
+        page: 1,
+        per_page: 10
+      }
+      this.daterange = ''
+      this.search()
+    },
     goAdd() {
       this.$router.push({
         path: '/pe/flowManage/flowAdd'

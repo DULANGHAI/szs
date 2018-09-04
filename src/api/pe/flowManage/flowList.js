@@ -47,6 +47,18 @@ export function createFlowApi(data) {
 }
 
 /**
+ * 复制一个流程
+ * @param {Object} data
+ */
+export function copyFlowApi(id, data) {
+  return request({
+    url: `/v1/processes/${id}`,
+    method: 'post',
+    data: data
+  })
+}
+
+/**
  * 获取一个流程所有信息
  * @param {Object} data
  */

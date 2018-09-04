@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { createFlowApi } from '@/api/pe/flowManage/flowList'
+import { copyFlowApi } from '@/api/pe/flowManage/flowList'
 
 export default {
   props: {
@@ -53,14 +53,9 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = {
-            name: this.form.name,
-            'status': this.data.status,
-            'has_manual_job': this.data.has_manual_job,
-            'job_id_list': this.data.job_id_list,
-            'scheduling': this.data.scheduling,
-            'description': this.data.description
+            name: this.form.name
           }
-          createFlowApi(data).then(res => {
+          copyFlowApi(this.data.id, data).then(res => {
             this.$message({
               showClose: true,
               message: '操作成功',
