@@ -7,7 +7,7 @@
       <div class="dash-header">
         <div class="dash-title">资源管理仪表盘</div>
         <div class="header-flex">
-          <div class="dash-desc">{{`早上好，${name}，欢迎来到上证信息运维自动化平台`}}</div>
+          <div class="dash-desc">{{`您好，${name}，欢迎来到上证信息运维自动化平台`}}</div>
           <el-form :inline="true">
             <el-form-item label="时间">
               <el-date-picker
