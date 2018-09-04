@@ -48,10 +48,10 @@
               <svg-icon icon-class="zhixing" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">执行</div>
             </div>
-            <div class="op-item" @click="refresh">
+            <!-- <div class="op-item" @click="refresh">
               <svg-icon icon-class="refresh_instant" :style="{ transform: 'scale(1.5)' }" />
               <div class="mart-10">刷新</div>
-            </div>
+            </div> -->
           </div>
           <div class="flex">
             <div class="op-item" @click="handleMultipleDelete">
