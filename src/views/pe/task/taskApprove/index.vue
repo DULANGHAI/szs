@@ -267,7 +267,7 @@ export default {
       this.search()
     },
     goView(row) {
-      if (row.status === '审批中') { // 审核中，可操作
+      if (row.status === '审批中' || row.status === 'pending') { // 审核中，可操作
         this.$router.push({
           path: `/pe/taskManage/approveTask/${row.id}`
         })
