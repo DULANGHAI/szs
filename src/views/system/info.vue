@@ -36,7 +36,7 @@
           </el-col>
           <el-col :span="5">
             <el-form-item label="风险">
-              <el-select v-model="queryForm.riskLevel" placeholder="请选择">
+              <el-select v-model="queryForm.risk_level" placeholder="请选择">
                 <el-option
                   v-for="(item, index) in levelOptions"
                   :key="index"
@@ -58,6 +58,7 @@
         </el-row>
         <div class="flex-end">
           <el-button type="primary" size="small" @click="handleSearchBtn">查询</el-button>
+          <el-button size="small" @click.native="searchReset">重置</el-button>
         </div>
       </el-form>
 
@@ -109,7 +110,6 @@ const status_map = {
   '1': '无需确认',
   '2': '未确认'
 }
-
 export default {
   name: 'info',
   components: {
@@ -170,6 +170,19 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    searchReset() {
+      this.queryForm = {
+        start_time: '',
+        end_time: '',
+        type: '',
+        riskLevel: '',
+        status: '',
+        page: 1,
+        per_page: 10
+      }
+      this.daterange = ''
+      this.getListData(1)
     },
     handleCurrentChange(val) {
       this.getListData(val)
