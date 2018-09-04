@@ -194,7 +194,7 @@ export default {
         file_permission: '',
         is_replace: false,
 
-        time_out: 1,
+        time_out: 30,
         risk_level: 0,
         risk_statement: '风险说明自动填写评估详情，用户不能修改',
         is_enable: false
@@ -430,7 +430,7 @@ export default {
         file_permission: '',
         is_replace: false,
 
-        time_out: 1,
+        time_out: 30,
         risk_level: 0,
         risk_statement: '风险说明自动填写评估详情，用户不能修改',
         is_enable: false
