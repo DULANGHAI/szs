@@ -143,7 +143,8 @@ export default {
       total: 0,
       systemAndLang: {},
       creator_arr: [],
-      daterange: ''
+      daterange: '',
+      interval: ''
     }
   },
   watch: {
@@ -154,6 +155,7 @@ export default {
   },
   created() {
     this.init()
+    this.startInterval()
   },
   methods: {
     init() {
@@ -167,6 +169,14 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    startInterval() {
+      this.interval = setInterval(() => {
+        this.getListData()
+      }, 5000)
+    },
+    stopInterval() {
+      clearInterval(this.interval)
     },
     formatterJobType(row) {
       return this.job_type_map[row.job_type]
@@ -196,6 +206,7 @@ export default {
         this.loading = false
       }).catch(() => {
         this.loading = false
+        this.stopInterval()
       })
     },
     handlePageChange(val) {

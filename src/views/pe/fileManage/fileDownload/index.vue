@@ -60,11 +60,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="" label="权限"></el-table-column>
-          <el-table-column prop="" label="所有者"></el-table-column>
-          <el-table-column prop="" label="用户组"></el-table-column>
-          <el-table-column prop="" label="大小"></el-table-column>
-          <el-table-column prop="updated_at" label="上传时间"></el-table-column>
+          <el-table-column prop="mode" label="权限"></el-table-column>
+          <el-table-column prop="pw_name" label="所有者"></el-table-column>
+          <el-table-column prop="gr_name" label="用户组"></el-table-column>
+          <el-table-column prop="size" label="大小" :formatter="formatterSize"></el-table-column>
+          <el-table-column prop="mtime" label="修改时间" :formatter="formatterTime"></el-table-column>
         </el-table>
       </div>
     </div>
@@ -93,19 +93,12 @@ export default {
       },
       options: [],
       data: [],
-      multipleSelection: [],
-      project_id: null
+      multipleSelection: []
     }
   },
   computed: {
     downloadDisabled() {
-      if (!this.project_id) {
-        return true
-      }
-      if (this.multipleSelection.length !== 1) {
-        return true
-      }
-      if (this.multipleSelection.length === 1 && this.multipleSelection[0].isdir) {
+      if (!this.multipleSelection.length) {
         return true
       }
       return false
@@ -144,32 +137,45 @@ export default {
     },
     // 创建一个下载
     download() {
-      const temp = this.getIpAndPath()
-
+      const target_ip_arr = []
+      const path_arr = []
+      target_ip_arr.push(this.form.target_ip)
+      path_arr.push(this.form.path)
       const data = {
-        target_ip: temp.target_ip,
-        path: temp.path,
+        target_ip: target_ip_arr,
+        path: path_arr,
         system_type: 'linux'
       }
       postDownloadApi(data).then(() => {
         this.$message.success('成功，请到批量下载中查看')
       })
     },
-    getIpAndPath() {
-      const result = {
-        target_ip: [],
-        path: []
-      }
-      this.multipleSelection.forEach((item) => {
-        result.target_ip.push(item.target_ip)
-        result.path.push(item.path)
-      })
-      return result
-    },
     // 进去文件夹
     enterDir(path) {
       this.form.path = path
       this.getListData()
+    },
+    formatterTime(row) {
+      if (row.mtime) {
+        return this.$dayjs(row.mtime * 1000).format('YYYY-MM-DD HH:mm:ss')
+      } else {
+        return ''
+      }
+    },
+    formatterSize(row) {
+      return this.renderSize(row.size)
+    },
+    renderSize(value) {
+      if (value === null || value === '') {
+        return '0 Bytes'
+      }
+      const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      let index = 0
+      const srcsize = parseFloat(value)
+      index = Math.floor(Math.log(srcsize) / Math.log(1024))
+      let size = srcsize / Math.pow(1024, index)
+      size = size.toFixed(2)// 保留的小数位数
+      return size + unitArr[index]
     }
   }
 }

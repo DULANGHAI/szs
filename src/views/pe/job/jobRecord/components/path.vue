@@ -52,7 +52,7 @@
     <!-- 路径图 -->
     <div>
        <!-- 作业编排 -->
-        <div class="block-item">
+        <div class="block-item" v-show="scheduling">
           <!-- 操作 -->
           <div class="tool-box">
             <div class="op-item" @click="enlarge">
@@ -134,7 +134,11 @@ export default {
         status: data.status,
         result: data.result
       }
-      this.scheduling = JSON.parse(data.scheduling)
+      if (data.job_type === 'distribution') {
+        this.scheduling = ''
+      } else {
+        this.scheduling = JSON.parse(data.scheduling)
+      }
       this.uniqueId = +new Date()
       this.scale = 10
     }
