@@ -108,8 +108,8 @@
       </template>
     </div>
     <!-- 文件选择model -->
-    <file-model ref="rjb_file" :fileOk="rjb_fileOk" :filePath="rjbPath"></file-model>
-    <file-model ref="pzwj_file" :fileOk="pzwj_fileOk" :filePath="pzwjPath"></file-model>
+    <file-model ref="rjb_file" :fileOk="rjb_fileOk" :filePath="form.sw_package_repository || rjbPath"></file-model>
+    <file-model ref="pzwj_file" :fileOk="pzwj_fileOk" :filePath="form.cfg_file_repository || pzwjPath"></file-model>
   </div>
 </template>
 
@@ -120,6 +120,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import FileModel from './fileModel'
 import RiskLevel from '@/components/RiskLevel'
 import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 
 const formData = {
   'instance_name': '',
@@ -188,13 +189,12 @@ export default {
     }
   },
   created() {
-    this.rjbPath = this.$store.state.user.repository + '/applications'
-    this.pzwjPath = this.$store.state.user.repository + '/configurations'
-
     if (this.$route.params.id) {
       this.getAppDetail()
     }
-    getAppRepository(this.$store.state.user.repository, 'applications').then(response => {
+    this.rjbPath = this.repository + '/applications'
+    this.pzwjPath = this.repository + '/configurations'
+    getAppRepository(this.repository, 'applications').then(response => {
       this.getAppList(response[0].id)
     }).catch(error => {
       Message.error(error)
@@ -211,6 +211,11 @@ export default {
     }).catch(error => {
       Message.error(error)
     })
+  },
+  computed: {
+    ...mapGetters([
+      'repository'
+    ])
   },
   watch: {
     'appName'(val, oldVal) {
@@ -344,11 +349,11 @@ export default {
       this.form = JSON.parse(JSON.stringify(formData))
     },
     rjb_fileOk(data) {
-      this.form.sw_package_repository = data.path
+      this.form.sw_package_repository = data.absolute_path
       console.log(data.path)
     },
     pzwj_fileOk(data) {
-      this.form.cfg_file_repository = data.path
+      this.form.cfg_file_repository = data.absolute_path
     },
     formatterTime(row) {
       return this.$dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')

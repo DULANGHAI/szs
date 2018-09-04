@@ -48,6 +48,7 @@
 
 <script>
 import { getFileListApi, getBranchApi } from '@/api/pe/taskManage/taskList'
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -57,9 +58,9 @@ export default {
   data() {
     return {
       show: false,
-      pathItems: ['LDDS'],
+      pathItems: [],
       form: {
-        path: 'LDDS',
+        path: '',
         branch: ''
       },
       branchOption: [],
@@ -73,15 +74,15 @@ export default {
         return false
       }
       return true
-    }
-  },
-  created() {
-    this.init()
-    this.form.path = this.$props.filePath
-    this.pathItems = (this.$props.filePath).split('/')
+    },
+    ...mapGetters([
+      'repository'
+    ])
   },
   methods: {
     init() {
+      // this.pathItems = [this.repository, this.$props.filePath]
+      // this.form.path = `${this.repository}/${this.$props.filePath}`
       getFileListApi(this.form).then(res => {
         this.data = res
       })
@@ -95,12 +96,15 @@ export default {
     },
     showMoel() {
       this.show = true
+      this.init()
+      this.form.path = this.$props.filePath
+      this.pathItems = (this.$props.filePath).split('/')
     },
     cancel() {
       this.show = false
-      this.pathItems = ['LDDS']
+      this.pathItems = []
       this.form = {
-        path: 'LDDS',
+        path: '',
         branch: ''
       }
       this.branchOption = []
