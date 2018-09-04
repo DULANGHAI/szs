@@ -88,6 +88,8 @@
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" :formatter="formatterStatus"></el-table-column>
+          <el-table-column prop="approver" label="审批人" width="100px" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="description" label="审批说明" width="200px" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column fixed="right" label="操作" width="150">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="goDetail(scope.row)">详情</el-button>

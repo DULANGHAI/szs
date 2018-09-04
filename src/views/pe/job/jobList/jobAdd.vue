@@ -197,7 +197,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入作业名称', trigger: ['blur', 'change'] }
+          { required: true, message: '请输入作业名称', trigger: ['blur', 'change'] },
+          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: ['blur', 'change'] }
         ],
         description: [
           { required: true, message: '请输入备注', trigger: ['blur', 'change'] }
@@ -422,7 +423,7 @@ export default {
     openEndModel() {
       this.showEndModel = true
     },
-    // 作业的校验，1.必须有值；2.每个分支的最后一个节点必须要有结束节点 3.playbook 不能有结束节点
+    // 作业的校验，1.必须有值；2.每个分支的最后一个节点必须要有结束节点 3.playbook 不能有结束节点 4.每个 cmd 必须配置
     jobValidateFun() {
       // 1.看值是否为空
       if (!this.scheduling.type) {
@@ -433,10 +434,17 @@ export default {
       // 方法：先找出next.length === 0 的节点，判断该节点的type.indexOf('end') === 0
       if (this.scheduling.type !== 'playbook') {
         const nodeArr = this.findNoNextNode(this.scheduling)
-        if (nodeArr.length > 0) {
+        if (nodeArr.length) {
           this.$message.warning('作业必须要以结束节点结束')
           return false
         }
+      }
+
+      // 4.每个 cmd 必须配置
+      const nodeArr2 = this.findNoConditionNode(this.scheduling.next)
+      if (nodeArr2.length) {
+        this.$message.warning('作业编排中有 ' + nodeArr2.length + ' 个 cmd 没有编辑')
+        return false
       }
 
       return true
@@ -452,6 +460,21 @@ export default {
           result = result.concat(this.findNoNextNode(temp.next[i]))
         }
       }
+
+      return result
+    },
+    findNoConditionNode(temp) {
+      let result = []
+
+      for (let i = 0; i < temp.length; i++) {
+        if (!temp[i].condition) {
+          result.push(1)
+        }
+        if (temp[i].next.length) {
+          result = result.concat(this.findNoConditionNode(temp[i].next))
+        }
+      }
+
       return result
     },
     /**

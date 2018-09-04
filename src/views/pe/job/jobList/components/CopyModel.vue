@@ -33,7 +33,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '作业名不能为空', trigger: 'blur' }
+          { required: true, message: '作业名不能为空', trigger: 'blur' },
+          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: ['blur', 'change'] }
         ]
       }
     }
